@@ -64,33 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private void applyAppLogo(int viewId) {
         ImageView img = findViewById(viewId);
         if (img == null) return;
-
-        Bitmap bmp = null;
-
-        try {
-            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-            if (resId != 0) {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
-            }
-        } catch (Exception ignored) {}
-
-        if (bmp == null) {
-            try {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher, opts);
-            } catch (Exception ignored) {}
-        }
-
-        if (bmp == null) return;
-        if (!bmp.hasAlpha()) bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
-
+        // app_logo sudah di-set via XML (android:src), tidak perlu override di sini
+        // Cukup pastikan tidak ada background yang menutupi
         img.setBackground(null);
-        img.setImageBitmap(bmp);
         img.setPadding(0, 0, 0, 0);
-        img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
     }
 
     private void applyHeaderBackground() {
@@ -109,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
             imgBg.setImageDrawable(d);
             imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgBg.setAdjustViewBounds(false);
+            imgBg.setBackgroundColor(Color.TRANSPARENT);
+
+            // Langsung hapus background headerContent sebelum layout — cegah flash biru
+            content.setBackgroundColor(Color.TRANSPARENT);
 
             // Setelah layout selesai, cocokkan tinggi imgHeaderBg dengan headerContent
             frame.getViewTreeObserver().addOnGlobalLayoutListener(
