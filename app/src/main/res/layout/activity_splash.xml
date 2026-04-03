@@ -31,12 +31,12 @@
         android:paddingStart="40dp"
         android:paddingEnd="40dp">
 
-        <!-- Logo — diisi sepenuhnya via applyAppLogo() di SplashActivity.java -->
-        <!-- Ganti drawable/app_logo.png untuk ganti logo, tanpa ubah kode -->
+        <!-- Logo — ganti drawable/app_logo.png untuk custom logo -->
         <ImageView
             android:id="@+id/splashLogo"
             android:layout_width="110dp"
             android:layout_height="110dp"
+            android:src="@drawable/app_logo"
             android:scaleType="centerInside"
             android:background="#00000000"
             android:padding="0dp"
