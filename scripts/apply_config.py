@@ -226,7 +226,7 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
 
 # ── 11. Logo user → app_logo.png (transparan, bukan ic_launcher) ──────────
 LOGO_IMAGE = env("LOGO_IMAGE", "")
-APP_LOGO_PATH = "app/src/main/res/drawable/app_logo.png"
+APP_LOGO_PATH = "app/src/main/res/drawable-nodpi/app_logo.png"
 if LOGO_IMAGE.strip():
     if decode_image(LOGO_IMAGE, APP_LOGO_PATH, "app_logo"):
         print(f"  ✓ Logo user disimpan sebagai app_logo.png (transparan)")
