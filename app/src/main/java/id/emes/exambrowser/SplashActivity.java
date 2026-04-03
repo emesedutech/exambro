@@ -147,6 +147,8 @@ public class SplashActivity extends AppCompatActivity {
         img.setBackground(null);
         img.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         img.setPadding(0, 0, 0, 0);
+        // Software rendering wajib agar alpha channel PNG tidak dirender hitam
+        img.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
         // Load dengan ARGB_8888 agar alpha channel terjaga
         android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
         opts.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
