@@ -5,6 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -133,21 +136,36 @@ public class SplashActivity extends AppCompatActivity {
 
     /**
      * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
+     * Menggunakan BitmapFactory dengan ARGB_8888 agar alpha channel PNG terjaga.
      * Fallback ke ic_launcher jika tidak ada logo user yang di-upload.
      */
     private void applyAppLogo(int viewId) {
         try {
             int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
             if (resId == 0) return; // Tidak ada logo → tetap pakai ic_launcher
-            android.graphics.drawable.Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
+
+            // Decode PNG dengan alpha channel penuh (ARGB_8888)
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
+            if (bmp == null) return;
+
+            // Pastikan bitmap punya alpha
+            if (!bmp.hasAlpha()) {
+                bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
+            }
+
+            BitmapDrawable drawable = new BitmapDrawable(getResources(), bmp);
+
             ImageView img = findViewById(viewId);
-            img.setImageDrawable(d);
-            img.setBackground(null);   // hapus frame/background apapun
+            img.setBackground(null);        // hapus background ImageView
+            img.setImageDrawable(null);     // reset dulu
+            img.setImageDrawable(drawable); // set bitmap transparan
             img.setPadding(0, 0, 0, 0);
             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
         } catch (Exception e) {
-            // Fallback ke ic_launcher
+            // Fallback ke ic_launcher — tidak ada yang perlu dilakukan
         }
     }
 
