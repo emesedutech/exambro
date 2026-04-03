@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Nama di launcher / notification bar -->
+    <string name="app_name">Emes Exam Browser</string>
+    <!-- Judul besar di header layar utama -->
+    <string name="app_title">Emes Exam Browser</string>
+    <!-- Subtitle di bawah judul -->
+    <string name="app_description">Safe browsing untuk ujian online</string>
+</resources>

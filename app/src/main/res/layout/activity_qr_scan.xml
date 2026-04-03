@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Camera preview -->
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Custom scanner overlay -->
+    <id.emes.exambrowser.ScannerOverlayView
+        android:id="@+id/overlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="48dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Close button -->
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#33FFFFFF"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:scaleType="fitCenter"
+            android:padding="8dp"
+            android:contentDescription="Tutup" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scan QR Code Ujian"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arahkan ke QR Code dari pengawas"
+                android:textColor="#CCFFFFFF"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Torch button -->
+        <ImageButton
+            android:id="@+id/btnTorch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#33FFFFFF"
+            android:src="@android:drawable/btn_star_big_off"
+            android:scaleType="fitCenter"
+            android:padding="8dp"
+            android:contentDescription="Lampu" />
+    </LinearLayout>
+
+    <!-- Bottom hint -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"
+        android:text="QR Code akan otomatis terdeteksi"
+        android:textColor="#99FFFFFF"
+        android:textSize="13sp"
+        android:gravity="center" />
+
+</FrameLayout>
