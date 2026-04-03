@@ -1598,8 +1598,31 @@ async function testConn() {
 // ═══ BUILD ════════════════════════════════════════════════════════════════════
 // GitHub Actions API: limit TOTAL payload ~65KB untuk semua inputs gabungan
 // Bagi rata: logo ≤15KB, header ≤15KB, splash ≤15KB → total ~45KB aman
-const GH_TOTAL_LIMIT = 60000;  // chars, total semua gambar
-const GH_IMG_LIMIT   = 15000;  // chars, per gambar
+const GH_TOTAL_LIMIT = 200000; // chars, total semua gambar
+const GH_IMG_LIMIT   = 65000;  // chars, per gambar
+
+// Resize gambar ke PNG — WAJIB untuk logo agar alpha/transparansi tetap terjaga
+// JANGAN gunakan image/jpeg karena JPEG tidak support transparansi (hasilnya hitam)
+async function resizePng(url, maxW, maxH) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+      if(h > maxH){ w = Math.round(w * maxH / h); h = maxH; }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, w, h); // pastikan canvas transparan
+      ctx.drawImage(img, 0, 0, w, h);
+      // toDataURL PNG — satu-satunya format yang support transparansi
+      const b64 = c.toDataURL('image/png').split(',')[1] || '';
+      res(b64);
+    };
+    img.onerror = () => res('');
+    img.src = url;
+  });
+}
 
 async function compressImg(url, maxW=300, maxH=300, maxChars=GH_IMG_LIMIT, keepAlpha=false) {
   return new Promise(res => {
@@ -1667,12 +1690,10 @@ async function triggerBuild() {
   try {
     let hImg='',sImg='',logoImg='';
     if(S.logoUrl){
-      // Logo: ambil base64 LANGSUNG dari FileReader — JANGAN lewat canvas/compressImg
-      // Canvas akan merusak alpha channel dan menghasilkan background hitam
+      // Logo: resize PNG tapi TETAP format PNG (bukan JPEG) agar alpha/transparansi terjaga
       btn.textContent='⏳ Menyiapkan logo…';
-      const rawB64 = S.logoUrl.includes(',') ? S.logoUrl.split(',')[1] : S.logoUrl;
-      logoImg = rawB64;
-      log('dim',`🖼 Logo: ${Math.round(logoImg.length/1024)}KB (PNG asli, alpha terjaga)\n`);
+      logoImg = await resizePng(S.logoUrl, 256, 256);
+      log('dim',`🖼 Logo: ${Math.round(logoImg.length/1024)}KB (PNG, alpha terjaga)\n`);
     }
     if(S.hdrMode==='image'&&S.hdrBgUrl){
       btn.textContent='⏳ Kompres gambar header…';
