@@ -15,7 +15,20 @@ android {
     }
 
     buildTypes {
-        release { minifyEnabled false }
+        release {
+            minifyEnabled false
+            // Disable PNG crunching agar alpha channel pada PNG transparan tidak hilang saat build APK
+            crunchPngs false
+        }
+        debug {
+            crunchPngs false
+        }
+    }
+
+    aaptOptions {
+        // Jangan kompres PNG agar transparansi tetap terjaga
+        cruncherEnabled false
+        noCompress 'png'
     }
 
     compileOptions {
