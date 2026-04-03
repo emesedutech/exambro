@@ -113,14 +113,44 @@ jobs:
 
       - name: Setup launcher icons
         run: |
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-          mkdir -p app/src/main/res/mipmap-xhdpi app/src/main/res/mipmap-xxhdpi app/src/main/res/mipmap-mdpi
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-xhdpi/ic_launcher.png
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-mdpi/ic_launcher.png
-          cp app/src/main/res/mipmap-hdpi/ic_launcher.png app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+          pip install Pillow --quiet
+          python3 - << 'PYEOF'
+import os, sys
+from PIL import Image
+
+# Sumber logo: pakai drawable-nodpi/app_logo.png jika ada (logo user dari web),
+# fallback ke mipmap-hdpi/ic_launcher.png (logo default)
+nodpi_logo = "app/src/main/res/drawable-nodpi/app_logo.png"
+default_logo = "app/src/main/res/mipmap-hdpi/ic_launcher.png"
+
+# Debug: cek semua file yang ada
+print(f"  drawable-nodpi exists: {os.path.exists('app/src/main/res/drawable-nodpi/')}")
+print(f"  app_logo.png exists: {os.path.exists(nodpi_logo)}")
+if os.path.exists(nodpi_logo):
+    size_kb = os.path.getsize(nodpi_logo) // 1024
+    print(f"  app_logo.png size: {size_kb}KB")
+
+src_path = nodpi_logo if os.path.exists(nodpi_logo) else default_logo
+print(f"  Using: {src_path}")
+
+img = Image.open(src_path).convert("RGBA")
+print(f"  Image mode: {img.mode}, size: {img.size}")
+
+sizes = {
+    "mipmap-mdpi":    48,
+    "mipmap-hdpi":    72,
+    "mipmap-xhdpi":   96,
+    "mipmap-xxhdpi":  144,
+    "mipmap-xxxhdpi": 192,
+}
+for folder, size in sizes.items():
+    base = f"app/src/main/res/{folder}"
+    os.makedirs(base, exist_ok=True)
+    resized = img.resize((size, size), Image.LANCZOS)
+    resized.save(f"{base}/ic_launcher.png")
+    resized.save(f"{base}/ic_launcher_round.png")
+    print(f"  ✓ {folder}/ic_launcher.png ({size}x{size})")
+PYEOF
 
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
