@@ -224,19 +224,21 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
         write(manifest_path, manifest2)
         print(f"  ✓ Package directory renamed: {old_dir} → {new_dir}")
 
-# ── 11. Logo user → app_logo.png (transparan, bukan ic_launcher) ──────────
+# ── 11. Logo user → app_logo.png ──────────────────────────────────────────
+# Logo sudah di-commit langsung ke repo via GitHub Contents API (dari docs/index.html)
+# Jika LOGO_IMAGE input diisi juga, pakai itu. Jika tidak, pakai file yang sudah ada di repo.
 LOGO_IMAGE = env("LOGO_IMAGE", "")
 APP_LOGO_PATH = "app/src/main/res/drawable-nodpi/app_logo.png"
 if LOGO_IMAGE.strip():
     if decode_image(LOGO_IMAGE, APP_LOGO_PATH, "app_logo"):
-        print(f"  ✓ Logo user disimpan sebagai app_logo.png (transparan)")
+        print(f"  ✓ Logo dari input disimpan ke drawable-nodpi/app_logo.png")
     else:
-        if os.path.exists(APP_LOGO_PATH):
-            os.remove(APP_LOGO_PATH)
+        print(f"  ⚠ Gagal decode logo dari input, pakai file yang sudah ada di repo")
 else:
-    # Hapus jika tidak ada, supaya Java fallback ke ic_launcher
     if os.path.exists(APP_LOGO_PATH):
-        os.remove(APP_LOGO_PATH)
+        print(f"  ✓ Logo dari repo dipakai: {APP_LOGO_PATH}")
+    else:
+        print(f"  ℹ Tidak ada logo — APK akan pakai ic_launcher default")
 
 print()
 print("✅ Semua file berhasil di-patch. Siap untuk Gradle build.")
