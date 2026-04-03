@@ -64,10 +64,18 @@ public class MainActivity extends AppCompatActivity {
     private void applyAppLogo(int viewId) {
         ImageView img = findViewById(viewId);
         if (img == null) return;
-        // app_logo sudah di-set via XML (android:src), tidak perlu override di sini
-        // Cukup pastikan tidak ada background yang menutupi
+        // Hapus semua background agar PNG transparan tampil apa adanya
         img.setBackground(null);
+        img.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         img.setPadding(0, 0, 0, 0);
+        // Load dengan ARGB_8888 agar alpha channel terjaga
+        android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
+        opts.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+        if (resId != 0) {
+            android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeResource(getResources(), resId, opts);
+            if (bmp != null) img.setImageBitmap(bmp);
+        }
     }
 
     private void applyHeaderBackground() {
