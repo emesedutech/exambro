@@ -1594,44 +1594,51 @@ async function testConn() {
 }
 
 // ═══ BUILD ════════════════════════════════════════════════════════════════════
-// GitHub Actions API max input size: ~65KB per field (base64)
-// We target max 45KB base64 (~33KB binary) with iterative quality reduction
-const GH_IMG_LIMIT = 45000; // chars
+// GitHub Actions API: limit TOTAL payload ~65KB untuk semua inputs gabungan
+// Bagi rata: logo ≤15KB, header ≤15KB, splash ≤15KB → total ~45KB aman
+const GH_TOTAL_LIMIT = 60000;  // chars, total semua gambar
+const GH_IMG_LIMIT   = 15000;  // chars, per gambar
 
-async function compressImg(url, maxW=400, maxH=300, maxChars=GH_IMG_LIMIT) {
+async function compressImg(url, maxW=300, maxH=300, maxChars=GH_IMG_LIMIT) {
   return new Promise(res => {
     const img = new Image(); img.onload = () => {
       let w=img.width, h=img.height;
-      // Downscale to fit maxW/maxH
       if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
       if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
-      const c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      // Iteratively reduce quality until under limit
-      let quality=0.55, result='';
-      do {
-        result = c.toDataURL('image/jpeg', quality);
-        quality -= 0.07;
-      } while(result.length > maxChars && quality > 0.1);
-      // If still too large, shrink canvas 75% and retry
-      if(result.length > maxChars) {
-        w=Math.round(w*0.75); h=Math.round(h*0.75);
-        c.width=w; c.height=h;
-        c.getContext('2d').drawImage(img,0,0,w,h);
-        result=c.toDataURL('image/jpeg',0.30);
+      const tryEncode = (tw, th, q) => {
+        const c=document.createElement('canvas');c.width=tw;c.height=th;
+        c.getContext('2d').drawImage(img,0,0,tw,th);
+        return c.toDataURL('image/jpeg', q).split(',')[1]||'';
+      };
+      // Iterasi: turunkan kualitas dulu, lalu kecilkan dimensi jika perlu
+      let result='';
+      for(let q=0.45; q>=0.10; q-=0.08){
+        result=tryEncode(w,h,q);
+        if(result.length<=maxChars) break;
       }
-      // Strip the data:image/jpeg;base64, prefix — send raw base64 only
-      const b64 = result.split(',')[1]||'';
-      res(b64.length > maxChars ? '' : b64);
+      // Masih besar? Kecilkan dimensi 60% lalu coba lagi
+      if(result.length>maxChars){
+        w=Math.round(w*0.6); h=Math.round(h*0.6);
+        for(let q=0.40; q>=0.10; q-=0.08){
+          result=tryEncode(w,h,q);
+          if(result.length<=maxChars) break;
+        }
+      }
+      res(result.length<=maxChars ? result : '');
     };
     img.onerror=()=>res(''); img.src=url;
   });
 }
 
-// Estimate total payload size and warn if approaching limit
+// Cek total ukuran semua gambar — harus di bawah GH_TOTAL_LIMIT
+function imgsTooLarge(logoImg, hImg, sImg) {
+  return (logoImg.length + hImg.length + sImg.length) > GH_TOTAL_LIMIT;
+}
+
+// Estimate total payload
 function payloadTooLarge(inputs) {
   const json = JSON.stringify({ref:'main', inputs});
-  return json.length > 250000; // 250KB hard limit for the whole request
+  return json.length > 100000;
 }
 
 async function triggerBuild() {
@@ -1647,20 +1654,20 @@ async function triggerBuild() {
     if(S.logoUrl){
       btn.textContent='⏳ Kompres logo…';
       logoImg=await compressImg(S.logoUrl,512,512,GH_IMG_LIMIT);
-      if(!logoImg){log('err','⚠️ Logo terlalu besar, diabaikan\n');}
-      else{log('dim',`🖼 Logo: ${Math.round(logoImg.length/1024)}KB (base64)\n`);}
+      if(!logoImg){log('err','⚠️ Logo tidak bisa dikompres cukup kecil, diabaikan\n');}
+      else{log('dim',`🖼 Logo: ${Math.round(logoImg.length/1024)}KB\n`);}
     }
     if(S.hdrMode==='image'&&S.hdrBgUrl){
       btn.textContent='⏳ Kompres gambar header…';
       hImg=await compressImg(S.hdrBgUrl,400,200,GH_IMG_LIMIT);
-      if(!hImg){log('err','⚠️ Gambar header terlalu besar, diabaikan (pakai warna saja)\n');}
-      else {log('dim',`📷 Header image: ${Math.round(hImg.length/1024)}KB (base64)\n`);}
+      if(!hImg){log('err','⚠️ Gambar header tidak bisa dikompres, diabaikan\n');}
+      else{log('dim',`📷 Header: ${Math.round(hImg.length/1024)}KB\n`);}
     }
     if(S.spBgMode==='image'&&S.spBgUrl){
       btn.textContent='⏳ Kompres gambar splash…';
       sImg=await compressImg(S.spBgUrl,360,640,GH_IMG_LIMIT);
-      if(!sImg){log('err','⚠️ Gambar splash terlalu besar, diabaikan (pakai warna saja)\n');}
-      else {log('dim',`🖼 Splash image: ${Math.round(sImg.length/1024)}KB (base64)\n`);}
+      if(!sImg){log('err','⚠️ Gambar splash tidak bisa dikompres, diabaikan\n');}
+      else{log('dim',`🌅 Splash: ${Math.round(sImg.length/1024)}KB\n`);}
     }
     btn.textContent='⏳ Mengirim ke GitHub…';
     const inputs = {
@@ -1676,10 +1683,18 @@ async function triggerBuild() {
       package_id:v('pkgId')||'id.emes.exambrowser',
       version_name:v('versionName')||'1.1.0'
     };
+    // Cek total ukuran gambar sebelum kirim
+    const totalImgKB = Math.round((logoImg.length+hImg.length+sImg.length)/1024);
+    log('dim',`📦 Total gambar: ${totalImgKB}KB\n`);
+    if(imgsTooLarge(logoImg,hImg,sImg)){
+      log('err','❌ Total gambar masih terlalu besar untuk GitHub Actions API.\n');
+      log('err','  → Coba kurangi: gunakan hanya 1-2 gambar saja\n');
+      log('err','  → Atau gunakan warna saja (tanpa gambar) untuk header/splash\n');
+      btn.disabled=false;btn.textContent='🚀 Build APK Sekarang';
+      return;
+    }
     if(payloadTooLarge(inputs)){
-      log('err','❌ Total payload masih terlalu besar setelah kompresi.\n');
-      log('err','  → Coba gunakan warna saja (tanpa gambar) untuk header/splash\n');
-      log('err','  → Atau upload gambar yang lebih kecil (<500KB)\n');
+      log('err','❌ Total payload terlalu besar.\n');
       btn.disabled=false;btn.textContent='🚀 Build APK Sekarang';
       return;
     }
