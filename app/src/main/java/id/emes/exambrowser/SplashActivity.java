@@ -135,38 +135,43 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     /**
-     * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
-     * Menggunakan BitmapFactory dengan ARGB_8888 agar alpha channel PNG terjaga.
-     * Fallback ke ic_launcher jika tidak ada logo user yang di-upload.
+     * Load logo secara dinamis:
+     *  1. drawable/app_logo.png  → logo custom yang di-bundle user saat build
+     *  2. fallback ic_launcher   → jika tidak ada app_logo
+     * Alpha channel dijaga penuh dengan ARGB_8888.
      */
     private void applyAppLogo(int viewId) {
+        ImageView img = findViewById(viewId);
+        if (img == null) return;
+
+        Bitmap bmp = null;
+
+        // Prioritas 1: app_logo.png di drawable (logo dinamis dari user)
         try {
             int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-            if (resId == 0) return; // Tidak ada logo → tetap pakai ic_launcher
-
-            // Decode PNG dengan alpha channel penuh (ARGB_8888)
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
-            if (bmp == null) return;
-
-            // Pastikan bitmap punya alpha
-            if (!bmp.hasAlpha()) {
-                bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
+            if (resId != 0) {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
             }
+        } catch (Exception ignored) {}
 
-            BitmapDrawable drawable = new BitmapDrawable(getResources(), bmp);
-
-            ImageView img = findViewById(viewId);
-            img.setBackground(null);        // hapus background ImageView
-            img.setImageDrawable(null);     // reset dulu
-            img.setImageDrawable(drawable); // set bitmap transparan
-            img.setPadding(0, 0, 0, 0);
-            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-        } catch (Exception e) {
-            // Fallback ke ic_launcher — tidak ada yang perlu dilakukan
+        // Prioritas 2: fallback ke ic_launcher
+        if (bmp == null) {
+            try {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher, opts);
+            } catch (Exception ignored) {}
         }
+
+        if (bmp == null) return;
+        if (!bmp.hasAlpha()) bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
+
+        img.setBackground(null);
+        img.setImageBitmap(bmp);
+        img.setPadding(0, 0, 0, 0);
+        img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
     }
 
     /**

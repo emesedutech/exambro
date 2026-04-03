@@ -1,6 +1,8 @@
 package id.emes.exambrowser;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -55,21 +57,40 @@ public class MainActivity extends AppCompatActivity {
      * tampilkan sebagai background gambar dengan overlay gelap agar teks tetap terbaca.
      */
     /**
-     * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
+     * Load logo secara dinamis:
+     *  1. drawable/app_logo.png  → logo custom dari user
+     *  2. fallback ic_launcher   → jika tidak ada app_logo
      */
     private void applyAppLogo(int viewId) {
+        ImageView img = findViewById(viewId);
+        if (img == null) return;
+
+        Bitmap bmp = null;
+
         try {
             int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-            if (resId == 0) return;
-            android.graphics.drawable.Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
-            ImageView img = findViewById(viewId);
-            if (img == null) return;
-            img.setImageDrawable(d);
-            img.setBackground(null);   // hapus frame/background apapun
-            img.setPadding(0, 0, 0, 0);
-            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        } catch (Exception e) { /* fallback ic_launcher */ }
+            if (resId != 0) {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
+            }
+        } catch (Exception ignored) {}
+
+        if (bmp == null) {
+            try {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher, opts);
+            } catch (Exception ignored) {}
+        }
+
+        if (bmp == null) return;
+        if (!bmp.hasAlpha()) bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
+
+        img.setBackground(null);
+        img.setImageBitmap(bmp);
+        img.setPadding(0, 0, 0, 0);
+        img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
     }
 
     private void applyHeaderBackground() {
