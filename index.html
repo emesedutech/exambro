@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EMES ExamBro — APK Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f3;
+      --surface: #ffffff;
+      --surface2: #f0f0ee;
+      --border: #e2e2de;
+      --text: #1a1a1a;
+      --text2: #6b6b6b;
+      --accent: #1a3a5c;
+      --accent2: #2e7bf6;
+      --accent-light: #e8f0fc;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--accent);
+      border-bottom: none;
+      box-shadow: 0 2px 12px rgba(26,58,92,0.25);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 17px;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 16px;
+    }
+    .badge {
+      font-size: 11px; font-weight: 600;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+      padding: 3px 9px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      letter-spacing: 0.3px;
+    }
+    .header-right {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .btn-gh {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      transition: all 0.15s;
+    }
+    .btn-gh:hover { background: rgba(255,255,255,0.18); color: white; }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ── PAGE TITLE ── */
+    .page-title {
+      margin-bottom: 28px;
+    }
+    .page-title h1 {
+      font-size: 26px; font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .page-title p {
+      font-size: 14px; color: var(--text2);
+    }
+
+    /* ── ALERT ── */
+    .alert {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 24px;
+      border: 1px solid;
+    }
+    .alert-info { background: var(--accent-light); border-color: #bdd6f8; color: var(--accent); }
+    .alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card-header-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .card-header h2 {
+      font-size: 14px; font-weight: 600;
+      letter-spacing: -0.1px;
+    }
+    .card-header p {
+      font-size: 12px; color: var(--text2); margin-top: 1px;
+    }
+    .card-body { padding: 20px; }
+
+    /* ── FORM GRID ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-full { grid-column: 1 / -1; }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.1px;
+    }
+    .field .hint {
+      font-size: 11px; color: var(--text2);
+      margin-top: 2px;
+    }
+    .required-dot {
+      display: inline-block; width: 5px; height: 5px;
+      background: var(--accent2); border-radius: 50%;
+      margin-left: 4px; vertical-align: middle;
+      margin-bottom: 2px;
+    }
+
+    input[type="text"], input[type="color"], select, textarea {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 8px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(46,123,246,0.1);
+    }
+    textarea { resize: vertical; min-height: 60px; }
+
+    /* Color + hex combo */
+    .color-row { display: flex; gap: 8px; align-items: center; }
+    .color-row input[type="color"] {
+      width: 38px; height: 36px;
+      padding: 2px 3px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .color-row input[type="text"] { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+    /* Image upload */
+    .upload-area {
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--surface2);
+      position: relative;
+    }
+    .upload-area:hover { border-color: var(--accent2); background: var(--accent-light); }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 20px; margin-bottom: 6px; }
+    .upload-text { font-size: 12px; color: var(--text2); }
+    .upload-text strong { color: var(--accent2); }
+    .preview-img {
+      max-height: 60px; max-width: 100%;
+      border-radius: 6px; margin-top: 8px;
+      display: none;
+    }
+
+    /* PIN field */
+    .pin-input {
+      font-family: 'DM Mono', monospace !important;
+      font-size: 18px !important;
+      letter-spacing: 8px;
+      text-align: center;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px; background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* ── SUBMIT AREA ── */
+    .submit-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+    .submit-info { font-size: 13px; color: var(--text2); }
+    .submit-info strong { color: var(--text); font-weight: 600; }
+
+    .btn-build {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--accent);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 600;
+      padding: 10px 24px;
+      border: none; border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .btn-build:hover { background: #142d4a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,58,92,0.3); }
+    .btn-build:active { transform: translateY(0); }
+
+    /* ── STATUS STEPS ── */
+    .steps {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+    .step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+    }
+    .step:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    .step:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .step + .step { border-left: none; }
+    .step-num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+    .step.done { color: var(--success); }
+    .step.done .step-num { background: var(--success-light); color: var(--success); }
+    .step.active { color: var(--accent2); background: var(--accent-light); border-color: #bdd6f8; }
+    .step.active .step-num { background: var(--accent2); color: white; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      header { padding: 0 16px; }
+      .container { padding: 20px 16px 60px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid.cols-3 { grid-template-columns: 1fr; }
+      .submit-area { flex-direction: column; align-items: stretch; }
+      .btn-build { justify-content: center; }
+      .steps { display: none; }
+    }
+
+    /* ── ANIMATIONS ── */
+    .card { animation: fadeUp 0.3s ease both; }
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+    .card:nth-child(4) { animation-delay: 0.2s; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div style="width:38px;height:38px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+      <img src="data:image/png;base64,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" alt="EMES" style="width:34px;height:34px;object-fit:contain;" />
+    </div>
+    <div style="display:flex;flex-direction:column;line-height:1.2;">
+      <span style="font-size:15px;font-weight:700;color:white;">EMES ExamBro</span>
+      <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.6);letter-spacing:0.5px;text-transform:uppercase;">APK Builder</span>
+    </div>
+    <span class="badge">v2.1</span>
+  </div>
+  <div class="header-right">
+    <a href="https://github.com/emesedutech/exambro/actions" target="_blank" class="btn-gh">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub Actions
+    </a>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="page-title">
+    <h1>Build APK & AAB</h1>
+    <p>Isi form di bawah, klik Build — GitHub Actions akan otomatis compile dan signing.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step done">
+      <div class="step-num">✓</div> Isi Konfigurasi
+    </div>
+    <div class="step active">
+      <div class="step-num">2</div> Klik Build
+    </div>
+    <div class="step">
+      <div class="step-num">3</div> Tunggu ~3 menit
+    </div>
+    <div class="step">
+      <div class="step-num">4</div> Download Artifact
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">ℹ️</span>
+    <span>Form ini akan membuka GitHub Actions dengan parameter yang sudah terisi. Pastikan Anda sudah login ke GitHub sebelum klik Build.</span>
+  </div>
+
+  <!-- CARD 1: Identitas App -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon" style="background:#eff6ff;">🏷️</div>
+      <div>
+        <h2>Identitas Aplikasi</h2>
+        <p>Nama, deskripsi, versi, dan package ID</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Nama Aplikasi <span class="required-dot"></span></label>
+          <input type="text" id="app_name" value="Emes Exam Browser" placeholder="contoh: SMA 1 Exam Browser" />
+          <span class="hint">Tampil di launcher & nama APK</span>
+        </div>
+        <div class="field">
+          <label>Package ID <span class="required-dot"></span></label>
+          <input type="text" id="package_id" value="id.emes.exambrowser" placeholder="id.sekolah.exambrowser" />
+          <span class="hint">Unik per app, gunakan format reverse domain</span>
+        </div>
+        <div class="field">
+          <label>Judul Header <span class="required-dot"></span></label>
+          <input type="text" id="app_title" value="Emes Exam Browser" placeholder="contoh: Ujian Online SMA 1" />
+          <span class="hint">Tampil di header layar utama</span>
+        </div>
+        <div class="field">
+          <label>Versi <span class="required-dot"></span></label>
+          <input type="text" id="version_name" value="1.1.0" placeholder="1.0.0" />
+          <span class="hint">Format: major.minor.patch</span>
+        </div>
+        <div class="field form-full">
+          <label>Deskripsi / Subtitle</label>
+          <input type="text" id="app_description" value="Safe browsing untuk ujian online" placeholder="Deskripsi singkat aplikasi" />
+          <span class="hint">Tampil di bawah judul header</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: Tampilan -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon" style="background:#fff7ed;">🎨</div>
+      <div>
+        <h2>Tampilan & Branding</h2>
+        <p>Warna, logo, dan gambar header/splash</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid cols-3">
+        <div class="field">
+          <label>Warna Header <span class="required-dot"></span></label>
+          <div class="color-row">
+            <input type="color" id="header_color_picker" value="#1A3A5C" oninput="syncColor(this,'header_color')" />
+            <input type="text" id="header_color" value="1A3A5C" placeholder="1A3A5C" oninput="syncPicker(this,'header_color_picker')" />
+          </div>
+          <span class="hint">Diabaikan jika ada gambar header</span>
+        </div>
+        <div class="field">
+          <label>Warna Tombol <span class="required-dot"></span></label>
+          <div class="color-row">
+            <input type="color" id="button_color_picker" value="#2E7BF6" oninput="syncColor(this,'button_color')" />
+            <input type="text" id="button_color" value="2E7BF6" placeholder="2E7BF6" oninput="syncPicker(this,'button_color_picker')" />
+          </div>
+          <span class="hint">Warna tombol utama di app</span>
+        </div>
+        <div class="field">
+          <label>PIN Pengawas <span class="required-dot"></span></label>
+          <input type="text" id="exit_pin" value="1234" maxlength="8" class="pin-input" placeholder="1234" oninput="this.value=this.value.replace(/\D/g,'')" />
+          <span class="hint">PIN untuk keluar mode ujian</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Logo Aplikasi</label>
+          <div class="upload-area" onclick="triggerUpload('logo_file')">
+            <input type="file" id="logo_file" accept="image/png" onchange="handleImage(this,'logo_preview','logo_image')" />
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-text"><strong>Klik untuk upload</strong> PNG transparan</div>
+            <img id="logo_preview" class="preview-img" />
+          </div>
+          <span class="hint">Ikon launcher app, PNG transparan</span>
+        </div>
+        <div class="field">
+          <label>Gambar Header</label>
+          <div class="upload-area" onclick="triggerUpload('header_file')">
+            <input type="file" id="header_file" accept="image/*" onchange="handleImage(this,'header_preview','header_image')" />
+            <div class="upload-icon">🏔️</div>
+            <div class="upload-text"><strong>Klik untuk upload</strong> PNG/JPG</div>
+            <img id="header_preview" class="preview-img" />
+          </div>
+          <span class="hint">Background header utama (opsional)</span>
+        </div>
+        <div class="field">
+          <label>Gambar Splash</label>
+          <div class="upload-area" onclick="triggerUpload('splash_file')">
+            <input type="file" id="splash_file" accept="image/*" onchange="handleImage(this,'splash_preview','splash_image')" />
+            <div class="upload-icon">✨</div>
+            <div class="upload-text"><strong>Klik untuk upload</strong> PNG/JPG</div>
+            <img id="splash_preview" class="preview-img" />
+          </div>
+          <span class="hint">Background loading/splash screen (opsional)</span>
+        </div>
+      </div>
+
+      <!-- hidden base64 stores -->
+      <input type="hidden" id="logo_image" />
+      <input type="hidden" id="header_image" />
+      <input type="hidden" id="splash_image" />
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <div class="submit-info">
+      <strong>Siap di-build?</strong><br>
+      GitHub Actions akan berjalan ~2–4 menit. Download APK & AAB dari tab <em>Actions → Artifacts</em>.
+    </div>
+    <a href="#" class="btn-build" id="btn-build" onclick="startBuild(event)">
+      ▶ Build Sekarang
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // Sync color picker ↔ hex text
+  function syncColor(picker, hexId) {
+    document.getElementById(hexId).value = picker.value.replace('#','').toUpperCase();
+  }
+  function syncPicker(hexInput, pickerId) {
+    const val = hexInput.value.replace('#','');
+    if (/^[0-9a-fA-F]{6}$/.test(val)) {
+      document.getElementById(pickerId).value = '#' + val;
+    }
+  }
+
+  // Prevent file input bubble
+  function triggerUpload(id) { /* handled by input directly */ }
+
+  // Handle image upload → base64
+  function handleImage(input, previewId, hiddenId) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const b64 = e.target.result.split(',')[1];
+      document.getElementById(hiddenId).value = b64;
+      const preview = document.getElementById(previewId);
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      // Update upload area text
+      const area = input.closest('.upload-area');
+      area.querySelector('.upload-text').innerHTML = `<strong>${file.name}</strong>`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Build → open GitHub Actions dispatch URL
+  function startBuild(e) {
+    e.preventDefault();
+
+    const params = {
+      app_name:        document.getElementById('app_name').value,
+      app_title:       document.getElementById('app_title').value,
+      app_description: document.getElementById('app_description').value,
+      exit_pin:        document.getElementById('exit_pin').value,
+      header_color:    document.getElementById('header_color').value,
+      button_color:    document.getElementById('button_color').value,
+      package_id:      document.getElementById('package_id').value,
+      version_name:    document.getElementById('version_name').value,
+      header_image:    document.getElementById('header_image').value,
+      splash_image:    document.getElementById('splash_image').value,
+      logo_image:      document.getElementById('logo_image').value,
+    };
+
+    // Validasi wajib
+    const required = ['app_name','app_title','exit_pin','header_color','button_color','package_id','version_name'];
+    for (const key of required) {
+      if (!params[key].trim()) {
+        alert('Field wajib belum diisi: ' + key.replace('_',' '));
+        return;
+      }
+    }
+
+    // Build GitHub Actions URL dengan inputs
+    const repo = 'emesedutech/exambro';
+    const workflow = 'build.yml';
+    const base = `https://github.com/${repo}/actions/workflows/${workflow}`;
+
+    // Simpan ke sessionStorage supaya bisa di-paste manual jika perlu
+    sessionStorage.setItem('buildParams', JSON.stringify(params, null, 2));
+
+    // Buka GitHub Actions dispatch page
+    // GitHub tidak support pre-fill inputs via URL, jadi kita buka halaman dispatch
+    // dan tampilkan instruksi + nilai yang perlu diisi
+    showBuildModal(params, base);
+  }
+
+  function showBuildModal(params, url) {
+    const existing = document.getElementById('build-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'build-modal';
+    modal.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;
+      display:flex;align-items:center;justify-content:center;padding:16px;
+    `;
+
+    const hasImages = params.logo_image || params.header_image || params.splash_image;
+
+    modal.innerHTML = `
+      <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
+        <div style="padding:24px 24px 0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:17px;font-weight:700;">🚀 Mulai Build</h3>
+            <button onclick="document.getElementById('build-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888;">×</button>
+          </div>
+          <p style="font-size:13px;color:#666;margin-bottom:16px;">Klik tombol di bawah untuk membuka GitHub Actions. Isi ulang form di GitHub dengan nilai berikut:</p>
+
+          <div style="background:#f5f5f3;border-radius:8px;padding:14px;font-size:12px;font-family:'DM Mono',monospace;margin-bottom:16px;line-height:1.8;border:1px solid #e2e2de;">
+            ${Object.entries(params).filter(([k,v]) => v && !k.includes('image') || (k.includes('image') && !v)).map(([k,v]) => v ? `<div><span style="color:#6b6b6b;">${k}:</span> <strong>${v.length > 40 ? v.substring(0,40)+'...' : v}</strong></div>` : '').join('')}
+            ${hasImages ? `<div style="color:#d97706;">⚠️ Gambar perlu diupload manual di GitHub Actions</div>` : ''}
+          </div>
+
+          ${hasImages ? `<div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:12px;font-size:12px;color:#92400e;margin-bottom:16px;">
+            ⚠️ <strong>Catatan:</strong> Field gambar (logo, header, splash) berukuran besar dan tidak bisa dikirim via URL. Upload gambar langsung di form GitHub Actions.
+          </div>` : ''}
+        </div>
+
+        <div style="padding:16px 24px 24px;display:flex;gap:10px;">
+          <a href="${url}" target="_blank"
+            style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+            background:#1a3a5c;color:white;text-decoration:none;
+            padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;">
+            Buka GitHub Actions →
+          </a>
+          <button onclick="copyParams()" style="padding:11px 16px;border:1px solid #e2e2de;border-radius:8px;background:#f5f5f3;cursor:pointer;font-size:13px;font-weight:500;">
+            📋 Copy Nilai
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => { if(e.target === modal) modal.remove(); });
+  }
+
+  function copyParams() {
+    const p = JSON.parse(sessionStorage.getItem('buildParams') || '{}');
+    const text = Object.entries(p).filter(([,v])=>v).map(([k,v])=>`${k}: ${v.length>80?'[gambar base64]':v}`).join('\n');
+    navigator.clipboard.writeText(text).then(()=>alert('✅ Disalin!'));
+  }
+</script>
+
+</body>
+</html>
