@@ -11,27 +11,27 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --ink:       #0C1222;
-  --ink2:      #111827;
-  --ink3:      #1E293B;
-  --surface:   #16202E;
-  --surface2:  #1C2A3A;
-  --surface3:  #243044;
-  --border:    rgba(255,255,255,.08);
-  --border2:   rgba(255,255,255,.14);
-  --blue:      #3B82F6;
-  --blue2:     #60A5FA;
-  --cyan:      #06B6D4;
-  --gold:      #F59E0B;
-  --green:     #10B981;
-  --red:       #EF4444;
-  --text:      #E2E8F0;
-  --text2:     #94A3B8;
+  --ink:       #F0F4F8;
+  --ink2:      #E8EEF5;
+  --ink3:      #DDE5EF;
+  --surface:   #FFFFFF;
+  --surface2:  #F5F8FC;
+  --surface3:  #EAF0F8;
+  --border:    rgba(0,0,0,.08);
+  --border2:   rgba(0,0,0,.14);
+  --blue:      #1D4ED8;
+  --blue2:     #2563EB;
+  --cyan:      #0891B2;
+  --gold:      #D97706;
+  --green:     #059669;
+  --red:       #DC2626;
+  --text:      #0F172A;
+  --text2:     #334155;
   --text3:     #64748B;
   --r:         12px;
   --r2:        8px;
-  --shadow:    0 4px 24px rgba(0,0,0,.4);
-  --glow:      0 0 24px rgba(59,130,246,.25);
+  --shadow:    0 4px 24px rgba(0,0,0,.10);
+  --glow:      0 0 24px rgba(37,99,235,.15);
 }
 
 html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--surface3) var(--ink)}
@@ -45,7 +45,7 @@ body{
 
 /* ────── TOPBAR ────── */
 .topbar{
-  background:rgba(12,18,34,.92);
+  background:rgba(255,255,255,.95);
   backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   height:56px;
@@ -63,7 +63,7 @@ body{
   overflow:hidden;
 }
 .brand-icon img{width:100%;height:100%;object-fit:contain;}
-.brand-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.brand-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#0F172A;letter-spacing:-.3px}
 .brand-name span{color:var(--blue2)}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .pill{
@@ -95,12 +95,48 @@ body{
   .sidebar{position:relative;top:0!important;border-left:none;border-top:1px solid var(--border)}
 }
 
+/* ────── MAIN TABS NAV ────── */
+.main-tabs-nav{
+  display:flex;
+  gap:2px;
+  padding:12px 20px 0;
+  border-bottom:2px solid var(--border);
+  background:var(--surface2);
+  overflow-x:auto;
+  scrollbar-width:none;
+  position:sticky;top:56px;z-index:100;
+}
+.main-tabs-nav::-webkit-scrollbar{display:none}
+.main-tab-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;
+  font-size:12.5px;font-weight:600;
+  color:var(--text3);
+  background:transparent;
+  border:none;border-radius:8px 8px 0 0;
+  cursor:pointer;white-space:nowrap;
+  border-bottom:3px solid transparent;
+  margin-bottom:-2px;
+  transition:.15s;
+}
+.main-tab-btn:hover{color:var(--text2);background:var(--surface3)}
+.main-tab-btn.on{
+  color:var(--blue2);
+  background:var(--surface);
+  border-bottom:3px solid var(--blue2);
+}
+
 /* ────── MAIN FORM COLUMN ────── */
 .main-col{
-  padding:28px 28px 80px;
   border-right:1px solid var(--border);
-  display:flex;flex-direction:column;gap:6px;
+  display:flex;flex-direction:column;
 }
+.main-tab-pane{
+  display:none;
+  padding:20px 24px 60px;
+  flex-direction:column;gap:10px;
+}
+.main-tab-pane.on{display:flex}
 
 /* ────── SECTION HEADERS ────── */
 .section-label{
@@ -145,7 +181,7 @@ body{
 
 /* Card variant: featured (build card) */
 .card-featured{
-  background:linear-gradient(145deg, #0D1F35 0%, #112240 100%);
+  background:linear-gradient(145deg, #EFF6FF 0%, #DBEAFE 100%);
   border-color:rgba(59,130,246,.3);
   box-shadow:var(--glow);
 }
@@ -348,9 +384,9 @@ body{
   white-space:pre-wrap;word-break:break-all;line-height:1.7;
   border:1px solid var(--border);
 }
-.build-log .ok{color:#6EE7B7}
-.build-log .err{color:#FCA5A5}
-.build-log .dim{color:#334155}
+.build-log .ok{color:#059669}
+.build-log .err{color:#DC2626}
+.build-log .dim{color:#475569}
 .artifact-btn{
   display:inline-flex;align-items:center;gap:7px;
   margin-top:12px;padding:10px 18px;
@@ -630,7 +666,18 @@ body{
 ════════════════════════════════════════════ -->
 <div class="main-col">
 
-  <!-- ── GITHUB CONNECTION ── -->
+<!-- Tab Navigation -->
+<div class="main-tabs-nav">
+  <button class="main-tab-btn on" onclick="switchMainTab('tab-github',this)">🔑 GitHub</button>
+  <button class="main-tab-btn" onclick="switchMainTab('tab-identitas',this)">🖼 Identitas</button>
+  <button class="main-tab-btn" onclick="switchMainTab('tab-splash',this)">🌅 Splash</button>
+  <button class="main-tab-btn" onclick="switchMainTab('tab-warna',this)">🎨 Warna</button>
+  <button class="main-tab-btn" onclick="switchMainTab('tab-keamanan',this)">🔒 Keamanan</button>
+  <button class="main-tab-btn" onclick="switchMainTab('tab-build',this)">🚀 Build</button>
+</div>
+
+<!-- TAB: GitHub -->
+<div class="main-tab-pane on" id="tab-github">
   <div class="section-label">Koneksi GitHub</div>
 
   <div class="card card-featured">
@@ -670,7 +717,10 @@ body{
     </div>
   </div>
 
-  <!-- ── LOGO ── -->
+</div><!-- /tab-github -->
+
+<!-- TAB: Identitas -->
+<div class="main-tab-pane" id="tab-identitas">
   <div class="section-label">Identitas Visual</div>
 
   <div class="card">
@@ -721,7 +771,10 @@ body{
     </div>
   </div>
 
-  <!-- ── SPLASH SCREEN ── -->
+</div><!-- /tab-identitas -->
+
+<!-- TAB: Splash -->
+<div class="main-tab-pane" id="tab-splash">
   <div class="section-label">Splash Screen</div>
 
   <div class="card">
@@ -826,6 +879,10 @@ body{
   </div>
 
   <!-- ── WARNA APLIKASI ── -->
+</div><!-- /tab-splash -->
+
+<!-- TAB: Warna -->
+<div class="main-tab-pane" id="tab-warna">
   <div class="section-label">Warna Aplikasi</div>
 
   <div class="card">
@@ -887,7 +944,10 @@ body{
     </div>
   </div>
 
-  <!-- ── KEAMANAN ── -->
+</div><!-- /tab-warna -->
+
+<!-- TAB: Keamanan -->
+<div class="main-tab-pane" id="tab-keamanan">
   <div class="section-label">Keamanan &amp; Identitas</div>
 
   <div class="card">
@@ -917,7 +977,10 @@ body{
     </div>
   </div>
 
-  <!-- ── EXPORT KODE ── -->
+</div><!-- /tab-keamanan -->
+
+<!-- TAB: Build -->
+<div class="main-tab-pane" id="tab-build">
   <div class="section-label">Export Konfigurasi</div>
 
   <div class="card">
@@ -977,6 +1040,8 @@ body{
       </div>
     </div>
   </div>
+
+</div><!-- /tab-build -->
 
 </div><!-- /main-col -->
 
@@ -1862,6 +1927,14 @@ async function pollBuild(tok,own,rep) {
 function elapsed(run){const s=new Date(run.created_at),e=run.updated_at?new Date(run.updated_at):new Date(),sec=Math.round((e-s)/1000);return sec<60?`${sec}s`:`${Math.round(sec/60)}m ${sec%60}s`;}
 function setRun(status,title,sub){el('runDot').className='run-dot '+status;el('runTitle').textContent=title;el('runSub').textContent=sub;}
 function log(cls,msg){const b=el('buildLog');const sp=document.createElement('span');sp.className=cls;sp.textContent=msg;b.appendChild(sp);b.scrollTop=b.scrollHeight;}
+
+// ═══ MAIN TAB SWITCHER ══════════════════════════════════════════════════════
+function switchMainTab(id, btn) {
+  document.querySelectorAll('.main-tab-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
 
 // ═══ TOAST ════════════════════════════════════════════════════════════════════
 let tTimer;
