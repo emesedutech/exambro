@@ -119,16 +119,32 @@ jobs:
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
-      - name: Build APK + AAB
-        run: ./gradlew assembleDebug bundleRelease --stacktrace
+      # ── SIGNING: Decode keystore dari secret ──────────────────────────────
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
+          echo "✅ keystore.jks berhasil di-decode ($(wc -c < app/keystore.jks) bytes)"
+
+      # ── BUILD: Release APK + AAB (keduanya signed) ───────────────────────
+      - name: Build APK + AAB (Signed Release)
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease bundleRelease --stacktrace
+
+      # ── CLEANUP: Hapus keystore setelah build ────────────────────────────
+      - name: Remove Keystore
+        if: always()
+        run: rm -f app/keystore.jks
 
       - name: Rename APK and AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-          mv app/build/outputs/apk/debug/app-debug.apk \
-             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
+          mv app/build/outputs/apk/release/app-release.apk \
+             "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
           mv app/build/outputs/bundle/release/app-release.aab \
              "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
@@ -136,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk
           retention-days: 30
 
       - name: Upload AAB artifact
