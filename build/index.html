@@ -981,30 +981,6 @@ body{
 
 <!-- TAB: Build -->
 <div class="main-tab-pane" id="tab-build">
-  <div class="section-label">Export Konfigurasi</div>
-
-  <div class="card">
-    <div class="card-head">
-      <div class="card-ico ico-green">📦</div>
-      <div><h3>Export Manual</h3><p>Salin kode untuk Android Studio (opsional)</p></div>
-    </div>
-    <div class="card-body" style="padding-bottom:0">
-      <div class="etabs">
-        <button class="etab on" onclick="switchExportTab('eStrings',this)">strings.xml</button>
-        <button class="etab" onclick="switchExportTab('eColors',this)">colors.xml</button>
-        <button class="etab" onclick="switchExportTab('eJson',this)">config.json</button>
-      </div>
-      <div class="epane on" id="eStrings"><div class="codeblock" id="codeStrings"><button class="copy-btn" onclick="copyCode('codeStrings')">Salin</button></div></div>
-      <div class="epane" id="eColors"><div class="codeblock" id="codeColors"><button class="copy-btn" onclick="copyCode('codeColors')">Salin</button></div></div>
-      <div class="epane" id="eJson"><div class="codeblock" id="codeJson"><button class="copy-btn" onclick="copyCode('codeJson')">Salin</button></div></div>
-      <div class="save-row" style="padding:16px 0">
-        <button class="btn btn-secondary" onclick="saveConfig()">💾 Simpan ke Browser</button>
-        <button class="btn btn-gold" onclick="dlJson()">⬇ Unduh config.json</button>
-        <span class="saved-ok" id="savedOk">✓ Tersimpan</span>
-      </div>
-    </div>
-  </div>
-
   <!-- ── BUILD APK ── -->
   <div class="section-label">Build APK</div>
 
@@ -1447,58 +1423,10 @@ function refreshSummary() {
   el('sumVer').textContent  = ver;
 }
 
-function refreshCode() {
-  const name  = esc(v('appName')    || 'Emes Exam Browser');
-  const title = esc(v('appTitle')   || 'Emes Exam Browser');
-  const sub   = esc(v('appSubtitle')|| 'Safe browsing untuk ujian online');
-  const hc    = (v('hHeader') || '#1A3A5C').toUpperCase();
-  const ac    = (v('hAccent') || '#2E7BF6').toUpperCase();
-  const sc    = (v('hSplash') || '#1A3A5C').toUpperCase();
-
-  el('codeStrings').innerHTML =
-    `<button class="copy-btn" onclick="copyCode('codeStrings')">Salin</button>` +
-    `<span class="cmt">&lt;?xml version="1.0" encoding="utf-8"?&gt;\n</span>` +
-    `<span class="kw">&lt;resources&gt;\n</span>` +
-    `    <span class="kw">&lt;string</span> name=<span class="str">"app_name"</span><span class="kw">&gt;</span>${name}<span class="kw">&lt;/string&gt;</span>\n` +
-    `    <span class="kw">&lt;string</span> name=<span class="str">"app_title"</span><span class="kw">&gt;</span>${title}<span class="kw">&lt;/string&gt;</span>\n` +
-    `    <span class="kw">&lt;string</span> name=<span class="str">"app_description"</span><span class="kw">&gt;</span>${sub}<span class="kw">&lt;/string&gt;</span>\n` +
-    `<span class="kw">&lt;/resources&gt;</span>`;
-
-  const dk = (h,f) => {
-    const x=h.replace('#','');
-    return '#'+[0,2,4].map(i=>Math.round(parseInt(x.slice(i,i+2),16)*f).toString(16).padStart(2,'0')).join('').toUpperCase();
-  };
-
-  el('codeColors').innerHTML =
-    `<button class="copy-btn" onclick="copyCode('codeColors')">Salin</button>` +
-    `<span class="cmt">&lt;?xml version="1.0" encoding="utf-8"?&gt;\n</span>` +
-    `<span class="kw">&lt;resources&gt;\n</span>` +
-    `    <span class="kw">&lt;color</span> name=<span class="str">"colorHeaderBg"</span>&gt;<span class="str">${hc}</span><span class="kw">&lt;/color&gt;</span>\n` +
-    `    <span class="kw">&lt;color</span> name=<span class="str">"colorSplashBg"</span>&gt;<span class="str">${sc}</span><span class="kw">&lt;/color&gt;</span>\n` +
-    `    <span class="kw">&lt;color</span> name=<span class="str">"colorPrimary"</span>&gt;<span class="str">${ac}</span><span class="kw">&lt;/color&gt;</span>\n` +
-    `    <span class="kw">&lt;color</span> name=<span class="str">"colorPrimaryDark"</span>&gt;<span class="str">${dk(ac,.85)}</span><span class="kw">&lt;/color&gt;</span>\n` +
-    `    <span class="kw">&lt;color</span> name=<span class="str">"colorAccent"</span>&gt;<span class="str">${ac}</span><span class="kw">&lt;/color&gt;</span>\n` +
-    `<span class="kw">&lt;/resources&gt;</span>`;
-
-  const cfg = {
-    app_name:v('appName')||'Emes Exam Browser',
-    app_title:v('appTitle')||'Emes Exam Browser',
-    app_description:v('appSubtitle')||'',
-    exit_pin:v('exitPin')||'1234',
-    colors:{header:hc,splash_bg:(v('hSplash')||'#1A3A5C').toUpperCase(),splash_text:(v('hSplashTxt')||'#FFFFFF').toUpperCase(),button:ac},
-    package_id:v('pkgId')||'id.emes.exambrowser',
-    version_name:v('versionName')||'1.1.0',
-    generated_at:new Date().toISOString()
-  };
-  el('codeJson').innerHTML =
-    `<button class="copy-btn" onclick="copyCode('codeJson')">Salin</button>` + esc(JSON.stringify(cfg,null,2));
-}
-
 function refresh() {
   refreshSplash();
   refreshMain();
   refreshSummary();
-  refreshCode();
 }
 
 // ═══ MISC HELPERS ═════════════════════════════════════════════════════════════
@@ -1521,31 +1449,12 @@ function validatePkg() {
   refreshSummary();
 }
 
-function switchExportTab(id, btn) {
-  document.querySelectorAll('.epane').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.etab').forEach(b=>b.classList.remove('on'));
-  el(id).classList.add('on'); btn.classList.add('on');
-}
-
 function copyCode(id) {
   const txt = el(id).innerText.replace(/^Salin\n?/,'');
   navigator.clipboard.writeText(txt).then(()=>toast('📋','Disalin ke clipboard'));
 }
 
 // ═══ SAVE / LOAD ══════════════════════════════════════════════════════════════
-function saveConfig() {
-  const cfg = {
-    appName:v('appName'),appTitle:v('appTitle'),appSubtitle:v('appSubtitle'),
-    exitPin:v('exitPin'),pkgId:v('pkgId'),versionName:v('versionName'),
-    cHeader:v('cHeader'),cAccent:v('cAccent'),cSplash:v('cSplash'),cSplashTxt:v('cSplashTxt'),
-    spBgMode:S.spBgMode,spLogoMode:S.spLogoMode,hdrMode:S.hdrMode,
-    logoUrl:S.logoUrl,spBgUrl:S.spBgUrl,spLogoUrl:S.spLogoUrl,hdrBgUrl:S.hdrBgUrl,
-    spOverlay:el('spOverlay')?.value,hdrOverlay:el('hdrOverlay')?.value,spLogoSize:el('spLogoSize')?.value
-  };
-  try { localStorage.setItem('ezambro_cfg', JSON.stringify(cfg)); } catch(e){}
-  const ok = el('savedOk'); ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),2200);
-  toast('💾','Tersimpan di browser');
-}
 
 function saveGH() {
   try {
@@ -1592,27 +1501,7 @@ function loadSaved() {
   } catch(e){}
 }
 
-function dlJson() {
-  const cfg = {
-    app_name:v('appName')||'Emes Exam Browser',
-    app_title:v('appTitle')||'Emes Exam Browser',
-    app_description:v('appSubtitle')||'',
-    exit_pin:v('exitPin')||'1234',
-    colors:{
-      header:(v('hHeader')||'#1A3A5C').toUpperCase(),
-      splash_bg:(v('hSplash')||'#1A3A5C').toUpperCase(),
-      splash_text:(v('hSplashTxt')||'#FFFFFF').toUpperCase(),
-      button:(v('hAccent')||'#2E7BF6').toUpperCase()
-    },
-    package_id:v('pkgId')||'id.emes.exambrowser',
-    version_name:v('versionName')||'1.1.0',
-    generated_at:new Date().toISOString()
-  };
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}));
-  a.download = 'ezambro-config.json'; a.click();
-  toast('⬇','config.json diunduh');
-}
+
 
 // ═══ GITHUB ═══════════════════════════════════════════════════════════════════
 function updateRepoLink() {
