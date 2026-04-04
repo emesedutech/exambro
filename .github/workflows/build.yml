@@ -116,10 +116,31 @@ jobs:
           pip install Pillow --quiet
           python3 scripts/setup_icons.py
 
+      - name: Restore keystore dari GitHub Secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD:  ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS:       ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:    ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
+            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
+          else
+            echo "⚠️  Secret KEYSTORE_BASE64 tidak ditemukan."
+            echo "    AAB akan di-build tanpa release signing (unsigned)."
+            echo "    Jalankan workflow 'Generate Keystore' lalu tambahkan secrets:"
+            echo "      KEYSTORE_BASE64, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD"
+          fi
+
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
       - name: Build APK + AAB
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleDebug bundleRelease --stacktrace
 
       - name: Rename APK and AAB
