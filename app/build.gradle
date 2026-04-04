@@ -16,10 +16,13 @@ android {
 
     signingConfigs {
         release {
-            storeFile     file("keystore.jks")
-            storePassword System.getenv("STORE_PASSWORD") ?: ""
-            keyAlias      System.getenv("KEY_ALIAS") ?: ""
-            keyPassword   System.getenv("KEY_PASSWORD") ?: ""
+            def ksFile = file("keystore.jks")
+            if (ksFile.exists()) {
+                storeFile     ksFile
+                storePassword System.getenv("STORE_PASSWORD") ?: ""
+                keyAlias      System.getenv("KEY_ALIAS") ?: ""
+                keyPassword   System.getenv("KEY_PASSWORD") ?: ""
+            }
         }
     }
 
@@ -28,7 +31,10 @@ android {
             minifyEnabled false
             // Disable PNG crunching agar alpha channel pada PNG transparan tidak hilang saat build APK
             crunchPngs false
-            signingConfig signingConfigs.release
+            // Hanya gunakan release signing jika keystore tersedia
+            if (file("keystore.jks").exists()) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             crunchPngs false
