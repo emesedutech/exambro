@@ -85,10 +85,12 @@ jobs:
             || curl -fsSL -o gradle/wrapper/gradle-wrapper.jar \
             "https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/8.4/gradle-wrapper-8.4.jar" \
             || (
+              # Fallback: pakai gradle wrapper yang sudah diinstall oleh setup-gradle
               GRADLE_HOME=$(gradle --version 2>/dev/null | grep "Gradle home" | awk '{print $NF}' || echo "")
               if [ -n "$GRADLE_HOME" ] && [ -f "$GRADLE_HOME/lib/gradle-wrapper.jar" ]; then
                 cp "$GRADLE_HOME/lib/gradle-wrapper.jar" gradle/wrapper/gradle-wrapper.jar
               else
+                # Generate wrapper pakai gradle yang sudah ada di PATH
                 gradle wrapper --gradle-version 8.4 --distribution-type bin
               fi
             )
@@ -106,7 +108,7 @@ jobs:
           BUTTON_COLOR:    ${{ github.event.inputs.button_color    || '2E7BF6' }}
           PACKAGE_ID:      ${{ github.event.inputs.package_id      || 'id.emes.exambrowser' }}
           VERSION_NAME:    ${{ github.event.inputs.version_name    || '1.1.0' }}
-          LOGO_IMAGE:      ${{ github.event.inputs.logo_image      || '' }}
+          LOGO_IMAGE:      ${{ github.event.inputs.logo_image       || '' }}
         run: python scripts/apply_config.py
 
       - name: Setup launcher icons
@@ -114,27 +116,11 @@ jobs:
           pip install Pillow --quiet
           python3 scripts/setup_icons.py
 
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/release.jks
-          echo "✅ Keystore decoded"
-
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
-      - name: Build APK (debug) + AAB (release signed)
-        env:
-          KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-        run: |
-          ./gradlew assembleDebug \
-            bundleRelease \
-            -Pandroid.injected.signing.store.file=$(pwd)/app/release.jks \
-            -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD \
-            --stacktrace
+      - name: Build APK + AAB
+        run: ./gradlew assembleDebug bundleRelease --stacktrace
 
       - name: Rename APK and AAB
         run: |
@@ -160,14 +146,10 @@ jobs:
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
-      - name: Hapus keystore dari runner
-        if: always()
-        run: rm -f app/release.jks
-
       - name: Show download info
         run: |
           echo "✅ Build selesai!"
-          echo "📦 APK (debug)  → Actions > Artifacts > APK-Build"
-          echo "📦 AAB (signed) → Actions > Artifacts > AAB-PlayStore"
+          echo "📦 APK tersedia di tab Actions > Artifacts > APK-Build"
+          echo "📦 AAB tersedia di tab Actions > Artifacts > AAB-PlayStore"
           echo "🏷 Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
           echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
