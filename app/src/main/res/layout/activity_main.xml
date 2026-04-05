@@ -5,34 +5,26 @@
     android:orientation="vertical"
     android:background="@color/colorBackground">
 
-    <!-- ══ HEADER (FrameLayout agar bisa overlay bg image + konten) ══ -->
     <FrameLayout
         android:id="@+id/headerFrame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="220dp">
+        android:layout_height="wrap_content">
 
-        <!-- Background image layer (default: gone, ditampilkan oleh Java jika ada header_bg) -->
         <ImageView
             android:id="@+id/imgHeaderBg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="220dp"
+            android:layout_height="220dp"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="false"
             android:visibility="gone"
             android:contentDescription="Header Background" />
 
-        <!-- Dark overlay agar teks tetap terbaca di atas gambar -->
         <View
             android:id="@+id/headerOverlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="220dp"
+            android:layout_height="220dp"
             android:background="#88000000"
             android:visibility="gone" />
 
-        <!-- Konten header -->
         <LinearLayout
             android:id="@+id/headerContent"
             android:layout_width="match_parent"
@@ -94,11 +86,9 @@
                     android:textStyle="bold"
                     android:letterSpacing="0.06" />
             </LinearLayout>
-
         </LinearLayout>
     </FrameLayout>
 
-    <!-- ══ BODY ══ -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -112,9 +102,8 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="20dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="20dp">
 
-            <!-- URL Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -206,7 +195,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Security feature card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -226,71 +214,32 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
-                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
-                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
-                    <TextView android:layout_width="20dp" android:layout_height="20dp"
-                        android:background="@drawable/bg_check" android:gravity="center"
-                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
-                        android:textStyle="bold" android:layout_marginEnd="10dp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Tombol Back &amp; Home diblokir"
-                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
-                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
-                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
-                    <TextView android:layout_width="20dp" android:layout_height="20dp"
-                        android:background="@drawable/bg_check" android:gravity="center"
-                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
-                        android:textStyle="bold" android:layout_marginEnd="10dp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Fullscreen tanpa gangguan"
-                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
-                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
-                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
-                    <TextView android:layout_width="20dp" android:layout_height="20dp"
-                        android:background="@drawable/bg_check" android:gravity="center"
-                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
-                        android:textStyle="bold" android:layout_marginEnd="10dp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Keluar hanya dengan PIN pengawas"
-                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
-                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
-                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
-                    <TextView android:layout_width="20dp" android:layout_height="20dp"
-                        android:background="@drawable/bg_check" android:gravity="center"
-                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
-                        android:textStyle="bold" android:layout_marginEnd="10dp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Scan QR Code URL ujian"
-                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
-                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
-                    android:paddingStart="12dp" android:paddingEnd="12dp">
-                    <TextView android:layout_width="20dp" android:layout_height="20dp"
-                        android:background="@drawable/bg_check" android:gravity="center"
-                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
-                        android:textStyle="bold" android:layout_marginEnd="10dp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Screenshot &amp; perekaman diblokir"
-                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
-                </LinearLayout>
+                <TextView 
+                    android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:text="✓ Tombol Back &amp; Home diblokir"
+                    android:padding="8dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextPrimary"/>
+                <TextView 
+                    android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:text="✓ Fullscreen tanpa gangguan"
+                    android:padding="8dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextPrimary"/>
+                <TextView 
+                    android:layout_width="match_parent" 
+                    android:layout_height="wrap_content"
+                    android:text="✓ Keluar hanya dengan PIN pengawas"
+                    android:padding="8dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextPrimary"/>
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- ══ COPYRIGHT BAR ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="36dp"
