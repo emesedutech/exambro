@@ -13,10 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,76 +39,21 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        TextView tvVersion = findViewById(R.id.tvVersion);
-        try {
-            String ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            tvVersion.setText("V " + ver);
-        } catch (PackageManager.NameNotFoundException e) {
-            tvVersion.setText("V 1.0");
-        }
-
         applyHeaderBackground();
         applyAppLogo(R.id.imgAppLogo);
 
         etUrl = findViewById(R.id.etUrl);
 
+        // Tombol Mulai Ujian
         Button btnStart = findViewById(R.id.btnStart);
         btnStart.setOnClickListener(v -> launchExam(etUrl.getText().toString().trim()));
 
-        Button btnScanQrFull = findViewById(R.id.btnScanQrFull);
-        btnScanQrFull.setOnClickListener(v -> {
+        // Tombol Scan QR
+        LinearLayout btnScanQr = findViewById(R.id.btnScanQr);
+        btnScanQr.setOnClickListener(v -> {
             Intent intent = new Intent(this, QRScanActivity.class);
             startActivityForResult(intent, QR_SCAN_REQUEST);
         });
-
-        // Bottom bar — Info: hanya tampilkan dialog, tidak buka app lain
-        LinearLayout btnInfo = findViewById(R.id.btnInfo);
-        btnInfo.setOnClickListener(v -> showInfoDialog());
-
-        // DIHAPUS: Rate Us & Share — kedua tombol ini membuka intent ke luar app
-        // yang bisa dimanfaatkan siswa untuk keluar ke Play Store / browser / app lain.
-        // Tombol diganti dengan dialog About saja.
-        LinearLayout btnRate = findViewById(R.id.btnRate);
-        if (btnRate != null) btnRate.setVisibility(View.GONE);
-
-        LinearLayout btnShare = findViewById(R.id.btnShare);
-        if (btnShare != null) btnShare.setVisibility(View.GONE);
-
-        LinearLayout btnAbout = findViewById(R.id.btnAbout);
-        btnAbout.setOnClickListener(v -> showAboutDialog());
-    }
-
-    private void showInfoDialog() {
-        new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.app_name))
-            .setMessage(
-                "Fitur yang dinonaktifkan selama ujian:\n\n" +
-                "✗  Screenshot\n" +
-                "✗  Dual Layar\n" +
-                "✗  Tombol Back, Home, Recent\n" +
-                "✗  Sembunyikan navigasi\n" +
-                "✗  Sembunyikan notifikasi\n" +
-                "✗  Navigasi ke situs lain\n" +
-                "✗  Buka aplikasi lain"
-            )
-            .setPositiveButton("OK", null)
-            .show();
-    }
-
-    private void showAboutDialog() {
-        String ver = "";
-        try {
-            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (Exception ignored) {}
-        new AlertDialog.Builder(this)
-            .setTitle("Tentang Aplikasi")
-            .setMessage(
-                getString(R.string.app_name) + " v" + ver + "\n\n" +
-                "Aplikasi browser aman untuk pelaksanaan ujian online berbasis komputer (CBT).\n\n" +
-                "© 2026 Emes EduTech"
-            )
-            .setPositiveButton("OK", null)
-            .show();
     }
 
     private void applyAppLogo(int viewId) {
@@ -157,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == QR_SCAN_REQUEST && resultCode == RESULT_OK && data != null) {
             String url = data.getStringExtra("scanned_url");
             if (url != null && !url.isEmpty()) {
-                // Validasi: hanya terima hasil QR yang merupakan URL http/https
                 if (isValidHttpUrl(url)) {
                     etUrl.setText(url);
                     launchExam(url);
@@ -173,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Masukkan URL ujian terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Auto-prefix https jika tidak ada scheme
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "https://" + url;
         }
-        // Validasi format URL sebelum diluncurkan
         if (!isValidHttpUrl(url)) {
             Toast.makeText(this, "Format URL tidak valid", Toast.LENGTH_SHORT).show();
             return;
@@ -187,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * Validasi URL: harus http/https dengan host yang valid.
-     */
     private boolean isValidHttpUrl(String url) {
         try {
             Uri uri = Uri.parse(url);
