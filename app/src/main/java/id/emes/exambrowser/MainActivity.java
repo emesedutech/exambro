@@ -1,18 +1,21 @@
 package id.emes.exambrowser;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,48 +37,107 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // ── Cek apakah ada header background image ────────────────────────
-        applyHeaderBackground();
+        // Versi dari package
+        TextView tvVersion = findViewById(R.id.tvVersion);
+        try {
+            String ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            tvVersion.setText("V " + ver);
+        } catch (PackageManager.NameNotFoundException e) {
+            tvVersion.setText("V 1.0");
+        }
 
-        // ── Terapkan logo transparan jika app_logo.png tersedia ────────────
+        // Apply header background & logo
+        applyHeaderBackground();
         applyAppLogo(R.id.imgAppLogo);
 
         etUrl = findViewById(R.id.etUrl);
-        Button btnStart        = findViewById(R.id.btnStart);
-        LinearLayout btnScanQr = findViewById(R.id.btnScanQr);
 
+        // Tombol ENTER
+        Button btnStart = findViewById(R.id.btnStart);
         btnStart.setOnClickListener(v -> launchExam(etUrl.getText().toString().trim()));
 
-        btnScanQr.setOnClickListener(v -> {
+        // Tombol SCAN QR CODE
+        Button btnScanQrFull = findViewById(R.id.btnScanQrFull);
+        btnScanQrFull.setOnClickListener(v -> {
             Intent intent = new Intent(this, QRScanActivity.class);
             startActivityForResult(intent, QR_SCAN_REQUEST);
         });
+
+        // Bottom bar — Info
+        LinearLayout btnInfo = findViewById(R.id.btnInfo);
+        btnInfo.setOnClickListener(v -> showInfoDialog());
+
+        // Bottom bar — Rate Us
+        LinearLayout btnRate = findViewById(R.id.btnRate);
+        btnRate.setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + getPackageName())));
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+            }
+        });
+
+        // Bottom bar — Share
+        LinearLayout btnShare = findViewById(R.id.btnShare);
+        btnShare.setOnClickListener(v -> {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT,
+                getString(R.string.app_name) + " - Secure Exam Browser\n" +
+                "https://play.google.com/store/apps/details?id=" + getPackageName());
+            startActivity(Intent.createChooser(share, "Bagikan via"));
+        });
+
+        // Bottom bar — About Us
+        LinearLayout btnAbout = findViewById(R.id.btnAbout);
+        btnAbout.setOnClickListener(v -> showAboutDialog());
     }
 
-    /**
-     * Jika file header_bg ada di drawable dan bukan placeholder warna,
-     * tampilkan sebagai background gambar dengan overlay gelap agar teks tetap terbaca.
-     */
-    /**
-     * Load logo secara dinamis:
-     *  1. drawable/app_logo.png  → logo custom dari user
-     *  2. fallback ic_launcher   → jika tidak ada app_logo
-     */
+    private void showInfoDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.app_name))
+            .setMessage(
+                "Fitur yang dinonaktifkan selama ujian:\n\n" +
+                "✗  Screenshot\n" +
+                "✗  Dual Layar\n" +
+                "✗  Tombol Back, Home, Recent\n" +
+                "✗  Sembunyikan navigasi\n" +
+                "✗  Sembunyikan notifikasi"
+            )
+            .setPositiveButton("OK", null)
+            .show();
+    }
+
+    private void showAboutDialog() {
+        String ver = "";
+        try {
+            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (Exception ignored) {}
+        new AlertDialog.Builder(this)
+            .setTitle("Tentang Aplikasi")
+            .setMessage(
+                getString(R.string.app_name) + " v" + ver + "\n\n" +
+                "Aplikasi browser aman untuk pelaksanaan ujian online berbasis komputer (CBT).\n\n" +
+                "© 2026 Emes EduTech"
+            )
+            .setPositiveButton("OK", null)
+            .show();
+    }
+
     private void applyAppLogo(int viewId) {
         ImageView img = findViewById(viewId);
         if (img == null) return;
-        // Hapus semua background agar PNG transparan tampil apa adanya
         img.setBackground(null);
-        img.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        img.setBackgroundColor(Color.TRANSPARENT);
         img.setPadding(0, 0, 0, 0);
-        // Software rendering wajib agar alpha channel PNG tidak dirender hitam
-        img.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-        // Load dengan ARGB_8888 agar alpha channel terjaga
-        android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
-        opts.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        img.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
         int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
         if (resId != 0) {
-            android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeResource(getResources(), resId, opts);
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
             if (bmp != null) img.setImageBitmap(bmp);
         }
     }
@@ -84,46 +146,21 @@ public class MainActivity extends AppCompatActivity {
         try {
             int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
             if (resId == 0) return;
-
             Drawable d = getResources().getDrawable(resId, getTheme());
             if (d == null) return;
 
-            final ImageView  imgBg   = findViewById(R.id.imgHeaderBg);
-            final View       overlay = findViewById(R.id.headerOverlay);
+            final ImageView imgBg     = findViewById(R.id.imgHeaderBg);
+            final View overlay        = findViewById(R.id.headerOverlay);
             final LinearLayout content = findViewById(R.id.headerContent);
-            final FrameLayout frame  = findViewById(R.id.headerFrame);
 
             imgBg.setImageDrawable(d);
             imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgBg.setAdjustViewBounds(false);
             imgBg.setBackgroundColor(Color.TRANSPARENT);
-
-            // Langsung hapus background headerContent sebelum layout — cegah flash biru
             content.setBackgroundColor(Color.TRANSPARENT);
-
-            // Setelah layout selesai, cocokkan tinggi imgHeaderBg dengan headerContent
-            frame.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        frame.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int h = content.getHeight();
-                        if (h > 0) {
-                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT, h);
-                            imgBg.setLayoutParams(lp);
-                            overlay.setLayoutParams(new FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT, h));
-                        }
-                        imgBg.setVisibility(View.VISIBLE);
-                        overlay.setVisibility(View.VISIBLE);
-                        content.setBackgroundColor(Color.TRANSPARENT);
-                    }
-                }
-            );
-
+            imgBg.setVisibility(View.VISIBLE);
+            overlay.setVisibility(View.VISIBLE);
         } catch (Exception e) {
-            // Gagal load — pakai warna solid default
+            // fallback warna solid
         }
     }
 
