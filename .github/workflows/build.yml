@@ -20,15 +20,15 @@ on:
         required: true
         default: '1234'
       header_color:
-        description: 'Warna Header (hex, tanpa #)'
+        description: 'Warna Header (hex, tanpa #) — diabaikan jika header_image diisi'
         required: true
         default: '1A3A5C'
       header_image:
-        description: 'Background gambar header (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background gambar header utama (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       splash_image:
-        description: 'Background splash screen (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background gambar splash/loading screen (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       button_color:
@@ -44,7 +44,7 @@ on:
         required: true
         default: '1.1.0'
       logo_image:
-        description: 'Logo aplikasi (base64 PNG, kosongkan jika pakai default)'
+        description: 'Logo aplikasi transparan (base64 PNG, kosongkan jika pakai ic_launcher default)'
         required: false
         default: ''
 
@@ -121,7 +121,7 @@ jobs:
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore"
+            echo "✅ Keystore berhasil di-restore — APK akan di-sign dengan release key"
           else
             echo "⚠️  Tidak ada keystore — pakai debug key (tetap bisa diinstall)"
           fi
@@ -149,7 +149,6 @@ jobs:
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
 
-          # Rename semua APK release
           find app/build/outputs/apk/release/ -name "*.apk" | while read f; do
             BASE=$(basename "$f" .apk)
             if echo "$BASE" | grep -qi "universal"; then
@@ -167,7 +166,6 @@ jobs:
           echo "✅ Total APK: $COUNT"
           [ "$COUNT" -eq 0 ] && echo "❌ Tidak ada APK!" && exit 1
 
-          # Rename AAB
           AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
           [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
@@ -189,7 +187,7 @@ jobs:
         run: |
           echo "✅ Build selesai!"
           echo "📦 APK: Actions > Artifacts > APK-Build"
-          echo "   *-universal.apk → semua HP (pakai ini kalau tidak tahu tipe HP)"
+          echo "   *-universal.apk → semua HP"
           echo "   *-arm64.apk     → HP modern"
           echo "   *-arm32.apk     → HP lama"
           echo "🏷 Versi : ${{ github.event.inputs.version_name || '1.1.0' }}"
