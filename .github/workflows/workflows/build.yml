@@ -1,0 +1,171 @@
+name: Build EzamBro APK + AAB
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Nama Aplikasi (tampil di launcher)'
+        required: true
+        default: 'Emes Exam Browser'
+      app_title:
+        description: 'Judul Header Layar Utama'
+        required: true
+        default: 'Emes Exam Browser'
+      app_description:
+        description: 'Subtitle di bawah judul'
+        required: true
+        default: 'Safe browsing untuk ujian online'
+      exit_pin:
+        description: 'PIN Pengawas untuk keluar ujian'
+        required: true
+        default: '1234'
+      header_color:
+        description: 'Warna Header (hex, tanpa #) — diabaikan jika header_image diisi'
+        required: true
+        default: '1A3A5C'
+      header_image:
+        description: 'Background gambar header utama (base64 PNG/JPG, kosongkan jika pakai warna)'
+        required: false
+        default: ''
+      splash_image:
+        description: 'Background gambar splash/loading screen (base64 PNG/JPG, kosongkan jika pakai warna)'
+        required: false
+        default: ''
+      button_color:
+        description: 'Warna Tombol Utama (hex, tanpa #)'
+        required: true
+        default: '2E7BF6'
+      package_id:
+        description: 'Package ID Android (contoh: id.sekolah.exambrowser)'
+        required: true
+        default: 'id.emes.exambrowser'
+      version_name:
+        description: 'Versi APK (contoh: 1.2.0)'
+        required: true
+        default: '1.1.0'
+      logo_image:
+        description: 'Logo aplikasi transparan (base64 PNG, kosongkan jika pakai ic_launcher default)'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download Gradle Wrapper JAR
+        run: |
+          mkdir -p gradle/wrapper
+          curl -fsSL -o gradle/wrapper/gradle-wrapper.jar \
+            "https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradle/wrapper/gradle-wrapper.jar" \
+            || curl -fsSL -o gradle/wrapper/gradle-wrapper.jar \
+            "https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/8.4/gradle-wrapper-8.4.jar" \
+            || (
+              GRADLE_HOME=$(gradle --version 2>/dev/null | grep "Gradle home" | awk '{print $NF}' || echo "")
+              if [ -n "$GRADLE_HOME" ] && [ -f "$GRADLE_HOME/lib/gradle-wrapper.jar" ]; then
+                cp "$GRADLE_HOME/lib/gradle-wrapper.jar" gradle/wrapper/gradle-wrapper.jar
+              else
+                gradle wrapper --gradle-version 8.4 --distribution-type bin
+              fi
+            )
+          echo "✅ gradle-wrapper.jar: $(ls -lh gradle/wrapper/gradle-wrapper.jar)"
+
+      - name: Apply configuration from inputs
+        env:
+          APP_NAME:        ${{ github.event.inputs.app_name        || 'Emes Exam Browser' }}
+          APP_TITLE:       ${{ github.event.inputs.app_title       || 'Emes Exam Browser' }}
+          APP_DESCRIPTION: ${{ github.event.inputs.app_description || 'Safe browsing untuk ujian online' }}
+          EXIT_PIN:        ${{ github.event.inputs.exit_pin        || '1234' }}
+          HEADER_COLOR:    ${{ github.event.inputs.header_color    || '1A3A5C' }}
+          HEADER_IMAGE:    ${{ github.event.inputs.header_image    || '' }}
+          SPLASH_IMAGE:    ${{ github.event.inputs.splash_image    || '' }}
+          BUTTON_COLOR:    ${{ github.event.inputs.button_color    || '2E7BF6' }}
+          PACKAGE_ID:      ${{ github.event.inputs.package_id      || 'id.emes.exambrowser' }}
+          VERSION_NAME:    ${{ github.event.inputs.version_name    || '1.1.0' }}
+          LOGO_IMAGE:      ${{ github.event.inputs.logo_image      || '' }}
+        run: python scripts/apply_config.py
+
+      - name: Setup launcher icons
+        run: |
+          pip install Pillow --quiet
+          python3 scripts/setup_icons.py
+
+      - name: Restore keystore dari GitHub Secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD:  ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS:       ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:    ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
+            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
+          else
+            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — AAB tidak akan di-sign"
+          fi
+
+      - name: Grant gradlew execute permission
+        run: chmod +x gradlew
+
+      - name: Build APK + AAB
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleDebug bundleRelease --stacktrace
+
+      - name: Rename APK and AAB
+        run: |
+          APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
+          VER="${{ github.event.inputs.version_name || '1.1.0' }}"
+          SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
+          mv app/build/outputs/apk/debug/app-debug.apk \
+             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
+          mv app/build/outputs/bundle/release/app-release.aab \
+             "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Build
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AAB-PlayStore
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Show download info
+        run: |
+          echo "✅ Build selesai!"
+          echo "📦 APK tersedia di tab Actions > Artifacts > APK-Build"
+          echo "📦 AAB tersedia di tab Actions > Artifacts > AAB-PlayStore"
+          echo "🏷 Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
+          echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
