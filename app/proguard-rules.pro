@@ -1,5 +1,10 @@
-# Jaga semua kelas utama aplikasi
+# Jaga semua kelas utama aplikasi — termasuk field private (etUrl, btnScanQr, btnStart)
 -keep class id.emes.exambrowser.** { *; }
+-keepclassmembers class id.emes.exambrowser.MainActivity {
+    private android.widget.EditText etUrl;
+    private android.widget.Button btnStart;
+    private android.widget.LinearLayout btnScanQr;
+}
 
 # PENTING: Jaga semua Activity, View, dan field yang diakses via findViewById
 # Tanpa ini R8 bisa strip etUrl, btnScanQr, dll → input URL & tombol QR hilang
