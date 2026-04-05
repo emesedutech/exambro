@@ -1,8 +1,6 @@
 name: Build EzamBro APK + AAB
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       app_name:
@@ -22,15 +20,15 @@ on:
         required: true
         default: '1234'
       header_color:
-        description: 'Warna Header (hex, tanpa #) — diabaikan jika header_image diisi'
+        description: 'Warna Header (hex, tanpa #)'
         required: true
         default: '1A3A5C'
       header_image:
-        description: 'Background gambar header utama (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background gambar header (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       splash_image:
-        description: 'Background gambar splash/loading screen (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background splash screen (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       button_color:
@@ -46,7 +44,7 @@ on:
         required: true
         default: '1.1.0'
       logo_image:
-        description: 'Logo aplikasi transparan (base64 PNG, kosongkan jika pakai ic_launcher default)'
+        description: 'Logo aplikasi (base64 PNG, kosongkan jika pakai default)'
         required: false
         default: ''
 
@@ -123,9 +121,9 @@ jobs:
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
+            echo "✅ Keystore berhasil di-restore"
           else
-            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — AAB tidak akan di-sign"
+            echo "⚠️  Tidak ada keystore — pakai debug key (tetap bisa diinstall)"
           fi
 
       - name: Grant gradlew execute permission
@@ -136,26 +134,51 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleDebug bundleRelease --stacktrace
+        run: ./gradlew assembleRelease bundleRelease --stacktrace
+
+      - name: List build outputs
+        run: |
+          echo "=== APK ==="
+          find app/build/outputs/apk/ -name "*.apk" 2>/dev/null || echo "tidak ada"
+          echo "=== AAB ==="
+          find app/build/outputs/bundle/ -name "*.aab" 2>/dev/null || echo "tidak ada"
 
       - name: Rename APK and AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-          mv app/build/outputs/apk/debug/app-debug.apk \
-             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
-          mv app/build/outputs/bundle/release/app-release.aab \
-             "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
-      - name: Upload APK artifact
+          # Rename semua APK release
+          find app/build/outputs/apk/release/ -name "*.apk" | while read f; do
+            BASE=$(basename "$f" .apk)
+            if echo "$BASE" | grep -qi "universal"; then
+              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-universal.apk"
+            elif echo "$BASE" | grep -qi "arm64"; then
+              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm64.apk"
+            elif echo "$BASE" | grep -qi "armeabi"; then
+              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm32.apk"
+            else
+              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
+            fi
+          done
+
+          COUNT=$(find app/build/outputs/apk/release/ -name "*.apk" | wc -l)
+          echo "✅ Total APK: $COUNT"
+          [ "$COUNT" -eq 0 ] && echo "❌ Tidak ada APK!" && exit 1
+
+          # Rename AAB
+          AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
+          [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk
           retention-days: 30
 
-      - name: Upload AAB artifact
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: AAB-PlayStore
@@ -165,7 +188,9 @@ jobs:
       - name: Show download info
         run: |
           echo "✅ Build selesai!"
-          echo "📦 APK tersedia di tab Actions > Artifacts > APK-Build"
-          echo "📦 AAB tersedia di tab Actions > Artifacts > AAB-PlayStore"
-          echo "🏷 Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
+          echo "📦 APK: Actions > Artifacts > APK-Build"
+          echo "   *-universal.apk → semua HP (pakai ini kalau tidak tahu tipe HP)"
+          echo "   *-arm64.apk     → HP modern"
+          echo "   *-arm32.apk     → HP lama"
+          echo "🏷 Versi : ${{ github.event.inputs.version_name || '1.1.0' }}"
           echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
