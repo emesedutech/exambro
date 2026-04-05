@@ -20,15 +20,15 @@ on:
         required: true
         default: '1234'
       header_color:
-        description: 'Warna Header (hex, tanpa #) — diabaikan jika header_image diisi'
+        description: 'Warna Header (hex, tanpa #)'
         required: true
         default: '1A3A5C'
       header_image:
-        description: 'Background gambar header utama (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background gambar header (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       splash_image:
-        description: 'Background gambar splash/loading screen (base64 PNG/JPG, kosongkan jika pakai warna)'
+        description: 'Background gambar splash (base64 PNG/JPG, kosongkan jika pakai warna)'
         required: false
         default: ''
       button_color:
@@ -44,7 +44,7 @@ on:
         required: true
         default: '1.1.0'
       logo_image:
-        description: 'Logo aplikasi transparan (base64 PNG, kosongkan jika pakai ic_launcher default)'
+        description: 'Logo aplikasi (base64 PNG transparan)'
         required: false
         default: ''
 
@@ -90,7 +90,7 @@ jobs:
                 gradle wrapper --gradle-version 8.4 --distribution-type bin
               fi
             )
-          echo "✅ gradle-wrapper.jar: $(ls -lh gradle/wrapper/gradle-wrapper.jar)"
+          echo "OK gradle-wrapper.jar siap"
 
       - name: Apply configuration from inputs
         env:
@@ -115,15 +115,12 @@ jobs:
       - name: Restore keystore dari GitHub Secrets
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          STORE_PASSWORD:  ${{ secrets.STORE_PASSWORD }}
-          KEY_ALIAS:       ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD:    ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore — APK akan di-sign dengan release key"
+            echo "OK Keystore berhasil di-restore"
           else
-            echo "⚠️  Tidak ada keystore — pakai debug key (tetap bisa diinstall)"
+            echo "WARN Tidak ada keystore"
           fi
 
       - name: Grant gradlew execute permission
@@ -136,14 +133,7 @@ jobs:
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease bundleRelease --stacktrace
 
-      - name: List build outputs
-        run: |
-          echo "=== APK ==="
-          find app/build/outputs/apk/ -name "*.apk" 2>/dev/null || echo "tidak ada"
-          echo "=== AAB ==="
-          find app/build/outputs/bundle/ -name "*.aab" 2>/dev/null || echo "tidak ada"
-
-      - name: Rename APK and AAB
+      - name: Rename APK dan AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
@@ -162,10 +152,6 @@ jobs:
             fi
           done
 
-          COUNT=$(find app/build/outputs/apk/release/ -name "*.apk" | wc -l)
-          echo "✅ Total APK: $COUNT"
-          [ "$COUNT" -eq 0 ] && echo "❌ Tidak ada APK!" && exit 1
-
           AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
           [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
@@ -183,12 +169,14 @@ jobs:
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
+      - name: Hapus keystore dari runner
+        if: always()
+        run: rm -f app/keystore.jks
+
       - name: Show download info
         run: |
-          echo "✅ Build selesai!"
-          echo "📦 APK: Actions > Artifacts > APK-Build"
-          echo "   *-universal.apk → semua HP"
-          echo "   *-arm64.apk     → HP modern"
-          echo "   *-arm32.apk     → HP lama"
-          echo "🏷 Versi : ${{ github.event.inputs.version_name || '1.1.0' }}"
-          echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
+          echo "Build selesai!"
+          echo "APK: Actions > Artifacts > APK-Build"
+          echo "AAB: Actions > Artifacts > AAB-PlayStore"
+          echo "Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
+          echo "Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
