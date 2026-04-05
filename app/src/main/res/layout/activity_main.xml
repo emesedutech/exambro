@@ -214,32 +214,71 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <TextView 
-                    android:layout_width="match_parent" 
-                    android:layout_height="wrap_content"
-                    android:text="✓ Tombol Back &amp; Home diblokir"
-                    android:padding="8dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/colorTextPrimary"/>
-                <TextView 
-                    android:layout_width="match_parent" 
-                    android:layout_height="wrap_content"
-                    android:text="✓ Fullscreen tanpa gangguan"
-                    android:padding="8dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/colorTextPrimary"/>
-                <TextView 
-                    android:layout_width="match_parent" 
-                    android:layout_height="wrap_content"
-                    android:text="✓ Keluar hanya dengan PIN pengawas"
-                    android:padding="8dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/colorTextPrimary"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
+                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="20dp" android:layout_height="20dp"
+                        android:background="@drawable/bg_check" android:gravity="center"
+                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
+                        android:textStyle="bold" android:layout_marginEnd="10dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Tombol Back &amp; Home diblokir"
+                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
+                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="20dp" android:layout_height="20dp"
+                        android:background="@drawable/bg_check" android:gravity="center"
+                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
+                        android:textStyle="bold" android:layout_marginEnd="10dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Fullscreen tanpa gangguan"
+                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
+                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="20dp" android:layout_height="20dp"
+                        android:background="@drawable/bg_check" android:gravity="center"
+                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
+                        android:textStyle="bold" android:layout_marginEnd="10dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Keluar hanya dengan PIN pengawas"
+                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
+                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="20dp" android:layout_height="20dp"
+                        android:background="@drawable/bg_check" android:gravity="center"
+                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
+                        android:textStyle="bold" android:layout_marginEnd="10dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Scan QR Code URL ujian"
+                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="38dp"
+                    android:background="@drawable/bg_feature_row" android:gravity="center_vertical"
+                    android:paddingStart="12dp" android:paddingEnd="12dp">
+                    <TextView android:layout_width="20dp" android:layout_height="20dp"
+                        android:background="@drawable/bg_check" android:gravity="center"
+                        android:text="✓" android:textColor="@color/white" android:textSize="10sp"
+                        android:textStyle="bold" android:layout_marginEnd="10dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Screenshot &amp; perekaman diblokir"
+                        android:textColor="@color/colorTextPrimary" android:textSize="13sp" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- ══ COPYRIGHT BAR ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="36dp"
