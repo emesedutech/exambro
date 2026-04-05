@@ -107,6 +107,43 @@ jobs:
           LOGO_IMAGE:      ${{ github.event.inputs.logo_image      || '' }}
         run: python scripts/apply_config.py
 
+      - name: Verify critical layout elements exist
+        run: |
+          echo "🔍 Memverifikasi elemen layout kritis..."
+          LAYOUT="app/src/main/res/layout/activity_main.xml"
+
+          # Cek etUrl ada
+          if grep -q 'android:id="@+id/etUrl"' "$LAYOUT"; then
+            echo "  ✅ etUrl (input URL ujian) — ada"
+          else
+            echo "  ❌ etUrl TIDAK DITEMUKAN di layout!"
+            exit 1
+          fi
+
+          # Cek btnScanQr ada
+          if grep -q 'android:id="@+id/btnScanQr"' "$LAYOUT"; then
+            echo "  ✅ btnScanQr (tombol QR) — ada"
+          else
+            echo "  ❌ btnScanQr TIDAK DITEMUKAN di layout!"
+            exit 1
+          fi
+
+          # Cek btnStart ada
+          if grep -q 'android:id="@+id/btnStart"' "$LAYOUT"; then
+            echo "  ✅ btnStart (tombol Mulai Ujian) — ada"
+          else
+            echo "  ❌ btnStart TIDAK DITEMUKAN di layout!"
+            exit 1
+          fi
+
+          echo "✅ Semua elemen layout kritis terverifikasi."
+
+          # Tampilkan warna yang akan dipakai
+          echo ""
+          echo "🎨 Konfigurasi warna:"
+          grep 'colorPrimary\|colorButtonScanBg\|colorHeaderBg' \
+            app/src/main/res/values/colors.xml | grep -v '<!--' | head -10
+
       - name: Setup launcher icons
         run: |
           pip install Pillow --quiet
