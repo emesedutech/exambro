@@ -265,10 +265,16 @@ app_gradle = re.sub(r'namespace\s+"[^"]+"', f'namespace "{PACKAGE_ID}"', app_gra
 app_gradle = re.sub(r'versionName\s+"[^"]+"', f'versionName "{VERSION_NAME}"', app_gradle)
 write(app_gradle_path, app_gradle)
 
-# ── 12. AndroidManifest.xml — patch package + label ──────────────────────
+# ── 12. AndroidManifest.xml — patch label + pastikan hardwareAccelerated=true ──
 manifest_path = "app/src/main/AndroidManifest.xml"
 manifest = read(manifest_path)
 manifest = re.sub(r'android:label="[^"]+"', f'android:label="{APP_NAME_XML}"', manifest, count=1)
+# KRITIS: hardwareAccelerated WAJIB true di level <application>
+# Jika false, ScrollView + card dengan elevation tidak ter-render di HP → etUrl & btnScanQr hilang
+manifest = manifest.replace(
+    'android:hardwareAccelerated="false">',
+    'android:hardwareAccelerated="true">'
+)
 write(manifest_path, manifest)
 
 # ── 13. Rename Java package directory if needed ───────────────────────────
