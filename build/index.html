@@ -1597,10 +1597,8 @@ async function triggerBuild() {
       if(!sImg){log('err','⚠️ Gambar splash tidak bisa dikompres, diabaikan\n');}
       else{log('dim',`🌅 Splash: ${Math.round(sImg.length/1024)}KB\n`);}
     }
-    // Source files sudah benar di repo — tidak perlu di-overwrite
-    log('dim','✅ Source files di repo sudah up-to-date\n');
-    log('dim','🔨 Langsung trigger build dari source yang ada…\n');
-
+    // Source files di repo sudah benar — langsung trigger build
+    log('dim','🔨 Trigger build dari source repo yang sudah benar…\n');
         btn.textContent='⏳ Mengirim ke GitHub…';
     const inputs = {
       app_name:v('appName')||'Emes Exam Browser',
