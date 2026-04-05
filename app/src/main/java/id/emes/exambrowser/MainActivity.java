@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // FLAG_SECURE: cegah screenshot di layar home
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+
         getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_FULLSCREEN |
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
@@ -37,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Versi dari package
         TextView tvVersion = findViewById(R.id.tvVersion);
         try {
             String ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
@@ -46,51 +49,33 @@ public class MainActivity extends AppCompatActivity {
             tvVersion.setText("V 1.0");
         }
 
-        // Apply header background & logo
         applyHeaderBackground();
         applyAppLogo(R.id.imgAppLogo);
 
         etUrl = findViewById(R.id.etUrl);
 
-        // Tombol ENTER
         Button btnStart = findViewById(R.id.btnStart);
         btnStart.setOnClickListener(v -> launchExam(etUrl.getText().toString().trim()));
 
-        // Tombol SCAN QR CODE
         Button btnScanQrFull = findViewById(R.id.btnScanQrFull);
         btnScanQrFull.setOnClickListener(v -> {
             Intent intent = new Intent(this, QRScanActivity.class);
             startActivityForResult(intent, QR_SCAN_REQUEST);
         });
 
-        // Bottom bar — Info
+        // Bottom bar — Info: hanya tampilkan dialog, tidak buka app lain
         LinearLayout btnInfo = findViewById(R.id.btnInfo);
         btnInfo.setOnClickListener(v -> showInfoDialog());
 
-        // Bottom bar — Rate Us
+        // DIHAPUS: Rate Us & Share — kedua tombol ini membuka intent ke luar app
+        // yang bisa dimanfaatkan siswa untuk keluar ke Play Store / browser / app lain.
+        // Tombol diganti dengan dialog About saja.
         LinearLayout btnRate = findViewById(R.id.btnRate);
-        btnRate.setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=" + getPackageName())));
-            } catch (Exception e) {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
-            }
-        });
+        if (btnRate != null) btnRate.setVisibility(View.GONE);
 
-        // Bottom bar — Share
         LinearLayout btnShare = findViewById(R.id.btnShare);
-        btnShare.setOnClickListener(v -> {
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("text/plain");
-            share.putExtra(Intent.EXTRA_TEXT,
-                getString(R.string.app_name) + " - Secure Exam Browser\n" +
-                "https://play.google.com/store/apps/details?id=" + getPackageName());
-            startActivity(Intent.createChooser(share, "Bagikan via"));
-        });
+        if (btnShare != null) btnShare.setVisibility(View.GONE);
 
-        // Bottom bar — About Us
         LinearLayout btnAbout = findViewById(R.id.btnAbout);
         btnAbout.setOnClickListener(v -> showAboutDialog());
     }
@@ -104,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 "✗  Dual Layar\n" +
                 "✗  Tombol Back, Home, Recent\n" +
                 "✗  Sembunyikan navigasi\n" +
-                "✗  Sembunyikan notifikasi"
+                "✗  Sembunyikan notifikasi\n" +
+                "✗  Navigasi ke situs lain\n" +
+                "✗  Buka aplikasi lain"
             )
             .setPositiveButton("OK", null)
             .show();
@@ -149,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
             Drawable d = getResources().getDrawable(resId, getTheme());
             if (d == null) return;
 
-            final ImageView imgBg     = findViewById(R.id.imgHeaderBg);
-            final View overlay        = findViewById(R.id.headerOverlay);
+            final ImageView imgBg      = findViewById(R.id.imgHeaderBg);
+            final View overlay         = findViewById(R.id.headerOverlay);
             final LinearLayout content = findViewById(R.id.headerContent);
 
             imgBg.setImageDrawable(d);
@@ -170,8 +157,13 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == QR_SCAN_REQUEST && resultCode == RESULT_OK && data != null) {
             String url = data.getStringExtra("scanned_url");
             if (url != null && !url.isEmpty()) {
-                etUrl.setText(url);
-                launchExam(url);
+                // Validasi: hanya terima hasil QR yang merupakan URL http/https
+                if (isValidHttpUrl(url)) {
+                    etUrl.setText(url);
+                    launchExam(url);
+                } else {
+                    Toast.makeText(this, "QR code tidak mengandung URL ujian yang valid", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -181,12 +173,34 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Masukkan URL ujian terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
+        // Auto-prefix https jika tidak ada scheme
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "https://" + url;
+        }
+        // Validasi format URL sebelum diluncurkan
+        if (!isValidHttpUrl(url)) {
+            Toast.makeText(this, "Format URL tidak valid", Toast.LENGTH_SHORT).show();
+            return;
         }
         Intent intent = new Intent(this, ExamActivity.class);
         intent.putExtra("exam_url", url);
         startActivity(intent);
+    }
+
+    /**
+     * Validasi URL: harus http/https dengan host yang valid.
+     */
+    private boolean isValidHttpUrl(String url) {
+        try {
+            Uri uri = Uri.parse(url);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            return (scheme != null && (scheme.equals("http") || scheme.equals("https")))
+                && (host != null && !host.isEmpty())
+                && host.contains(".");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -199,5 +213,10 @@ public class MainActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             );
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Blokir tombol back di halaman home
     }
 }

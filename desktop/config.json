@@ -1,0 +1,9 @@
+{
+  "appName": "Emes Exam Browser",
+  "appTitle": "Emes Exam Browser",
+  "appDescription": "Safe browsing untuk ujian online",
+  "exitPin": "1234",
+  "headerColor": "#1A3A5C",
+  "buttonColor": "#2E7BF6",
+  "version": "1.1.0"
+}

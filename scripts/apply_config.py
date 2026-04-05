@@ -4,7 +4,7 @@ apply_config.py — Patch Android source files sebelum Gradle build.
 Membaca environment variables yang dikirim dari GitHub Actions workflow_dispatch.
 """
 
-import os, re, sys, base64
+import os, re, sys, base64, hashlib
 
 def env(key, default=""):
     return os.environ.get(key, default).strip()
@@ -176,12 +176,14 @@ if os.path.exists(splash_layout_path):
     splash_src = re.sub(r'>v[0-9]+\.[0-9]+\.[0-9]+<', f'>v{VERSION_NAME}<', splash_src)
     write(splash_layout_path, splash_src)
 
-# ── 7. ExamActivity.java — patch EXIT_PIN ─────────────────────────────────
+# ── 7. ExamActivity.java — patch EXIT_PIN_HASH (SHA-256, bukan plaintext) ─
 exam_path = "app/src/main/java/id/emes/exambrowser/ExamActivity.java"
 exam_src  = read(exam_path)
+pin_hash  = hashlib.sha256(EXIT_PIN.encode("utf-8")).hexdigest()
+print(f"  ℹ PIN SHA-256: {pin_hash[:8]}...{pin_hash[-8:]} (PIN tidak disimpan plaintext)")
 exam_src  = re.sub(
-    r'static final String EXIT_PIN\s*=\s*"[^"]*"',
-    f'static final String EXIT_PIN = "{EXIT_PIN}"',
+    r'static String EXIT_PIN_HASH\s*=\s*"[^"]*"',
+    f'static String EXIT_PIN_HASH = "{pin_hash}"',
     exam_src
 )
 write(exam_path, exam_src)
