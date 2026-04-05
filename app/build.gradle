@@ -33,7 +33,7 @@ android {
             // PENTING: shrinkResources hanya aman jika proguard-rules.pro
             // sudah menjaga semua resource IDs (R$id, R$layout, R$drawable).
             // Sudah diperbaiki di proguard-rules.pro v2.
-            shrinkResources true
+            shrinkResources false
             crunchPngs      false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (file("keystore.jks").exists()) {
