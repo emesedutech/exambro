@@ -49,30 +49,31 @@ public class MainActivity extends AppCompatActivity {
         btnStart  = findViewById(R.id.btnStart);
         btnScanQr = findViewById(R.id.btnScanQr);
 
-        if (etUrl == null || btnStart == null || btnScanQr == null) {
-            // Seharusnya tidak pernah terjadi — log untuk debug jika ada masalah layout
-            Toast.makeText(this, "Error: layout tidak termuat dengan benar", Toast.LENGTH_LONG).show();
-            return;
+        // Tombol Mulai Ujian
+        if (btnStart != null) {
+            btnStart.setOnClickListener(v -> {
+                String url = etUrl != null && etUrl.getText() != null
+                        ? etUrl.getText().toString().trim() : "";
+                launchExam(url);
+            });
         }
 
-        // Tombol Mulai Ujian
-        btnStart.setOnClickListener(v -> {
-            String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
-            launchExam(url);
-        });
-
         // Tombol Scan QR
-        btnScanQr.setOnClickListener(v -> {
-            Intent intent = new Intent(this, QRScanActivity.class);
-            startActivityForResult(intent, QR_SCAN_REQUEST);
-        });
+        if (btnScanQr != null) {
+            btnScanQr.setOnClickListener(v -> {
+                Intent intent = new Intent(this, QRScanActivity.class);
+                startActivityForResult(intent, QR_SCAN_REQUEST);
+            });
+        }
 
         // IME action "Go" pada keyboard juga trigger mulai ujian
-        etUrl.setOnEditorActionListener((v, actionId, event) -> {
-            String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
-            launchExam(url);
-            return true;
-        });
+        if (etUrl != null) {
+            etUrl.setOnEditorActionListener((v, actionId, event) -> {
+                String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
+                launchExam(url);
+                return true;
+            });
+        }
     }
 
     private void applyAppLogo(int viewId) {
