@@ -28,13 +28,14 @@ android {
 
     buildTypes {
         release {
-            // ✅ WAJIB false — ini penyebab masalah APK bertanda debuggable
             debuggable      false
             minifyEnabled   true
+            // PENTING: shrinkResources hanya aman jika proguard-rules.pro
+            // sudah menjaga semua resource IDs (R$id, R$layout, R$drawable).
+            // Sudah diperbaiki di proguard-rules.pro v2.
             shrinkResources true
             crunchPngs      false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // Jika keystore.jks ada → pakai release key, jika tidak → debug key otomatis
             if (file("keystore.jks").exists()) {
                 signingConfig signingConfigs.release
             }
@@ -45,13 +46,13 @@ android {
         }
     }
 
-    // Split APK per arsitektur — lebih kecil untuk distribusi langsung ke sekolah
+    // Split APK per arsitektur
     splits {
         abi {
             enable       true
             reset()
             include      "armeabi-v7a", "arm64-v8a"
-            universalApk true   // APK universal sebagai fallback jika tidak tahu tipe HP
+            universalApk true
         }
     }
 

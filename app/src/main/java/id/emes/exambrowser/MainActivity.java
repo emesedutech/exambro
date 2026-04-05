@@ -1,8 +1,6 @@
 package id.emes.exambrowser;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,7 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final int QR_SCAN_REQUEST = 200;
+
+    // Deklarasi eksplisit sebagai field — mencegah R8 menganggapnya dead code
     private EditText etUrl;
+    private Button btnStart;
+    private LinearLayout btnScanQr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +44,34 @@ public class MainActivity extends AppCompatActivity {
         applyHeaderBackground();
         applyAppLogo(R.id.imgAppLogo);
 
-        etUrl = findViewById(R.id.etUrl);
+        // Bind views — etUrl dan btnScanQr adalah fitur inti, WAJIB ada
+        etUrl     = findViewById(R.id.etUrl);
+        btnStart  = findViewById(R.id.btnStart);
+        btnScanQr = findViewById(R.id.btnScanQr);
+
+        if (etUrl == null || btnStart == null || btnScanQr == null) {
+            // Seharusnya tidak pernah terjadi — log untuk debug jika ada masalah layout
+            Toast.makeText(this, "Error: layout tidak termuat dengan benar", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         // Tombol Mulai Ujian
-        Button btnStart = findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(v -> launchExam(etUrl.getText().toString().trim()));
+        btnStart.setOnClickListener(v -> {
+            String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
+            launchExam(url);
+        });
 
         // Tombol Scan QR
-        LinearLayout btnScanQr = findViewById(R.id.btnScanQr);
         btnScanQr.setOnClickListener(v -> {
             Intent intent = new Intent(this, QRScanActivity.class);
             startActivityForResult(intent, QR_SCAN_REQUEST);
+        });
+
+        // IME action "Go" pada keyboard juga trigger mulai ujian
+        etUrl.setOnEditorActionListener((v, actionId, event) -> {
+            String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
+            launchExam(url);
+            return true;
         });
     }
 
@@ -65,7 +84,11 @@ public class MainActivity extends AppCompatActivity {
         img.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+        // Coba drawable-nodpi dulu, fallback ke drawable
+        int resId = getResources().getIdentifier("app_logo", "drawable-nodpi", getPackageName());
+        if (resId == 0) {
+            resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+        }
         if (resId != 0) {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
             if (bmp != null) img.setImageBitmap(bmp);
@@ -83,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
             final View overlay         = findViewById(R.id.headerOverlay);
             final LinearLayout content = findViewById(R.id.headerContent);
 
+            if (imgBg == null || overlay == null || content == null) return;
+
             imgBg.setImageDrawable(d);
             imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgBg.setBackgroundColor(Color.TRANSPARENT);
@@ -90,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             imgBg.setVisibility(View.VISIBLE);
             overlay.setVisibility(View.VISIBLE);
         } catch (Exception e) {
-            // fallback warna solid
+            // fallback warna solid — normal jika tidak ada header_bg
         }
     }
 
@@ -101,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             String url = data.getStringExtra("scanned_url");
             if (url != null && !url.isEmpty()) {
                 if (isValidHttpUrl(url)) {
-                    etUrl.setText(url);
+                    if (etUrl != null) etUrl.setText(url);
                     launchExam(url);
                 } else {
                     Toast.makeText(this, "QR code tidak mengandung URL ujian yang valid", Toast.LENGTH_LONG).show();
@@ -111,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchExam(String url) {
-        if (url.isEmpty()) {
+        if (url == null || url.isEmpty()) {
             Toast.makeText(this, "Masukkan URL ujian terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -131,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             Uri uri = Uri.parse(url);
             String scheme = uri.getScheme();
-            String host = uri.getHost();
+            String host   = uri.getHost();
             return (scheme != null && (scheme.equals("http") || scheme.equals("https")))
                 && (host != null && !host.isEmpty())
                 && host.contains(".");
