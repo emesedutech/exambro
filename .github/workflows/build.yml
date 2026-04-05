@@ -136,14 +136,14 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleDebug bundleRelease --stacktrace
+        run: ./gradlew assembleRelease bundleRelease --stacktrace
 
       - name: Rename APK and AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-          mv app/build/outputs/apk/debug/app-debug.apk \
+          mv app/build/outputs/apk/release/app-release.apk \
              "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
           mv app/build/outputs/bundle/release/app-release.aab \
              "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
