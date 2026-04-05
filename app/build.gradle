@@ -20,18 +20,18 @@ android {
             if (ksFile.exists()) {
                 storeFile     ksFile
                 storePassword System.getenv("STORE_PASSWORD") ?: ""
-                keyAlias      System.getenv("KEY_ALIAS") ?: ""
-                keyPassword   System.getenv("KEY_PASSWORD") ?: ""
+                keyAlias      System.getenv("KEY_ALIAS")      ?: ""
+                keyPassword   System.getenv("KEY_PASSWORD")   ?: ""
             }
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            // Disable PNG crunching agar alpha channel pada PNG transparan tidak hilang saat build APK
-            crunchPngs false
-            // Hanya gunakan release signing jika keystore tersedia
+            minifyEnabled   true
+            shrinkResources true
+            crunchPngs      false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (file("keystore.jks").exists()) {
                 signingConfig signingConfigs.release
             }
@@ -42,7 +42,6 @@ android {
     }
 
     aaptOptions {
-        // Jangan kompres PNG agar transparansi tetap terjaga
         cruncherEnabled false
         noCompress 'png'
     }

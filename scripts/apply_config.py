@@ -4,7 +4,7 @@ apply_config.py — Patch Android source files sebelum Gradle build.
 Membaca environment variables yang dikirim dari GitHub Actions workflow_dispatch.
 """
 
-import os, re, sys, base64
+import os, re, sys, base64, hashlib
 
 def env(key, default=""):
     return os.environ.get(key, default).strip()
@@ -70,7 +70,6 @@ write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="u
     <string name="app_name">{APP_NAME}</string>
     <string name="app_title">{APP_TITLE}</string>
     <string name="app_description">{APP_DESCRIPTION}</string>
-    <string name="exit_pin">{EXIT_PIN}</string>
 </resources>
 """)
 
@@ -177,8 +176,17 @@ if os.path.exists(splash_layout_path):
     splash_src = re.sub(r'>v[0-9]+\.[0-9]+\.[0-9]+<', f'>v{VERSION_NAME}<', splash_src)
     write(splash_layout_path, splash_src)
 
-# ── 7. ExamActivity.java — PIN sudah dibaca dari strings.xml (tidak perlu patch) ──
-print("  ✓ PIN disimpan di strings.xml — ExamActivity membacanya via getResources()")
+# ── 7. ExamActivity.java — patch EXIT_PIN_HASH (SHA-256, bukan plaintext) ─
+exam_path = "app/src/main/java/id/emes/exambrowser/ExamActivity.java"
+exam_src  = read(exam_path)
+pin_hash  = hashlib.sha256(EXIT_PIN.encode("utf-8")).hexdigest()
+print(f"  ℹ PIN SHA-256: {pin_hash[:8]}...{pin_hash[-8:]} (PIN tidak disimpan plaintext)")
+exam_src  = re.sub(
+    r'static String EXIT_PIN_HASH\s*=\s*"[^"]*"',
+    f'static String EXIT_PIN_HASH = "{pin_hash}"',
+    exam_src
+)
+write(exam_path, exam_src)
 
 # ── 8. app/build.gradle — patch packageId + versionName ───────────────────
 app_gradle_path = "app/build.gradle"
