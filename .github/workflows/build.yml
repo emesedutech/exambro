@@ -114,37 +114,37 @@ jobs:
           pip install Pillow --quiet
           python3 scripts/setup_icons.py
 
-      - name: Restore keystore dari GitHub Secrets
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          STORE_PASSWORD:  ${{ secrets.STORE_PASSWORD }}
-          KEY_ALIAS:       ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD:    ${{ secrets.KEY_PASSWORD }}
+      - name: Decode Keystore
         run: |
-          if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
-          else
-            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — AAB tidak akan di-sign"
-          fi
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/release.jks
+          echo "✅ Keystore decoded"
 
       - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
-      - name: Build APK + AAB
+      - name: Build APK + AAB (keduanya release signed)
         env:
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleDebug bundleRelease --stacktrace
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease \
+            bundleRelease \
+            -Pandroid.injected.signing.store.file=$(pwd)/app/release.jks \
+            -Pandroid.injected.signing.store.password=$STORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD \
+            --stacktrace
 
-      - name: Rename APK and AAB
+      - name: Rename APK dan AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-          mv app/build/outputs/apk/debug/app-debug.apk \
-             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
+          mv app/build/outputs/apk/release/app-release-unsigned.apk \
+             "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk" 2>/dev/null || \
+          mv app/build/outputs/apk/release/app-release.apk \
+             "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk" 2>/dev/null || true
           mv app/build/outputs/bundle/release/app-release.aab \
              "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
@@ -152,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk
           retention-days: 30
 
       - name: Upload AAB artifact
@@ -162,10 +162,14 @@ jobs:
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
+      - name: Hapus keystore dari runner
+        if: always()
+        run: rm -f app/release.jks
+
       - name: Show download info
         run: |
           echo "✅ Build selesai!"
-          echo "📦 APK tersedia di tab Actions > Artifacts > APK-Build"
-          echo "📦 AAB tersedia di tab Actions > Artifacts > AAB-PlayStore"
+          echo "📦 APK (release signed) → Actions > Artifacts > APK-Build"
+          echo "📦 AAB (signed) → Actions > Artifacts > AAB-PlayStore"
           echo "🏷 Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
           echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
