@@ -30,9 +30,9 @@ android {
         release {
             debuggable      false
             minifyEnabled   true
-            // PENTING: shrinkResources hanya aman jika proguard-rules.pro
-            // sudah menjaga semua resource IDs (R$id, R$layout, R$drawable).
-            // Sudah diperbaiki di proguard-rules.pro v2.
+            // shrinkResources DINONAKTIFKAN: R8 dapat salah strip resource ID
+            // (etUrl, btnScanQr, btnStart) sehingga input URL & tombol QR hilang.
+            // Minify tetap aktif untuk obfuscation, hanya resource shrinking yang dimatikan.
             shrinkResources false
             crunchPngs      false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
