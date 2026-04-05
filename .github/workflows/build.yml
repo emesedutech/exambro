@@ -1,4 +1,4 @@
-name: Build EzamBro APK + AAB
+name: Build Emes ExamBro APK + AAB
 
 on:
   push:
