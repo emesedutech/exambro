@@ -1,4 +1,4 @@
-name: Build Emes ExamBro APK + AAB
+name: Build EzamBro APK + AAB
 
 on:
   push:
@@ -123,9 +123,9 @@ jobs:
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore — APK & AAB akan di-sign dengan release key"
+            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
           else
-            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — build akan menggunakan debug key"
+            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — AAB tidak akan di-sign"
           fi
 
       - name: Grant gradlew execute permission
@@ -136,55 +136,23 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease bundleRelease --stacktrace
-
-      - name: List build outputs (debug)
-        run: |
-          echo "=== APK outputs ==="
-          find app/build/outputs/apk/ -type f 2>/dev/null || echo "Tidak ada APK"
-          echo "=== AAB outputs ==="
-          find app/build/outputs/bundle/ -type f 2>/dev/null || echo "Tidak ada AAB"
+        run: ./gradlew assembleDebug bundleRelease --stacktrace
 
       - name: Rename APK and AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-
-          # Pastikan folder output tersedia
-          mkdir -p app/build/outputs/apk/release/
-          mkdir -p app/build/outputs/bundle/release/
-
-          # Cari file APK release (nama bisa bervariasi tergantung Gradle)
-          APK_FILE=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          AAB_FILE=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
-
-          echo "APK ditemukan: $APK_FILE"
-          echo "AAB ditemukan: $AAB_FILE"
-
-          # Rename APK
-          if [ -n "$APK_FILE" ]; then
-            mv "$APK_FILE" "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
-            echo "✅ APK berhasil di-rename: ${SAFE}-v${VER}-release.apk"
-          else
-            echo "❌ APK tidak ditemukan di app/build/outputs/apk/release/"
-            exit 1
-          fi
-
-          # Rename AAB
-          if [ -n "$AAB_FILE" ]; then
-            mv "$AAB_FILE" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
-            echo "✅ AAB berhasil di-rename: ${SAFE}-v${VER}-release.aab"
-          else
-            echo "❌ AAB tidak ditemukan di app/build/outputs/bundle/release/"
-            exit 1
-          fi
+          mv app/build/outputs/apk/debug/app-debug.apk \
+             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
+          mv app/build/outputs/bundle/release/app-release.aab \
+             "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
 
       - name: Upload AAB artifact
