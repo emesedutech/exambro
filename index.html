@@ -451,29 +451,22 @@ body{
 .sp-ver{text-align:center;font-size:7px;color:rgba(255,255,255,.3);margin-top:7px}
 
 /* Main screen sim */
-#simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9}
-.ms-header{display:flex;flex-direction:column;align-items:center;padding:20px 14px 14px;transition:background .3s}
-.ms-logo{width:44px;height:44px;border-radius:10px;object-fit:contain;margin-bottom:5px}
-.ms-logo-fallback{font-size:26px;margin-bottom:5px;color:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
-.ms-title{font-size:12.5px;font-weight:800;color:#fff;text-align:center}
-.ms-sub{font-size:9px;color:rgba(255,255,255,.72);text-align:center;margin-top:2px}
-.ms-badge{margin-top:7px;background:rgba(255,255,255,.16);border-radius:20px;padding:3px 10px;font-size:7px;color:#fff;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:4px}
-.ms-body{flex:1;padding:10px;overflow:hidden;background:#F1F5F9}
-.ms-card{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
-.ms-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
-.ms-input-row{display:flex;gap:5px;margin-bottom:5px}
-.ms-input{flex:1;height:26px;background:#F8FAFC;border:1.5px solid #E5E7EB;border-radius:6px;font-size:8px;color:#94A3B8;font-family:monospace;display:flex;align-items:center;padding:0 7px}
-.ms-qr-btn{width:26px;height:26px;border-radius:6px;flex-shrink:0;border:1.5px solid #3B82F6;background:#EFF6FF;display:flex;align-items:center;justify-content:center;color:#3B82F6}
-.ms-divider{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.ms-divider-line{flex:1;height:1px;background:#F1F5F9}
-.ms-divider-text{font-size:7px;color:#94A3B8;white-space:nowrap}
-.ms-start-btn{height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;transition:background .3s}
-.ms-feats{background:#fff;border-radius:10px;padding:10px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
-.ms-feat-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
-.ms-feat{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:7px;background:#F8FAFC;margin-bottom:4px;font-size:7.5px;color:#374151}
-.ms-feat:last-child{margin:0}
-.ms-check{width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:bold;flex-shrink:0;transition:background .3s}
-.ms-footer{background:#F8FAFF;border-top:1px solid #EEF2FF;text-align:center;padding:4px;font-size:7px;color:#94A3B8}
+#simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9;overflow:hidden}
+.ms-header{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:16px 14px;transition:background .3s}
+.ms-logo{width:54px;height:54px;object-fit:contain;margin-bottom:8px;background:none}
+.ms-logo-fallback{font-size:32px;margin-bottom:8px;color:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
+.ms-title{font-size:13px;font-weight:800;color:#fff;text-align:center}
+.ms-version{font-size:8.5px;color:rgba(255,255,255,.75);text-align:center;margin-top:3px}
+.ms-card{background:#fff;border-radius:12px;padding:12px;margin:0 10px;box-shadow:0 4px 16px rgba(0,0,0,.13);margin-top:-14px;margin-bottom:8px}
+.ms-lbl{font-size:7px;color:#64748B;margin-bottom:5px}
+.ms-input{width:100%;height:24px;background:#F8FAFC;border:1.5px solid #E5E7EB;border-radius:6px;font-size:7.5px;color:#94A3B8;font-family:monospace;display:flex;align-items:center;padding:0 7px;box-sizing:border-box;margin-bottom:7px}
+.ms-enter-btn{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8.5px;font-weight:800;letter-spacing:.8px;transition:background .3s;margin-bottom:5px}
+.ms-or{font-size:7px;color:#94A3B8;text-align:center;margin-bottom:5px}
+.ms-scan-btn{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8.5px;font-weight:800;letter-spacing:.8px;transition:background .3s}
+.ms-bottom{display:flex;background:#fff;border-top:1px solid #F1F5F9;padding:6px 0 4px}
+.ms-bottom-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px}
+.ms-bottom-icon{font-size:13px;line-height:1}
+.ms-bottom-lbl{font-size:6.5px;color:#64748B}
 
 /* Preview labels */
 .prev-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
@@ -961,37 +954,35 @@ body{
           <div id="simMain">
             <div class="ms-header" id="msHeader" style="background:#1A3A5C">
               <img id="msLogoImg" src="" alt="" class="ms-logo" style="display:none"/>
-              <span id="msLogoEmoji" class="ms-logo-fallback"><span class="ico" style="width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></span>
+              <span id="msLogoEmoji" class="ms-logo-fallback"><span class="ico" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></span>
               <div class="ms-title" id="msTitle">Emes Exam Browser</div>
-              <div class="ms-sub" id="msSub">Safe browsing untuk ujian online</div>
-              <div class="ms-badge">
-                <span class="ico" style="width:7px;height:7px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> <span>SECURE EXAM MODE</span>
+              <div class="ms-version" id="msVersion">V 1.0</div>
+            </div>
+            <div class="ms-card">
+              <div class="ms-lbl">Input URL / IP Address Server</div>
+              <div class="ms-input">https://ujian.sekolah.id/...</div>
+              <div class="ms-enter-btn" id="msStartBtn" style="background:#2E7BF6">ENTER</div>
+              <div class="ms-or">OR ?</div>
+              <div class="ms-scan-btn" id="msScanBtn" style="background:#2E7BF6">SCAN QR CODE</div>
+            </div>
+            <div class="ms-bottom">
+              <div class="ms-bottom-item">
+                <span class="ms-bottom-icon" id="msBottomColor1" style="color:#2E7BF6">☑</span>
+                <span class="ms-bottom-lbl">Info</span>
+              </div>
+              <div class="ms-bottom-item">
+                <span class="ms-bottom-icon" id="msBottomColor2" style="color:#2E7BF6">★</span>
+                <span class="ms-bottom-lbl">Rate Us !</span>
+              </div>
+              <div class="ms-bottom-item">
+                <span class="ms-bottom-icon" id="msBottomColor3" style="color:#2E7BF6">⎙</span>
+                <span class="ms-bottom-lbl">Share !</span>
+              </div>
+              <div class="ms-bottom-item">
+                <span class="ms-bottom-icon" id="msBottomColor4" style="color:#2E7BF6">ℹ</span>
+                <span class="ms-bottom-lbl">About Us</span>
               </div>
             </div>
-            <div class="ms-body">
-              <div class="ms-card">
-                <div class="ms-lbl">URL Ujian</div>
-                <div class="ms-input-row">
-                  <div class="ms-input">https://ujian.sekolah.id/...</div>
-                  <div class="ms-qr-btn" id="msQrBtn" style="font-size:9px;font-weight:900">QR</div>
-                </div>
-                <div class="ms-divider">
-                  <div class="ms-divider-line"></div>
-                  <span class="ms-divider-text">atau scan QR pengawas</span>
-                  <div class="ms-divider-line"></div>
-                </div>
-                <div class="ms-start-btn" id="msStartBtn" style="background:#2E7BF6">Mulai Ujian</div>
-              </div>
-              <div class="ms-feats">
-                <div class="ms-feat-lbl">Fitur Keamanan</div>
-                <div class="ms-feat"><span class="ms-check" id="ch1" style="background:#2E7BF6">&#10003;</span>Back &amp; Home diblokir</div>
-                <div class="ms-feat"><span class="ms-check" id="ch2" style="background:#2E7BF6">&#10003;</span>Fullscreen tanpa gangguan</div>
-                <div class="ms-feat"><span class="ms-check" id="ch3" style="background:#2E7BF6">&#10003;</span>PIN pengawas untuk keluar</div>
-                <div class="ms-feat"><span class="ms-check" id="ch4" style="background:#2E7BF6">&#10003;</span>Screenshot diblokir</div>
-                <div class="ms-feat"><span class="ms-check" id="ch5" style="background:#2E7BF6">&#10003;</span>Scan QR URL ujian</div>
-              </div>
-            </div>
-            <div class="ms-footer">&copy; 2026 Emes EduTech</div>
           </div>
         </div>
       </div>
@@ -1290,14 +1281,12 @@ function refreshMain() {
 
   // Text
   el('msTitle').textContent = name;
-  el('msSub').textContent = sub;
+  if(el('msVersion')) el('msVersion').textContent = 'V ' + (v('versionName') || '1.0');
 
   // Accent color
   el('msStartBtn').style.background = accColor;
-  el('msQrBtn').style.borderColor = accColor;
-  el('msQrBtn').style.color = accColor;
-  el('msQrBtn').style.background = accColor + '18';
-  ['ch1','ch2','ch3','ch4','ch5'].forEach(id => el(id) && (el(id).style.background = accColor));
+  if(el('msScanBtn')) el('msScanBtn').style.background = accColor;
+  ['msBottomColor1','msBottomColor2','msBottomColor3','msBottomColor4'].forEach(id => el(id) && (el(id).style.color = accColor));
 }
 
 function refreshSummary() {
