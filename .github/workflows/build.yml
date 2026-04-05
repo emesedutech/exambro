@@ -123,9 +123,9 @@ jobs:
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > app/keystore.jks
-            echo "✅ Keystore berhasil di-restore — APK akan di-sign dengan release key"
+            echo "✅ Keystore berhasil di-restore — AAB akan di-sign dengan release key"
           else
-            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — APK akan di-sign dengan debug key (tetap bisa diinstall)"
+            echo "⚠️  KEYSTORE_BASE64 tidak ditemukan — AAB tidak akan di-sign"
           fi
 
       - name: Grant gradlew execute permission
@@ -136,60 +136,23 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease bundleRelease --stacktrace
-
-      - name: List build outputs
-        run: |
-          echo "=== APK outputs ==="
-          find app/build/outputs/apk/ -type f 2>/dev/null || echo "Tidak ada APK"
-          echo "=== AAB outputs ==="
-          find app/build/outputs/bundle/ -type f 2>/dev/null || echo "Tidak ada AAB"
+        run: ./gradlew assembleDebug bundleRelease --stacktrace
 
       - name: Rename APK and AAB
         run: |
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-
-          mkdir -p app/build/outputs/apk/release/
-
-          # Rename setiap APK yang ditemukan (universal, arm64, arm32)
-          find app/build/outputs/apk/release/ -name "*.apk" | while read f; do
-            BASE=$(basename "$f" .apk)
-            if echo "$BASE" | grep -q "universal"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-universal.apk"
-              echo "✅ Universal APK: ${SAFE}-v${VER}-universal.apk"
-            elif echo "$BASE" | grep -q "arm64"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm64.apk"
-              echo "✅ ARM64 APK: ${SAFE}-v${VER}-arm64.apk"
-            elif echo "$BASE" | grep -q "armeabi"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm32.apk"
-              echo "✅ ARM32 APK: ${SAFE}-v${VER}-arm32.apk"
-            fi
-          done
-
-          # Verifikasi minimal ada 1 APK
-          COUNT=$(find app/build/outputs/apk/release/ -name "*.apk" | wc -l)
-          if [ "$COUNT" -eq 0 ]; then
-            echo "❌ Tidak ada APK yang dihasilkan!"
-            exit 1
-          fi
-          echo "✅ Total APK dihasilkan: $COUNT file"
-
-          # Rename AAB
-          AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
-          if [ -n "$AAB" ]; then
-            mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
-            echo "✅ AAB: ${SAFE}-v${VER}-release.aab"
-          else
-            echo "⚠️ AAB tidak ditemukan"
-          fi
+          mv app/build/outputs/apk/debug/app-debug.apk \
+             "app/build/outputs/apk/debug/${SAFE}-v${VER}-debug.apk"
+          mv app/build/outputs/bundle/release/app-release.aab \
+             "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
 
       - name: Upload AAB artifact
@@ -203,9 +166,6 @@ jobs:
         run: |
           echo "✅ Build selesai!"
           echo "📦 APK tersedia di tab Actions > Artifacts > APK-Build"
-          echo "   - *-universal.apk → untuk semua HP (pakai ini jika tidak tahu tipe HP)"
-          echo "   - *-arm64.apk     → untuk HP modern (2017 ke atas, lebih kecil)"
-          echo "   - *-arm32.apk     → untuk HP lama/murah"
           echo "📦 AAB tersedia di tab Actions > Artifacts > AAB-PlayStore"
           echo "🏷 Versi: ${{ github.event.inputs.version_name || '1.1.0' }}"
           echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
