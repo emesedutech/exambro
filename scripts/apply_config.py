@@ -48,6 +48,24 @@ def read(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
+def xml_escape(text):
+    """Escape karakter XML khusus agar strings.xml tidak corrupt.
+    WAJIB dipakai untuk semua nilai user yang ditulis ke file XML Android.
+    Karakter yang harus di-escape: & < > ' "
+    """
+    text = str(text)
+    text = text.replace("&", "&amp;")   # HARUS duluan sebelum yang lain
+    text = text.replace("<", "&lt;")
+    text = text.replace(">", "&gt;")
+    text = text.replace("'", "\\'")     # Android XML: apostrof perlu escape
+    text = text.replace('"', '\\"')     # tanda kutip ganda
+    return text
+
+# Escape semua nilai yang akan masuk ke XML
+APP_NAME_XML        = xml_escape(APP_NAME)
+APP_TITLE_XML       = xml_escape(APP_TITLE)
+APP_DESCRIPTION_XML = xml_escape(APP_DESCRIPTION)
+
 def decode_image(b64_data, dest_path, label):
     """Decode base64 image dan simpan ke dest_path. Return True jika berhasil."""
     try:
@@ -87,9 +105,9 @@ SCAN_STROKE_LIGHT = hex_with_alpha(BUTTON_COLOR, 30)
 # ── 1. strings.xml ─────────────────────────────────────────────────────────
 write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">{APP_NAME}</string>
-    <string name="app_title">{APP_TITLE}</string>
-    <string name="app_description">{APP_DESCRIPTION}</string>
+    <string name="app_name">{APP_NAME_XML}</string>
+    <string name="app_title">{APP_TITLE_XML}</string>
+    <string name="app_description">{APP_DESCRIPTION_XML}</string>
 </resources>
 """)
 
@@ -250,7 +268,7 @@ write(app_gradle_path, app_gradle)
 # ── 12. AndroidManifest.xml — patch package + label ──────────────────────
 manifest_path = "app/src/main/AndroidManifest.xml"
 manifest = read(manifest_path)
-manifest = re.sub(r'android:label="[^"]+"', f'android:label="{APP_NAME}"', manifest, count=1)
+manifest = re.sub(r'android:label="[^"]+"', f'android:label="{APP_NAME_XML}"', manifest, count=1)
 write(manifest_path, manifest)
 
 # ── 13. Rename Java package directory if needed ───────────────────────────
