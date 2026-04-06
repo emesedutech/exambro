@@ -4,48 +4,28 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_dialog"
+    android:padding="26dp"
     android:gravity="center_horizontal">
 
-    <!-- ══ HEADER BAR — warna ikut colorHeaderBg ══ -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Lock icon — minimal -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorHeaderBg"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="14dp">
+        android:text="🔐"
+        android:textSize="36sp"
+        android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔐 "
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Akhiri Sesi Ujian?"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:letterSpacing="-0.01" />
-
-    </LinearLayout>
-
-    <!-- ══ KONTEN DIALOG ══ -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingStart="26dp"
-        android:paddingEnd="26dp"
-        android:paddingTop="22dp"
-        android:paddingBottom="26dp">
+        android:text="Akhiri Sesi Ujian?"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:letterSpacing="-0.02"
+        android:layout_marginBottom="6dp" />
 
     <!-- Subtitle -->
     <TextView
@@ -56,7 +36,7 @@
         android:textSize="12.5sp"
         android:gravity="center"
         android:lineSpacingMultiplier="1.4"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="24dp" />
 
     <!-- PIN label -->
     <TextView
@@ -108,7 +88,5 @@
         android:textColor="@color/colorTextSecondary"
         android:textSize="13sp"
         android:letterSpacing="-0.01" />
-
-    </LinearLayout>
 
 </LinearLayout>

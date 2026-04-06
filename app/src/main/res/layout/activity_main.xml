@@ -4,18 +4,17 @@
   LAYOUT HALAMAN UTAMA
   ═══════════════════════════════════════════════════════════════
   Desain:
-  • Background: cover image penuh layar (main_bg.png) ATAU warna solid colorHeaderBg
-  • Jika ada main_bg.png: gambar full screen, header transparan, overlay gelap aktif
-  • Jika tidak ada main_bg.png: halaman pakai warna solid colorHeaderBg saja
-  • Konten header (logo + judul) di bagian atas
-  • Satu kartu putih besar di bawah yang berisi URL input + fitur keamanan
-  • Kartu sedikit overlap ke atas (mengambang di atas garis batas header)
-  • Overlap: 20dp — cukup untuk efek depth tanpa menutupi konten header
+  • Header: cover image (header_bg.png) sebagai background area atas.
+    Jika header_bg.png tidak ada → fallback warna solid colorHeaderBg.
+  • Overlay gelap ringan di atas header image agar teks tetap terbaca.
+  • Konten header (logo + judul) menumpuk di atas cover image.
+  • Satu kartu putih besar di bawah yang berisi URL input + fitur keamanan.
+  • Kartu sedikit overlap ke atas (mengambang di atas garis batas header).
+  • Overlap: 20dp — cukup untuk efek depth tanpa menutupi konten header.
 
   Ukuran gambar yang disarankan:
-  • main_bg.png  (cover halaman utama)  : 1080 × 1920 px  (portrait, rasio 9:16)
-  • splash_bg.png (layar loading)        : 1080 × 1920 px  (portrait, rasio 9:16)
-  • header_bg.png (header halaman utama, alternatif): 1080 × 560 px
+  • header_bg.png (cover area header halaman utama) : 1080 × 560 px
+  • splash_bg.png (layar loading)                  : 1080 × 1920 px  (portrait, rasio 9:16)
   Semua gambar: format PNG atau JPG, ukuran file maksimal 500 KB.
   Resolusi terlalu rendah = pecah. Gunakan minimal 1080px lebar.
   ═══════════════════════════════════════════════════════════════
@@ -24,26 +23,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@color/colorHeaderBg">
 
-    <!-- ══ LAYER 1: Background cover image (opsional, main_bg.png) ══ -->
-    <ImageView
-        android:id="@+id/imgMainBg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:contentDescription="Main Background" />
-
-    <!-- ══ LAYER 2: Overlay gelap supaya teks tetap terbaca ══ -->
-    <View
-        android:id="@+id/mainOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:visibility="gone" />
-
-    <!-- ══ LAYER 3: Semua konten (header + kartu) ══ -->
+    <!-- ══ Semua konten (header + kartu) ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,7 +37,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Background warna solid (dipakai saat tidak ada main_bg) -->
+            <!-- Cover image untuk header (header_bg.png) -->
+            <ImageView
+                android:id="@+id/imgHeaderBg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:contentDescription="Header Background" />
+
+            <!-- Overlay gelap di atas header image agar teks terbaca -->
+            <View
+                android:id="@+id/headerOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#66000000"
+                android:visibility="gone" />
+
+            <!-- Konten header — background solid sebagai fallback -->
             <LinearLayout
                 android:id="@+id/headerContent"
                 android:layout_width="match_parent"

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        applyMainBackground();   // cover image full-layar (main_bg.png) jika ada
+        applyHeaderBackground();  // cover image header (header_bg.png) jika ada
         applyAppLogo(R.id.imgAppLogo);
 
         etUrl     = findViewById(R.id.etUrl);
@@ -71,36 +71,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Terapkan gambar cover full-layar (main_bg.png) jika tersedia di drawable.
-     * Jika ada, headerContent dijadikan transparan agar background tembus.
-     * Overlay gelap (#99000000) otomatis tampil untuk keterbacaan teks.
-     * Jika tidak ada, halaman menggunakan warna solid colorHeaderBg.
+     * Terapkan gambar cover pada area header saja (header_bg.png) jika tersedia di drawable.
+     * Jika ada: imgHeaderBg tampil, overlay gelap muncul, headerContent dijadikan transparan.
+     * Jika tidak ada: header tetap memakai warna solid dari bg_header drawable.
      */
-    private void applyMainBackground() {
+    private void applyHeaderBackground() {
         try {
-            int resId = getResources().getIdentifier("main_bg", "drawable", getPackageName());
+            int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
             if (resId == 0) return;
 
             Drawable d = getResources().getDrawable(resId, getTheme());
             if (d == null) return;
 
-            ImageView imgBg  = findViewById(R.id.imgMainBg);
-            View overlay     = findViewById(R.id.mainOverlay);
+            ImageView imgHeaderBg = findViewById(R.id.imgHeaderBg);
+            View headerOverlay    = findViewById(R.id.headerOverlay);
             LinearLayout headerContent = findViewById(R.id.headerContent);
 
-            if (imgBg == null) return;
+            if (imgHeaderBg == null) return;
 
-            imgBg.setImageDrawable(d);
-            imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgBg.setVisibility(View.VISIBLE);
+            imgHeaderBg.setImageDrawable(d);
+            imgHeaderBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imgHeaderBg.setVisibility(View.VISIBLE);
 
-            if (overlay != null) overlay.setVisibility(View.VISIBLE);
+            if (headerOverlay != null) headerOverlay.setVisibility(View.VISIBLE);
 
-            // Transparankan background warna solid di header agar gambar tembus
+            // Transparankan background solid header agar cover image tembus
             if (headerContent != null) headerContent.setBackgroundColor(Color.TRANSPARENT);
 
         } catch (Exception e) {
-            // Fallback: warna solid dari colorHeaderBg
+            // Fallback: warna solid dari bg_header drawable
         }
     }
 
