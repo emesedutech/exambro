@@ -85,11 +85,8 @@ public class MainActivity extends AppCompatActivity {
         img.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        // Coba drawable-nodpi dulu, fallback ke drawable
-        int resId = getResources().getIdentifier("app_logo", "drawable-nodpi", getPackageName());
-        if (resId == 0) {
-            resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-        }
+        // getIdentifier type harus "drawable" bukan "drawable-nodpi" (qualifier bukan type)
+        int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
         if (resId != 0) {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
             if (bmp != null) img.setImageBitmap(bmp);

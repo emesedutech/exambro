@@ -73,6 +73,14 @@
             android:lineSpacingMultiplier="1.4"
             android:layout_marginBottom="28dp" />
 
+        <!-- Divider line -->
+        <View
+            android:id="@+id/splashDivider"
+            android:layout_width="48dp"
+            android:layout_height="2dp"
+            android:background="#60FFFFFF"
+            android:layout_marginBottom="20dp" />
+
         <!-- Secure badge — minimal pill -->
         <LinearLayout
             android:layout_width="wrap_content"

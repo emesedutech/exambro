@@ -279,6 +279,16 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
         app_gradle2 = read(app_gradle_path)
         app_gradle2 = app_gradle2.replace(OLD_PACKAGE_ID, PACKAGE_ID)
         write(app_gradle_path, app_gradle2)
+        # Patch layout XML files — custom view references pakai fully-qualified class name
+        layout_dir = "app/src/main/res/layout"
+        if os.path.isdir(layout_dir):
+            for xml_file in os.listdir(layout_dir):
+                if xml_file.endswith(".xml"):
+                    xml_path = os.path.join(layout_dir, xml_file)
+                    xml_src = read(xml_path)
+                    if OLD_PACKAGE_ID in xml_src:
+                        xml_src = xml_src.replace(OLD_PACKAGE_ID, PACKAGE_ID)
+                        write(xml_path, xml_src)
         print(f"  ✓ Package directory renamed: {old_dir} → {new_dir}")
 
 # ── 14. Logo user → app_logo.png ─────────────────────────────────────────

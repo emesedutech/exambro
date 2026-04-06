@@ -543,6 +543,34 @@ body{
   z-index:999;pointer-events:none;
 }
 .toast.show{transform:translateY(0);opacity:1}
+/* Exam screen sim */
+#simExam{width:100%;height:100%;display:flex;flex-direction:column;background:#111827}
+.ex-topbar{height:38px;background:#0A1020;display:flex;align-items:center;padding:0 8px;gap:6px;flex-shrink:0}
+.ex-appico{width:18px;height:18px;border-radius:4px;object-fit:contain}
+.ex-urlstack{flex:1;min-width:0}
+.ex-label{font-size:5.5px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ex-url{font-size:7.5px;color:rgba(255,255,255,.85);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ex-badge{background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.35);border-radius:10px;padding:2px 6px;font-size:6px;color:#60a5fa;font-weight:700;flex-shrink:0}
+.ex-progress{height:2px;background:#0A1020;flex-shrink:0}
+.ex-progressbar{height:100%;width:60%;transition:background .3s}
+.ex-webview{flex:1;background:#f8f9fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ex-webview-inner{text-align:center}
+.ex-webview-inner p{font-size:7.5px;color:#6b7280;margin-top:4px}
+.ex-bottombar{height:38px;background:#fff;border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-exitbtn{height:22px;padding:0 12px;border-radius:11px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.06);font-size:7.5px;font-weight:700;color:#ef4444}
+
+/* Dialog overlay sim */
+#simDialog{width:100%;height:100%;display:flex;flex-direction:column;background:#111827;position:relative}
+.dlg-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.dlg-card{background:#fff;border-radius:14px;padding:16px 14px;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px}
+.dlg-icon{font-size:22px}
+.dlg-title{font-size:11px;font-weight:800;color:#111827;text-align:center}
+.dlg-sub{font-size:7.5px;color:#6b7280;text-align:center;line-height:1.6}
+.dlg-label{font-size:7px;font-weight:700;color:#6b7280;letter-spacing:.5px;text-transform:uppercase;align-self:center}
+.dlg-input{width:100px;height:30px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;letter-spacing:6px;color:#374151}
+.dlg-btn-confirm{width:100%;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8.5px;font-weight:700;transition:background .3s;margin-top:2px}
+.dlg-btn-cancel{width:100%;height:28px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:600;color:#6b7280}
+
 .ico svg{width:100%;height:100%}
 </style>
 </head>
@@ -917,9 +945,11 @@ body{
 <!-- ══════════════════ RIGHT: SIDEBAR ══════════════════ -->
 <div class="sidebar">
 
-  <div class="prev-tabs">
-    <button class="prev-tab on" id="ptSplash" onclick="showPrev('splash')"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg></span> Splash</button>
-    <button class="prev-tab" id="ptMain" onclick="showPrev('main')"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg></span> Layar Utama</button>
+  <div class="prev-tabs" style="flex-wrap:wrap;gap:3px">
+    <button class="prev-tab on" id="ptSplash" onclick="showPrev('splash')" style="font-size:11px;padding:7px 8px">💡 Splash</button>
+    <button class="prev-tab" id="ptMain"   onclick="showPrev('main')"   style="font-size:11px;padding:7px 8px">🏠 Utama</button>
+    <button class="prev-tab" id="ptExam"   onclick="showPrev('exam')"   style="font-size:11px;padding:7px 8px">🖥 Ujian</button>
+    <button class="prev-tab" id="ptDialog" onclick="showPrev('dialog')" style="font-size:11px;padding:7px 8px">🔐 Dialog</button>
   </div>
 
   <!-- Splash Preview -->
@@ -999,7 +1029,72 @@ body{
     <p class="prev-note">Simulasi tampilan aktual</p>
   </div>
 
-  <!-- How it works -->
+  <!-- Exam Screen Preview -->
+  <div id="prevExam" style="display:none">
+    <p class="prev-label">Preview Halaman Ujian</p>
+    <div class="phone-outer">
+      <div class="phone-shell">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div id="simExam">
+            <div class="ex-topbar" id="exTopbar">
+              <img class="ex-appico" id="exLogoImg" src="" alt="" style="display:none"/>
+              <span id="exLogoEmoji" style="font-size:12px">🛡</span>
+              <div class="ex-urlstack">
+                <div class="ex-label">SESI UJIAN</div>
+                <div class="ex-url" id="exUrl">ujian.sekolah.id</div>
+              </div>
+              <div class="ex-badge">🔒 AMAN</div>
+            </div>
+            <div class="ex-progress">
+              <div class="ex-progressbar" id="exProgressBar" style="background:#3B82F6"></div>
+            </div>
+            <div class="ex-webview">
+              <div class="ex-webview-inner">
+                <span style="font-size:28px">📋</span>
+                <p>Halaman ujian dimuat</p>
+                <p style="font-size:6.5px;color:#9ca3af;margin-top:2px">Konten dari server ujian</p>
+              </div>
+            </div>
+            <div class="ex-bottombar">
+              <div class="ex-exitbtn">Keluar dari Ujian</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="prev-note">Kiosk mode — Back & Home diblokir</p>
+  </div>
+
+  <!-- Exit Dialog Preview -->
+  <div id="prevDialog" style="display:none">
+    <p class="prev-label">Preview Dialog Keluar</p>
+    <div class="phone-outer">
+      <div class="phone-shell">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div id="simDialog">
+            <!-- Background: exam screen (simplified) -->
+            <div class="ex-topbar" id="dlgTopbar" style="height:38px"></div>
+            <div style="flex:1;background:#f8f9fa"></div>
+            <!-- Dialog overlay -->
+            <div class="dlg-overlay">
+              <div class="dlg-card">
+                <div class="dlg-icon">🔐</div>
+                <div class="dlg-title">Akhiri Sesi Ujian?</div>
+                <div class="dlg-sub">Masukkan PIN pengawas untuk mengakhiri sesi</div>
+                <div class="dlg-label">PIN PENGAWAS</div>
+                <div class="dlg-input">• • • •</div>
+                <div class="dlg-btn-confirm" id="dlgConfirmBtn" style="background:#111827">Konfirmasi Keluar</div>
+                <div class="dlg-btn-cancel">Lanjutkan Ujian</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="prev-note">Muncul saat tombol "Keluar dari Ujian" ditekan</p>
+  </div>
   <div class="help-card">
     <p class="help-card-title"><span class="ico" style="width:12px;height:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Cara Kerja</p>
     <ol class="steps">
@@ -1077,11 +1172,13 @@ function el(id) { return document.getElementById(id); }
 
 // ═══ PREVIEW TAB ══════════════════════════════════════════════════════════════
 function showPrev(tab) {
-  const isSplash = tab === 'splash';
-  el('prevSplash').style.display = isSplash ? '' : 'none';
-  el('prevMain').style.display   = isSplash ? 'none' : '';
-  el('ptSplash').classList.toggle('on', isSplash);
-  el('ptMain').classList.toggle('on', !isSplash);
+  const tabs = ['splash','main','exam','dialog'];
+  tabs.forEach(t => {
+    const pane = el('prev'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(pane) pane.style.display = (t===tab) ? '' : 'none';
+    const btn = el('pt'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(btn) btn.classList.toggle('on', t===tab);
+  });
 }
 
 // ═══ MODE SWITCHES ════════════════════════════════════════════════════════════
@@ -1315,9 +1412,34 @@ function refreshSummary() {
   el('sumVer').textContent  = ver;
 }
 
+function refreshExam() {
+  const hdrColor = v('cHeader') || '#1A3A5C';
+  const accColor = v('cAccent') || '#2E7BF6';
+  // topbar color
+  const tb = el('exTopbar');
+  if(tb) tb.style.background = hdrColor;
+  const tb2 = el('dlgTopbar');
+  if(tb2) tb2.style.background = hdrColor;
+  // progress bar
+  const pb = el('exProgressBar');
+  if(pb) pb.style.background = accColor;
+  // logo
+  const exLogo = el('exLogoImg');
+  const exEmoji = el('exLogoEmoji');
+  if(S.logoUrl && exLogo && exEmoji) {
+    exLogo.src = S.logoUrl; exLogo.style.display='block'; exEmoji.style.display='none';
+  } else if(exLogo && exEmoji) {
+    exLogo.style.display='none'; exEmoji.style.display='';
+  }
+  // dialog confirm button
+  const dc = el('dlgConfirmBtn');
+  if(dc) dc.style.background = hdrColor;
+}
+
 function refresh() {
   refreshSplash();
   refreshMain();
+  refreshExam();
   refreshSummary();
 }
 
