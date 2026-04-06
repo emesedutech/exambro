@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network Security Config — Emes ExamBro
+
+    Catatan arsitektur:
+    - Network Security Config Android tidak mendukung whitelist IP address (hanya hostname).
+    - Karena app ini membuka server ujian via IP LAN (mis. 192.168.x.x:3000),
+      usesCleartextTraffic="true" diperlukan di manifest.
+    - Pembatasan HTTP ke IP publik dilakukan di layer app (shouldBlockNavigation
+      di ExamActivity) — hanya localhost dan IP privat yang diizinkan lewat HTTP.
+    - Koneksi ke Cloudflare Tunnel / domain publik otomatis HTTPS dan sudah aman.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

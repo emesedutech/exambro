@@ -142,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url = "https://" + url;
+            // Ekstrak host dari input (sebelum ada scheme) untuk cek apakah lokal
+            String rawHost = url.split("[:/]")[0];
+            url = (isPrivateHost(rawHost) ? "http://" : "https://") + url;
         }
         if (!isValidHttpUrl(url)) {
             Toast.makeText(this, "Format URL tidak valid", Toast.LENGTH_SHORT).show();
@@ -158,12 +160,30 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = Uri.parse(url);
             String scheme = uri.getScheme();
             String host   = uri.getHost();
-            return (scheme != null && (scheme.equals("http") || scheme.equals("https")))
-                && (host != null && !host.isEmpty())
-                && host.contains(".");
+            if (scheme == null || host == null || host.isEmpty()) return false;
+            if (!scheme.equals("http") && !scheme.equals("https")) return false;
+            // Izinkan: localhost, IP address, atau domain dengan titik
+            return isPrivateHost(host) || host.contains(".");
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /** Cek apakah host adalah localhost atau IP dalam range privat RFC-1918. */
+    private boolean isPrivateHost(String host) {
+        if (host == null) return false;
+        if (host.equals("localhost")) return true;
+        if (!host.matches("\\d{1,3}(\\.\\d{1,3}){3}")) return false;
+        try {
+            String[] parts = host.split("\\.");
+            int a = Integer.parseInt(parts[0]);
+            int b = Integer.parseInt(parts[1]);
+            if (a == 10) return true;                        // 10.0.0.0/8
+            if (a == 172 && b >= 16 && b <= 31) return true; // 172.16.0.0/12
+            if (a == 192 && b == 168) return true;           // 192.168.0.0/16
+            if (a == 127) return true;                       // 127.0.0.0/8 loopback
+        } catch (Exception ignored) {}
+        return false;
     }
 
     @Override

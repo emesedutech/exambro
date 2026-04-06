@@ -108,7 +108,8 @@ public class ExamActivity extends AppCompatActivity {
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
-        s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        // Blokir mixed content (HTTP dalam halaman HTTPS)
+        s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
         s.setAllowFileAccessFromFileURLs(false);
@@ -158,14 +159,43 @@ public class ExamActivity extends AppCompatActivity {
         if (uri == null) return true;
         String scheme = uri.getScheme();
         if (scheme == null) return true;
-        // Blokir semua scheme non-http/https
+        // Hanya izinkan http dan https
         if (!scheme.equals("http") && !scheme.equals("https")) return true;
         String host = uri.getHost();
         if (host == null || allowedHost == null) return true;
+        // HTTP hanya boleh untuk localhost dan IP privat (10.x, 172.16-31.x, 192.168.x)
+        if (scheme.equals("http")) {
+            if (!isPrivateHost(host)) {
+                Toast.makeText(this, "HTTP ke host publik diblokir", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        }
         // Izinkan host persis sama ATAU subdomain
         boolean ok = host.equals(allowedHost) || host.endsWith("." + allowedHost);
         if (!ok) Toast.makeText(this, "Navigasi ke " + host + " diblokir", Toast.LENGTH_SHORT).show();
         return !ok;
+    }
+
+    /** Cek apakah host adalah localhost atau IP dalam range privat RFC-1918. */
+    private boolean isPrivateHost(String host) {
+        if (host == null) return false;
+        if (host.equals("localhost")) return true;
+        // Harus berupa IP address dulu
+        if (!host.matches("\\d{1,3}(\\.\\d{1,3}){3}")) return false;
+        try {
+            String[] parts = host.split("\\.");
+            int a = Integer.parseInt(parts[0]);
+            int b = Integer.parseInt(parts[1]);
+            // 10.0.0.0/8
+            if (a == 10) return true;
+            // 172.16.0.0/12  (172.16 - 172.31)
+            if (a == 172 && b >= 16 && b <= 31) return true;
+            // 192.168.0.0/16
+            if (a == 192 && b == 168) return true;
+            // 127.0.0.0/8 (loopback)
+            if (a == 127) return true;
+        } catch (Exception ignored) {}
+        return false;
     }
 
     private String extractHost(String url) {
