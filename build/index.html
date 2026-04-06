@@ -452,14 +452,14 @@ body{
 
 /* Main screen sim */
 #simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9}
-.ms-header{display:flex;flex-direction:column;align-items:center;padding:20px 14px 14px;transition:background .3s}
+.ms-header{display:flex;flex-direction:column;align-items:center;padding:20px 14px 32px;transition:background .3s;position:relative;z-index:1;flex-shrink:0}
 .ms-logo{width:44px;height:44px;border-radius:10px;object-fit:contain;margin-bottom:5px}
 .ms-logo-fallback{font-size:26px;margin-bottom:5px;color:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
 .ms-title{font-size:12.5px;font-weight:800;color:#fff;text-align:center}
 .ms-sub{font-size:9px;color:rgba(255,255,255,.72);text-align:center;margin-top:2px}
 .ms-badge{margin-top:7px;background:rgba(255,255,255,.16);border-radius:20px;padding:3px 10px;font-size:7px;color:#fff;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:4px}
-.ms-body{flex:1;padding:10px;overflow:hidden;background:#F1F5F9}
-.ms-card{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.ms-body{flex:1;padding:10px;overflow:hidden;background:#F1F5F9;margin-top:-18px;position:relative;z-index:2}
+.ms-card{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;box-shadow:0 4px 16px rgba(0,0,0,.12);border:0.5px solid rgba(0,0,0,.04)}
 .ms-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
 .ms-input-row{display:flex;gap:5px;margin-bottom:5px}
 .ms-input{flex:1;height:26px;background:#F8FAFC;border:1.5px solid #E5E7EB;border-radius:6px;font-size:8px;color:#94A3B8;font-family:monospace;display:flex;align-items:center;padding:0 7px}
