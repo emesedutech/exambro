@@ -451,14 +451,14 @@ body{
 .sp-ver{text-align:center;font-size:7px;color:rgba(255,255,255,.3);margin-top:7px}
 
 /* Main screen sim */
-#simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9}
+#simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9;position:relative}
 .ms-header{display:flex;flex-direction:column;align-items:center;padding:20px 14px 32px;transition:background .3s;position:relative;z-index:1;flex-shrink:0}
 .ms-logo{width:44px;height:44px;border-radius:10px;object-fit:contain;margin-bottom:5px}
 .ms-logo-fallback{font-size:26px;margin-bottom:5px;color:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
 .ms-title{font-size:12.5px;font-weight:800;color:#fff;text-align:center}
 .ms-sub{font-size:9px;color:rgba(255,255,255,.72);text-align:center;margin-top:2px}
 .ms-badge{margin-top:7px;background:rgba(255,255,255,.16);border-radius:20px;padding:3px 10px;font-size:7px;color:#fff;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:4px}
-.ms-body{flex:1;padding:10px;overflow:hidden;background:#F1F5F9;margin-top:-18px;position:relative;z-index:2}
+.ms-body{flex:1;padding:10px;overflow:hidden;background:transparent;margin-top:-18px;position:relative;z-index:2}
 .ms-card{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;box-shadow:0 4px 16px rgba(0,0,0,.12);border:0.5px solid rgba(0,0,0,.04)}
 .ms-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
 .ms-input-row{display:flex;gap:5px;margin-bottom:5px}
@@ -545,7 +545,7 @@ body{
 .toast.show{transform:translateY(0);opacity:1}
 /* Exam screen sim */
 #simExam{width:100%;height:100%;display:flex;flex-direction:column;background:#111827}
-.ex-topbar{height:38px;background:#0A1020;display:flex;align-items:center;padding:0 8px;gap:6px;flex-shrink:0}
+.ex-topbar{height:38px;display:flex;align-items:center;padding:0 8px;gap:6px;flex-shrink:0}
 .ex-appico{width:18px;height:18px;border-radius:4px;object-fit:contain}
 .ex-urlstack{flex:1;min-width:0}
 .ex-label{font-size:5.5px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
@@ -1037,14 +1037,14 @@ body{
         <div class="phone-screen">
           <div class="phone-notch"></div>
           <div id="simExam">
-            <div class="ex-topbar" id="exTopbar">
+            <div class="ex-topbar" id="exTopbar" style="background:#1A3A5C">
               <img class="ex-appico" id="exLogoImg" src="" alt="" style="display:none"/>
               <span id="exLogoEmoji" style="font-size:12px">🛡</span>
               <div class="ex-urlstack">
                 <div class="ex-label">SESI UJIAN</div>
                 <div class="ex-url" id="exUrl">ujian.sekolah.id</div>
               </div>
-              <div class="ex-badge">🔒 AMAN</div>
+              <div class="ex-badge" id="exBadge" style="border-color:rgba(59,130,246,.35);color:#60a5fa;background:rgba(59,130,246,.18)">🔒 AMAN</div>
             </div>
             <div class="ex-progress">
               <div class="ex-progressbar" id="exProgressBar" style="background:#3B82F6"></div>
@@ -1075,7 +1075,7 @@ body{
           <div class="phone-notch"></div>
           <div id="simDialog">
             <!-- Background: exam screen (simplified) -->
-            <div class="ex-topbar" id="dlgTopbar" style="height:38px"></div>
+            <div class="ex-topbar" id="dlgTopbar" style="background:#1A3A5C;height:38px"></div>
             <div style="flex:1;background:#f8f9fa"></div>
             <!-- Dialog overlay -->
             <div class="dlg-overlay">
@@ -1085,7 +1085,7 @@ body{
                 <div class="dlg-sub">Masukkan PIN pengawas untuk mengakhiri sesi</div>
                 <div class="dlg-label">PIN PENGAWAS</div>
                 <div class="dlg-input">• • • •</div>
-                <div class="dlg-btn-confirm" id="dlgConfirmBtn" style="background:#111827">Konfirmasi Keluar</div>
+                <div class="dlg-btn-confirm" id="dlgConfirmBtn" style="background:#2E7BF6">Konfirmasi Keluar</div>
                 <div class="dlg-btn-cancel">Lanjutkan Ujian</div>
               </div>
             </div>
@@ -1415,15 +1415,26 @@ function refreshSummary() {
 function refreshExam() {
   const hdrColor = v('cHeader') || '#1A3A5C';
   const accColor = v('cAccent') || '#2E7BF6';
-  // topbar color
-  const tb = el('exTopbar');
-  if(tb) tb.style.background = hdrColor;
-  const tb2 = el('dlgTopbar');
-  if(tb2) tb2.style.background = hdrColor;
-  // progress bar
-  const pb = el('exProgressBar');
-  if(pb) pb.style.background = accColor;
-  // logo
+
+  // Exam topbar & dialog topbar → header color
+  const tb = el('exTopbar');  if(tb) tb.style.background = hdrColor;
+  const tb2 = el('dlgTopbar'); if(tb2) tb2.style.background = hdrColor;
+
+  // Progress bar → accent color
+  const pb = el('exProgressBar'); if(pb) pb.style.background = accColor;
+
+  // Badge "AMAN" → accent color
+  const badge = el('exBadge');
+  if(badge) {
+    badge.style.color = accColor;
+    badge.style.background = accColor + '28';
+    badge.style.borderColor = accColor + '55';
+  }
+
+  // Confirm button → accent color (sama dengan tombol Mulai Ujian)
+  const dc = el('dlgConfirmBtn'); if(dc) dc.style.background = accColor;
+
+  // Logo exam screen
   const exLogo = el('exLogoImg');
   const exEmoji = el('exLogoEmoji');
   if(S.logoUrl && exLogo && exEmoji) {
@@ -1431,9 +1442,6 @@ function refreshExam() {
   } else if(exLogo && exEmoji) {
     exLogo.style.display='none'; exEmoji.style.display='';
   }
-  // dialog confirm button
-  const dc = el('dlgConfirmBtn');
-  if(dc) dc.style.background = hdrColor;
 }
 
 function refresh() {
