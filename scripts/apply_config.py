@@ -19,6 +19,7 @@ BUTTON_COLOR    = env("BUTTON_COLOR",    "2E7BF6").lstrip("#")
 PACKAGE_ID      = env("PACKAGE_ID",      "id.emes.exambrowser")
 HEADER_IMAGE    = env("HEADER_IMAGE",    "")
 SPLASH_IMAGE    = env("SPLASH_IMAGE",    "")
+MAIN_IMAGE      = env("MAIN_IMAGE",      "")
 VERSION_NAME    = env("VERSION_NAME",    "1.1.0")
 
 print("=" * 56)
@@ -35,7 +36,8 @@ print(f"  Version    : {VERSION_NAME}")
 LOGO_IMAGE_env = env("LOGO_IMAGE", "")
 print(f"  Logo User  : {'✓ ada' if LOGO_IMAGE_env.strip() else '— pakai ic_launcher'}")
 print(f"  Splash Img : {'✓ ada' if SPLASH_IMAGE.strip() else '— pakai warna'}")
-print(f"  Header Img : {'✓ ada' if HEADER_IMAGE.strip() else '— pakai warna'}")
+print(f"  Main Img   : {'✓ ada' if MAIN_IMAGE.strip() else '— pakai warna'}")
+print(f"  Header Img : {'✓ ada' if HEADER_IMAGE.strip() else '— diabaikan (main_bg menggantikan)'}")
 print("=" * 56)
 
 def write(path, content):
@@ -263,7 +265,7 @@ else:
         os.remove(SPLASH_BG_PATH)
         print(f"  ✓ splash_bg.png dihapus — pakai warna solid")
 
-# ── 8. Header background image (opsional) ────────────────────────────────
+# ── 8. Header background image (opsional, tidak dipakai jika ada main_bg) ─
 HEADER_BG_PATH = "app/src/main/res/drawable/header_bg.png"
 if HEADER_IMAGE.strip():
     if not decode_image(HEADER_IMAGE, HEADER_BG_PATH, "header_bg"):
@@ -272,7 +274,19 @@ if HEADER_IMAGE.strip():
 else:
     if os.path.exists(HEADER_BG_PATH):
         os.remove(HEADER_BG_PATH)
-        print(f"  ✓ header_bg.png dihapus — pakai warna solid")
+        print(f"  ✓ header_bg.png dihapus")
+
+# ── 8b. Main background image — cover full-layar halaman utama ────────────
+# Ukuran yang disarankan: 1080 × 1920 px (portrait 9:16), PNG/JPG, maks 500 KB
+MAIN_BG_PATH = "app/src/main/res/drawable/main_bg.png"
+if MAIN_IMAGE.strip():
+    if not decode_image(MAIN_IMAGE, MAIN_BG_PATH, "main_bg"):
+        if os.path.exists(MAIN_BG_PATH):
+            os.remove(MAIN_BG_PATH)
+else:
+    if os.path.exists(MAIN_BG_PATH):
+        os.remove(MAIN_BG_PATH)
+        print(f"  ✓ main_bg.png dihapus — pakai warna solid")
 
 # ── 9. Patch version di activity_splash.xml ───────────────────────────────
 splash_layout_path = "app/src/main/res/layout/activity_splash.xml"
@@ -381,3 +395,8 @@ print("   • bg_progress_track: track progress bar ikut colorHeaderDark")
 print("   • bg_input         : border focus input ikut colorPrimary")
 print("   • bg_check         : titik centang fitur ikut colorPrimary")
 print("   • Logo disalin ke drawable/ & drawable-nodpi/")
+print()
+print("📐 Ukuran gambar yang disarankan:")
+print("   • main_bg.png   (cover halaman utama) : 1080 × 1920 px, PNG/JPG, maks 500 KB")
+print("   • splash_bg.png (layar loading)        : 1080 × 1920 px, PNG/JPG, maks 500 KB")
+print("   • app_logo.png  (logo transparan)      :  512 ×  512 px, PNG dengan alpha")
