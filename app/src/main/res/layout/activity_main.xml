@@ -282,14 +282,17 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="14dp"
-                android:text="© 2026 Emes EduTech"
-                android:textColor="@color/colorTextSecondary"
-                android:textSize="10sp" />
+<TextView
+    android:id="@+id/tvCopyright"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="14dp"
+    android:text="© 2026 Emes EduTech\nwww.emes.my.id"
+    android:textColor="@color/colorTextSecondary"
+    android:textSize="10sp"
+    android:autoLink="web"
+    android:linksClickable="true" />
 
         </LinearLayout>
     </ScrollView>
