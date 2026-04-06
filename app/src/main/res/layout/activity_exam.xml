@@ -5,26 +5,26 @@
     android:orientation="vertical"
     android:background="@color/colorHeaderBg">
 
-    <!-- ══ TOP BAR ══ -->
+    <!-- ══ TOP BAR — minimal, clean ══ -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:background="@drawable/bg_topbar"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
         android:gravity="center_vertical">
 
-        <!-- Logo kecil -->
+        <!-- App icon — small -->
         <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@mipmap/ic_launcher"
             android:scaleType="fitCenter"
             android:layout_marginEnd="10dp"
             android:contentDescription="Logo" />
 
-        <!-- URL info -->
+        <!-- URL label stack -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,30 +34,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SESI UJIAN"
-                android:textColor="#66FFFFFF"
-                android:textSize="8.5sp"
+                android:textColor="#50FFFFFF"
+                android:textSize="8sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:letterSpacing="0.09" />
             <TextView
                 android:id="@+id/tvSiteUrl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Memuat..."
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textColor="#E0FFFFFF"
+                android:textSize="11.5sp"
                 android:fontFamily="monospace"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:layout_marginTop="1dp" />
         </LinearLayout>
 
-        <!-- Secure badge -->
+        <!-- Secure badge — minimal pill -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_badge_secure"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:paddingStart="9dp"
+            android:paddingEnd="9dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:gravity="center">
@@ -66,19 +66,19 @@
                 android:layout_height="wrap_content"
                 android:text="🔒 AMAN"
                 android:textColor="@color/colorPrimary"
-                android:textSize="9.5sp"
+                android:textSize="9sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.06" />
+                android:letterSpacing="0.05" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- ══ PROGRESS BAR ══ -->
+    <!-- ══ PROGRESS BAR — 2dp thin ══ -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:progressTint="@color/colorPrimary"
         android:progressBackgroundTint="@color/colorHeaderDark"
         android:visibility="gone" />
@@ -93,7 +93,7 @@
     <!-- ══ BOTTOM BAR ══ -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="50dp"
         android:background="@drawable/bg_bottom_bar"
         android:orientation="horizontal"
         android:gravity="center"
@@ -103,14 +103,15 @@
         <Button
             android:id="@+id/btnExit"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="34dp"
             android:background="@drawable/bg_exit_btn"
             android:text="Keluar dari Ujian"
             android:textColor="@color/colorDanger"
-            android:textSize="12.5sp"
+            android:textSize="12sp"
             android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            android:letterSpacing="-0.01"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp" />
     </LinearLayout>
 
 </LinearLayout>

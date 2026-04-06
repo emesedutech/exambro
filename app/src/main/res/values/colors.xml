@@ -1,47 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Warna utama — di-patch otomatis oleh apply_config.py saat build GitHub Actions -->
-    <!-- PENTING: semua @color/ yang direferensikan drawable & layout HARUS ada di sini -->
 
-    <!-- Header -->
-    <color name="colorHeaderBg">#1A3A5C</color>
-    <color name="colorHeaderDark">#0D2540</color>
+    <!-- Header — deep navy default -->
+    <color name="colorHeaderBg">#111827</color>
+    <color name="colorHeaderDark">#0A1020</color>
 
-    <!-- Tombol & Aksen -->
-    <color name="colorPrimary">#2E7BF6</color>
-    <color name="colorPrimaryDark">#1C6AE4</color>
-    <color name="colorAccent">#2E7BF6</color>
-    <color name="colorButtonBg">#2E7BF6</color>
-    <color name="colorButtonPressed">#2259C0</color>
-    <color name="colorButtonShadow">#1D4DAB</color>
+    <!-- Primary / accent -->
+    <color name="colorPrimary">#3B82F6</color>
+    <color name="colorPrimaryDark">#2563EB</color>
+    <color name="colorAccent">#3B82F6</color>
+    <color name="colorButtonBg">#111827</color>
+    <color name="colorButtonPressed">#1F2937</color>
+    <color name="colorButtonShadow">#0A1020</color>
 
-    <!-- Tombol Scan QR — background 12% opacity dari warna aksen -->
-    <!-- Nilai ini di-patch saat build; default: biru muda transparan -->
-    <color name="colorButtonScanBg">#1F2E7BF6</color>
+    <!-- QR scan button bg — 10% primary -->
+    <color name="colorButtonScanBg">#1A3B82F6</color>
 
     <!-- Background -->
-    <color name="colorBackground">#F0F4FA</color>
+    <color name="colorBackground">#F9FAFB</color>
     <color name="colorCardBg">#FFFFFF</color>
-    <color name="colorSurface">#F8FAFF</color>
+    <color name="colorSurface">#FFFFFF</color>
 
-    <!-- Teks -->
-    <color name="colorTextPrimary">#0F172A</color>
-    <color name="colorTextSecondary">#64748B</color>
-    <color name="colorTextHint">#94A3B8</color>
+    <!-- Text -->
+    <color name="colorTextPrimary">#111827</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorTextHint">#9CA3AF</color>
 
-    <!-- Putih dengan berbagai opacity -->
+    <!-- White variants -->
     <color name="white">#FFFFFF</color>
     <color name="white80">#CCFFFFFF</color>
     <color name="white60">#99FFFFFF</color>
     <color name="white30">#4DFFFFFF</color>
 
     <!-- Status -->
-    <color name="colorSuccess">#22C55E</color>
+    <color name="colorSuccess">#10B981</color>
     <color name="colorDanger">#EF4444</color>
     <color name="colorWarning">#F59E0B</color>
 
     <!-- Misc -->
-    <color name="colorDivider">#F1F5F9</color>
+    <color name="colorDivider">#F3F4F6</color>
     <color name="colorInputBorder">#E5E7EB</color>
-    <color name="colorProgressBar">#2E7BF6</color>
+    <color name="colorProgressBar">#3B82F6</color>
 </resources>
