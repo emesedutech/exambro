@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -72,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Terapkan gambar cover pada area header saja (header_bg.png) jika tersedia di drawable.
-     * Jika ada: imgHeaderBg tampil, overlay gelap muncul, headerContent dijadikan transparan.
-     * Jika tidak ada: header tetap memakai warna solid dari bg_header drawable.
+     * Header sudah fixed 220dp, jadi ImageView match_parent bekerja dengan benar.
+     * Jika tidak ada header_bg.png → header tetap tampil dengan warna solid bg_header.
      */
     private void applyHeaderBackground() {
         try {
@@ -83,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
             Drawable d = getResources().getDrawable(resId, getTheme());
             if (d == null) return;
 
-            ImageView imgHeaderBg = findViewById(R.id.imgHeaderBg);
-            View headerOverlay    = findViewById(R.id.headerOverlay);
+            ImageView imgHeaderBg      = findViewById(R.id.imgHeaderBg);
+            View headerOverlay         = findViewById(R.id.headerOverlay);
             LinearLayout headerContent = findViewById(R.id.headerContent);
 
             if (imgHeaderBg == null) return;
@@ -95,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (headerOverlay != null) headerOverlay.setVisibility(View.VISIBLE);
 
-            // Transparankan background solid header agar cover image tembus
+            // Transparankan background LinearLayout konten agar cover image tembus
             if (headerContent != null) headerContent.setBackgroundColor(Color.TRANSPARENT);
 
         } catch (Exception e) {
-            // Fallback: warna solid dari bg_header drawable
+            // Fallback: warna solid dari bg_header drawable sudah ada di layer pertama
         }
     }
 
