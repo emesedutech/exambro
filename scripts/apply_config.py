@@ -97,34 +97,47 @@ write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="u
 write("app/src/main/res/values/colors.xml", f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Warna utama — di-patch otomatis oleh apply_config.py saat build -->
+
+    <!-- Header — ikut HEADER_COLOR -->
     <color name="colorHeaderBg">#{HEADER_COLOR}</color>
     <color name="colorHeaderDark">#{HEADER_DARK}</color>
+
+    <!-- Primary / accent — ikut BUTTON_COLOR. SEMUA elemen interaktif mengacu ke sini -->
     <color name="colorPrimary">#{BUTTON_COLOR}</color>
     <color name="colorPrimaryDark">#{BUTTON_DARK}</color>
+    <color name="colorAccent">#{BUTTON_COLOR}</color>
+
+    <!-- Tombol utama (Mulai Ujian, Konfirmasi PIN) — ikut BUTTON_COLOR -->
+    <color name="colorButtonBg">#{BUTTON_COLOR}</color>
     <color name="colorButtonPressed">#{BUTTON_DARKER}</color>
     <color name="colorButtonShadow">#{BUTTON_SHADOW}</color>
-    <color name="colorAccent">#{BUTTON_COLOR}</color>
-    <color name="colorButtonBg">#{BUTTON_COLOR}</color>
+
     <!-- Warna tombol scan QR: background 12% opacity dari warna aksen -->
     <color name="colorButtonScanBg">{SCAN_BG_ALPHA}</color>
+
     <!-- Backgrounds -->
-    <color name="colorBackground">#F0F4FA</color>
+    <color name="colorBackground">#F9FAFB</color>
     <color name="colorCardBg">#FFFFFF</color>
-    <color name="colorSurface">#F8FAFF</color>
+    <color name="colorSurface">#FFFFFF</color>
+
     <!-- Text -->
-    <color name="colorTextPrimary">#0F172A</color>
-    <color name="colorTextSecondary">#64748B</color>
-    <color name="colorTextHint">#94A3B8</color>
+    <color name="colorTextPrimary">#111827</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorTextHint">#9CA3AF</color>
+
+    <!-- White variants -->
     <color name="white">#FFFFFF</color>
     <color name="white80">#CCFFFFFF</color>
     <color name="white60">#99FFFFFF</color>
     <color name="white30">#4DFFFFFF</color>
+
     <!-- Status -->
-    <color name="colorSuccess">#22C55E</color>
+    <color name="colorSuccess">#10B981</color>
     <color name="colorDanger">#EF4444</color>
     <color name="colorWarning">#F59E0B</color>
+
     <!-- Misc -->
-    <color name="colorDivider">#F1F5F9</color>
+    <color name="colorDivider">#F3F4F6</color>
     <color name="colorInputBorder">#E5E7EB</color>
     <color name="colorProgressBar">#{BUTTON_COLOR}</color>
 </resources>
@@ -183,17 +196,60 @@ write("app/src/main/res/drawable/bg_button_primary.xml", f"""<?xml version="1.0"
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorPrimaryDark"/>
-            <corners android:radius="12dp"/>
+            <solid android:color="@color/colorButtonPressed"/>
+            <corners android:radius="9dp"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/colorButtonBg"/>
-            <corners android:radius="12dp"/>
+            <corners android:radius="9dp"/>
         </shape>
     </item>
 </selector>
+""")
+
+# ── 6b. bg_btn_confirm.xml — tombol konfirmasi PIN ikut colorPrimary ──────
+write("app/src/main/res/drawable/bg_btn_confirm.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorButtonPressed" />
+            <corners android:radius="9dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorButtonBg" />
+            <corners android:radius="9dp" />
+        </shape>
+    </item>
+</selector>
+""")
+
+# ── 6c. bg_topbar.xml — top bar halaman ujian ikut colorHeaderBg ──────────
+write("app/src/main/res/drawable/bg_topbar.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/colorHeaderBg" />
+</shape>
+""")
+
+# ── 6d. bg_bottom_bar.xml — bottom bar halaman ujian ikut colorHeaderBg ───
+write("app/src/main/res/drawable/bg_bottom_bar.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/colorHeaderBg" />
+    <stroke android:width="1dp" android:color="#14FFFFFF" />
+</shape>
+""")
+
+# ── 6e. bg_progress_track.xml — track progress bar ikut colorHeaderDark ───
+write("app/src/main/res/drawable/bg_progress_track.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/colorHeaderDark" />
+</shape>
 """)
 
 # ── 7. Splash background image ────────────────────────────────────────────
@@ -315,9 +371,13 @@ if os.path.exists(APP_LOGO_PATH):
 print()
 print("✅ Semua file berhasil di-patch. Siap untuk Gradle build.")
 print("\n📝 Perubahan:")
-print("   • colors.xml: warna header, tombol, scan button semua ter-patch")
-print("   • bg_button_scan.xml: ikut warna aksen (@color/colorPrimary)")
-print("   • bg_input.xml: border focus ikut warna aksen")
-print("   • bg_check.xml: centang fitur ikut warna aksen")
-print("   • bg_button_primary.xml: tombol utama ter-patch")
+print("   • colors.xml       : header, tombol, aksen, scan button — semua ter-patch")
+print("   • bg_button_primary: tombol Mulai Ujian ikut colorPrimary")
+print("   • bg_btn_confirm   : tombol Konfirmasi PIN ikut colorPrimary")
+print("   • bg_button_scan   : tombol QR scan ikut colorPrimary")
+print("   • bg_topbar        : top bar halaman ujian ikut colorHeaderBg")
+print("   • bg_bottom_bar    : bottom bar halaman ujian ikut colorHeaderBg")
+print("   • bg_progress_track: track progress bar ikut colorHeaderDark")
+print("   • bg_input         : border focus input ikut colorPrimary")
+print("   • bg_check         : titik centang fitur ikut colorPrimary")
 print("   • Logo disalin ke drawable/ & drawable-nodpi/")

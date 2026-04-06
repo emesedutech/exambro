@@ -317,7 +317,6 @@ public class ExamActivity extends AppCompatActivity {
         EditText etPin    = dv.findViewById(R.id.etPin);
         Button btnConfirm = dv.findViewById(R.id.btnConfirm);
         Button btnCancel  = dv.findViewById(R.id.btnCancel);
-        etPin.setHintTextColor(0x66FFFFFF);
 
         final int[] attempts = {0};
         final int MAX_ATTEMPTS = 5;

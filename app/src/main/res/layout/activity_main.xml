@@ -2,19 +2,21 @@
 <!--
   Layout trick: header pakai paddingBottom besar (56dp) supaya ada ruang
   untuk kartu URL "naik" menimpa header via marginTop negatif (-40dp).
-  Hasilnya kartu mengambang di atas batas header — efek depth modern.
+  Root pakai FrameLayout agar z-order dan negative margin bekerja,
+  ScrollView ditaruh setelah header dengan translationY negatif + elevation.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorBackground">
 
     <!-- ══ HEADER — beri padding bawah ekstra untuk area overlap ══ -->
     <FrameLayout
         android:id="@+id/headerFrame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="0dp">
 
         <ImageView
             android:id="@+id/imgHeaderBg"
@@ -101,14 +103,15 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- ══ SCROLL — marginTop negatif supaya kartu pertama menimpa header ══ -->
+    <!-- ══ SCROLL — pakai layout_marginTop negatif di CoordinatorLayout supaya benar-benar overlap ══ -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginTop="168dp"
         android:fillViewport="true"
         android:overScrollMode="never"
-        android:layout_marginTop="-40dp">
+        android:elevation="8dp"
+        android:translationY="-40dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -282,12 +285,14 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ══ FOOTER ══ -->
+    <!-- ══ FOOTER — anchor ke bawah layar ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="34dp"
+        android:layout_gravity="bottom"
         android:background="@color/colorBackground"
-        android:gravity="center">
+        android:gravity="center"
+        android:elevation="4dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -296,4 +301,4 @@
             android:textSize="10.5sp" />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Halaman ujian — SEMUA warna mengacu ke color resource, tidak ada hardcode hex.
+  colorHeaderBg  = warna header (ikut pengaturan utama)
+  colorPrimary   = warna aksen / tombol (ikut pengaturan utama)
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorHeaderBg">
 
-    <!-- ══ TOP BAR — minimal, clean ══ -->
+    <!-- ══ TOP BAR — warna mengikuti colorHeaderBg ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -34,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SESI UJIAN"
-                android:textColor="#50FFFFFF"
+                android:textColor="@color/white30"
                 android:textSize="8sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.09" />
@@ -43,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Memuat..."
-                android:textColor="#E0FFFFFF"
+                android:textColor="@color/white80"
                 android:textSize="11.5sp"
                 android:fontFamily="monospace"
                 android:maxLines="1"
@@ -51,7 +56,7 @@
                 android:layout_marginTop="1dp" />
         </LinearLayout>
 
-        <!-- Secure badge — minimal pill -->
+        <!-- Secure badge — warna teks ikut colorPrimary -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,7 +78,7 @@
 
     </LinearLayout>
 
-    <!-- ══ PROGRESS BAR — 2dp thin ══ -->
+    <!-- ══ PROGRESS BAR — tint ikut colorPrimary ══ -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -90,7 +95,7 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- ══ BOTTOM BAR ══ -->
+    <!-- ══ BOTTOM BAR — ikut colorHeaderBg ══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"

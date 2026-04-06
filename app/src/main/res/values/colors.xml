@@ -6,16 +6,18 @@
     <color name="colorHeaderBg">#111827</color>
     <color name="colorHeaderDark">#0A1020</color>
 
-    <!-- Primary / accent -->
+    <!-- Primary / accent — SEMUA elemen interaktif ikut warna ini -->
     <color name="colorPrimary">#3B82F6</color>
     <color name="colorPrimaryDark">#2563EB</color>
     <color name="colorAccent">#3B82F6</color>
-    <color name="colorButtonBg">#111827</color>
-    <color name="colorButtonPressed">#1F2937</color>
-    <color name="colorButtonShadow">#0A1020</color>
 
-    <!-- QR scan button bg — 10% primary -->
-    <color name="colorButtonScanBg">#1A3B82F6</color>
+    <!-- Tombol utama (Mulai Ujian, Konfirmasi) ikut colorPrimary -->
+    <color name="colorButtonBg">#3B82F6</color>
+    <color name="colorButtonPressed">#2563EB</color>
+    <color name="colorButtonShadow">#1D4ED8</color>
+
+    <!-- QR scan button bg — 12% opacity dari warna primary -->
+    <color name="colorButtonScanBg">#1F3B82F6</color>
 
     <!-- Background -->
     <color name="colorBackground">#F9FAFB</color>
