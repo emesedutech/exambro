@@ -4,8 +4,9 @@
   LAYOUT HALAMAN UTAMA
   ═══════════════════════════════════════════════════════════════
   Desain:
-  • Background: warna solid colorHeaderBg, atau cover image penuh layar (main_bg.png)
-  • Overlay gelap di atas background agar teks terbaca
+  • Background: cover image penuh layar (main_bg.png) ATAU warna solid colorHeaderBg
+  • Jika ada main_bg.png: gambar full screen, header transparan, overlay gelap aktif
+  • Jika tidak ada main_bg.png: halaman pakai warna solid colorHeaderBg saja
   • Konten header (logo + judul) di bagian atas
   • Satu kartu putih besar di bawah yang berisi URL input + fitur keamanan
   • Kartu sedikit overlap ke atas (mengambang di atas garis batas header)
@@ -23,7 +24,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorHeaderBg">
+    android:background="@android:color/transparent">
 
     <!-- ══ LAYER 1: Background cover image (opsional, main_bg.png) ══ -->
     <ImageView
