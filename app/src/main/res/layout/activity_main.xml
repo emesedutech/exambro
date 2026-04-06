@@ -288,7 +288,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:layout_marginTop="14dp"
-    android:text="© 2026 Emes EduTech\nwww.emes.my.id"
+    android:text="Emes Exam Browser © 2026 Emes EduTech\nwww.emes.my.id"
     android:textColor="@color/colorTextSecondary"
     android:textSize="10sp"
     android:autoLink="web"
