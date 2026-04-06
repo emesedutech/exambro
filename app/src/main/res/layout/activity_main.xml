@@ -135,7 +135,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/bg_input"
-                        android:hint="https://ujian.sekolah.id/..."
+                        android:hint="http://192.168.100.6:3000"
                         android:inputType="textUri"
                         android:paddingStart="14dp"
                         android:paddingEnd="12dp"
