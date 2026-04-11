@@ -2,7 +2,10 @@ package id.emes.exambrowser;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import java.io.InputStream;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -57,16 +60,40 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
      */
+    /**
+     * Load gambar dari assets/ — tidak diproses AAPT2, aman untuk semua format.
+     */
+    private Bitmap loadAssetBitmap(String filename) {
+        try {
+            InputStream is = getAssets().open(filename);
+            Bitmap bmp = BitmapFactory.decodeStream(is);
+            is.close();
+            return bmp;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private void applyAppLogo(int viewId) {
         try {
-            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-            if (resId == 0) return;
-            android.graphics.drawable.Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
             ImageView img = findViewById(viewId);
             if (img == null) return;
+            // Coba assets/ dulu
+            Bitmap bmp = loadAssetBitmap("app_logo.png");
+            if (bmp != null) {
+                img.setImageBitmap(bmp);
+                img.setBackground(null);
+                img.setPadding(0, 0, 0, 0);
+                img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                return;
+            }
+            // Fallback ke drawable
+            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+            if (resId == 0) return;
+            Drawable d = getResources().getDrawable(resId, getTheme());
+            if (d == null) return;
             img.setImageDrawable(d);
-            img.setBackground(null);   // hapus frame/background apapun
+            img.setBackground(null);
             img.setPadding(0, 0, 0, 0);
             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         } catch (Exception e) { /* fallback ic_launcher */ }
@@ -74,22 +101,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyHeaderBackground() {
         try {
-            int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
-            if (resId == 0) return;
+            // Load dari assets/ — tidak diproses AAPT2, tidak akan gagal compile
+            Bitmap bmp = loadAssetBitmap("header_bg.png");
+            if (bmp == null) bmp = loadAssetBitmap("header_bg.jpg");
 
-            Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
-
-            final ImageView  imgBg   = findViewById(R.id.imgHeaderBg);
-            final View       overlay = findViewById(R.id.headerOverlay);
+            final ImageView    imgBg   = findViewById(R.id.imgHeaderBg);
+            final View         overlay = findViewById(R.id.headerOverlay);
             final LinearLayout content = findViewById(R.id.headerContent);
-            final FrameLayout frame  = findViewById(R.id.headerFrame);
+            final FrameLayout  frame   = findViewById(R.id.headerFrame);
 
-            imgBg.setImageDrawable(d);
+            if (bmp == null) {
+                // Fallback: coba drawable (backward compat)
+                int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
+                if (resId == 0) return;
+                Drawable d = getResources().getDrawable(resId, getTheme());
+                if (d == null) return;
+                imgBg.setImageDrawable(d);
+            } else {
+                final Bitmap finalBmp = bmp;
+                imgBg.setImageBitmap(finalBmp);
+            }
+
             imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgBg.setAdjustViewBounds(false);
 
-            // Setelah layout selesai, cocokkan tinggi imgHeaderBg dengan headerContent
             frame.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -109,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             );
-
         } catch (Exception e) {
             // Gagal load — pakai warna solid default
         }

@@ -5,6 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import java.io.InputStream;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -50,7 +54,6 @@ public class SplashActivity extends AppCompatActivity {
         TextView  tvVersion   = findViewById(R.id.splashVersion);
 
         // ── Animasi masuk ───────────────────────────────────────────────────
-        // Mulai semua tersembunyi
         imgLogo.setAlpha(0f);
         imgLogo.setScaleX(0.3f);
         imgLogo.setScaleY(0.3f);
@@ -63,7 +66,6 @@ public class SplashActivity extends AppCompatActivity {
         progress.setAlpha(0f);
         tvVersion.setAlpha(0f);
 
-        // Logo: scale + fade in
         AnimatorSet logoAnim = new AnimatorSet();
         logoAnim.playTogether(
             ObjectAnimator.ofFloat(imgLogo, "alpha", 0f, 1f).setDuration(600),
@@ -73,7 +75,6 @@ public class SplashActivity extends AppCompatActivity {
         logoAnim.setInterpolator(new OvershootInterpolator(1.2f));
         logoAnim.setStartDelay(200);
 
-        // App name: slide up + fade in
         AnimatorSet nameAnim = new AnimatorSet();
         nameAnim.playTogether(
             ObjectAnimator.ofFloat(tvAppName, "alpha", 0f, 1f).setDuration(500),
@@ -82,7 +83,6 @@ public class SplashActivity extends AppCompatActivity {
         nameAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         nameAnim.setStartDelay(700);
 
-        // Tagline: slide up + fade in
         AnimatorSet taglineAnim = new AnimatorSet();
         taglineAnim.playTogether(
             ObjectAnimator.ofFloat(tvTagline, "alpha", 0f, 1f).setDuration(400),
@@ -91,7 +91,6 @@ public class SplashActivity extends AppCompatActivity {
         taglineAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         taglineAnim.setStartDelay(900);
 
-        // Divider: scale in
         AnimatorSet dividerAnim = new AnimatorSet();
         dividerAnim.playTogether(
             ObjectAnimator.ofFloat(divider, "alpha", 0f, 1f).setDuration(400),
@@ -100,7 +99,6 @@ public class SplashActivity extends AppCompatActivity {
         dividerAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         dividerAnim.setStartDelay(1100);
 
-        // Progress + version fade in
         AnimatorSet bottomAnim = new AnimatorSet();
         bottomAnim.playTogether(
             ObjectAnimator.ofFloat(progress, "alpha", 0f, 1f).setDuration(400),
@@ -108,14 +106,12 @@ public class SplashActivity extends AppCompatActivity {
         );
         bottomAnim.setStartDelay(1300);
 
-        // Play all
         AnimatorSet fullAnim = new AnimatorSet();
         fullAnim.playTogether(logoAnim, nameAnim, taglineAnim, dividerAnim, bottomAnim);
         fullAnim.start();
 
         // ── Lanjut ke MainActivity setelah delay ────────────────────────────
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            // Fade out keseluruhan
             View root = findViewById(R.id.splashRoot);
             root.animate()
                 .alpha(0f)
@@ -132,47 +128,78 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     /**
-     * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
-     * Fallback ke ic_launcher jika tidak ada logo user yang di-upload.
+     * Load gambar dari assets/ (tidak diproses AAPT2, aman untuk semua format).
+     * Fallback ke drawable jika tidak ada di assets.
      */
-    private void applyAppLogo(int viewId) {
+    private Bitmap loadAssetBitmap(String filename) {
         try {
-            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-            if (resId == 0) return; // Tidak ada logo → tetap pakai ic_launcher
-            android.graphics.drawable.Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
-            ImageView img = findViewById(viewId);
-            img.setImageDrawable(d);
-            img.setBackground(null);   // hapus frame/background apapun
-            img.setPadding(0, 0, 0, 0);
-            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            InputStream is = getAssets().open(filename);
+            Bitmap bmp = BitmapFactory.decodeStream(is);
+            is.close();
+            return bmp;
         } catch (Exception e) {
-            // Fallback ke ic_launcher
+            return null;
         }
     }
 
     /**
-     * Terapkan gambar background splash jika splash_bg.png tersedia di drawable.
-     * Jika tidak ada, layar menggunakan warna solid colorHeaderBg dari colors.xml.
+     * Terapkan app_logo dari assets/app_logo.png jika ada,
+     * fallback ke drawable/app_logo, fallback ke ic_launcher.
+     */
+    private void applyAppLogo(int viewId) {
+        try {
+            ImageView img = findViewById(viewId);
+            if (img == null) return;
+
+            // Coba assets/ dulu
+            Bitmap bmp = loadAssetBitmap("app_logo.png");
+            if (bmp != null) {
+                img.setImageBitmap(bmp);
+                img.setBackground(null);
+                img.setPadding(0, 0, 0, 0);
+                img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                return;
+            }
+            // Fallback ke drawable
+            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+            if (resId == 0) return;
+            Drawable d = getResources().getDrawable(resId, getTheme());
+            if (d == null) return;
+            img.setImageDrawable(d);
+            img.setBackground(null);
+            img.setPadding(0, 0, 0, 0);
+            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        } catch (Exception e) { /* fallback ic_launcher */ }
+    }
+
+    /**
+     * Terapkan gambar background splash dari assets/splash_bg.png jika tersedia.
+     * Tidak melalui AAPT2 → tidak akan gagal compile meski format tidak sempurna.
      */
     private void applySplashBackground() {
         try {
-            int resId = getResources().getIdentifier("splash_bg", "drawable", getPackageName());
-            if (resId == 0) return;
-
-            Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
-
+            Bitmap bmp = loadAssetBitmap("splash_bg.png");
+            if (bmp == null) bmp = loadAssetBitmap("splash_bg.jpg");
+            if (bmp == null) {
+                // Fallback ke drawable jika masih ada (backward compat)
+                int resId = getResources().getIdentifier("splash_bg", "drawable", getPackageName());
+                if (resId == 0) return;
+                Drawable d = getResources().getDrawable(resId, getTheme());
+                if (d == null) return;
+                ImageView imgBg  = findViewById(R.id.splashBgImage);
+                View      overlay = findViewById(R.id.splashOverlay);
+                imgBg.setImageDrawable(d);
+                imgBg.setVisibility(View.VISIBLE);
+                overlay.setVisibility(View.VISIBLE);
+                return;
+            }
             ImageView imgBg  = findViewById(R.id.splashBgImage);
             View      overlay = findViewById(R.id.splashOverlay);
-
-            imgBg.setImageDrawable(d);
+            imgBg.setImageBitmap(bmp);
+            imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgBg.setVisibility(View.VISIBLE);
             overlay.setVisibility(View.VISIBLE);
-
-        } catch (Exception e) {
-            // Gagal — pakai warna solid
-        }
+        } catch (Exception e) { /* pakai warna solid */ }
     }
 
     @Override

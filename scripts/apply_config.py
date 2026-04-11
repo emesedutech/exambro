@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
 apply_config.py — Patch Android source files sebelum Gradle build.
-VERSI TOTAL: Mempertahankan 100% logika asli + Perbaikan Validasi Gambar.
+Membaca environment variables yang dikirim dari GitHub Actions workflow_dispatch.
 """
 
-import os, re, base64, shutil, io
-from PIL import Image
+import os, re, sys, base64, struct, zlib
 
 def env(key, default=""):
     return os.environ.get(key, default).strip()
 
-# 1. AMBIL KONFIGURASI DARI ENV
+# ── Ambil semua config ─────────────────────────────────────────────────────
 APP_NAME        = env("APP_NAME",        "Emes Exam Browser")
 APP_TITLE       = env("APP_TITLE",       "Emes Exam Browser")
 APP_DESCRIPTION = env("APP_DESCRIPTION", "Safe browsing untuk ujian online")
@@ -24,142 +23,275 @@ VERSION_NAME    = env("VERSION_NAME",    "1.1.0")
 LOGO_IMAGE_env  = env("LOGO_IMAGE",      "")
 
 print("=" * 56)
-print("EzamBro Config Patcher — Full & Safe Version")
+print("🔧  EzamBro Config Patcher")
 print("=" * 56)
 
-def read(path):
-    if not os.path.exists(path): return ""
-    with open(path, "r", encoding="utf-8") as f: return f.read()
+# ── SAFETY: Hapus semua file gambar opsional di awal ──────────────────────
+# Ini mencegah file lama/rusak dari git commit sebelumnya ikut dikompilasi
+# oleh AAPT2. File ini akan dibuat ulang di bawah jika input tersedia.
+for _f in [
+    # Drawable lama (jika masih ada dari commit sebelumnya)
+    "app/src/main/res/drawable/header_bg.png",
+    "app/src/main/res/drawable/splash_bg.png",
+    "app/src/main/res/drawable/app_logo.png",
+    # Assets (akan dibuat ulang di bawah jika input tersedia)
+    "app/src/main/assets/header_bg.png",
+    "app/src/main/assets/header_bg.jpg",
+    "app/src/main/assets/splash_bg.png",
+    "app/src/main/assets/splash_bg.jpg",
+    "app/src/main/assets/app_logo.png",
+]:
+    if os.path.exists(_f):
+        os.remove(_f)
+        print(f"  🗑 Pre-clean: {_f} dihapus")
+print(f"  App Name   : {APP_NAME}")
+print(f"  App Title  : {APP_TITLE}")
+print(f"  Description: {APP_DESCRIPTION}")
+print(f"  Exit PIN   : {'*' * len(EXIT_PIN)}")
+print(f"  Header     : #{HEADER_COLOR}")
+print(f"  Button     : #{BUTTON_COLOR}")
+print(f"  Package ID : {PACKAGE_ID}")
+print(f"  Version    : {VERSION_NAME}")
+print(f"  Logo User  : {'✓ ada' if LOGO_IMAGE_env.strip() else '— pakai ic_launcher'}")
+print(f"  Splash Img : {'✓ ada' if SPLASH_IMAGE.strip() else '— pakai warna'}")
+print(f"  Header Img : {'✓ ada' if HEADER_IMAGE.strip() else '— pakai warna'}")
+print("=" * 56)
 
 def write(path, content):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f: f.write(content)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  ✓ {path}")
+
+def read(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+def is_valid_png(data):
+    """Validasi apakah bytes merupakan PNG yang valid (cek signature + IEND chunk)."""
+    PNG_SIG = b'\x89PNG\r\n\x1a\n'
+    if len(data) < 8:
+        return False
+    if data[:8] != PNG_SIG:
+        return False
+    # Cek ada IEND chunk
+    return b'IEND' in data
+
+def is_valid_jpeg(data):
+    """Validasi apakah bytes merupakan JPEG yang valid."""
+    return len(data) > 2 and data[:2] == b'\xff\xd8' and data[-2:] == b'\xff\xd9'
 
 def is_valid_image(data):
-    """Memastikan data adalah gambar valid sebelum disimpan."""
-    if not data or len(data) < 100: return False
+    """Cek apakah data adalah gambar PNG atau JPEG yang valid."""
+    return is_valid_png(data) or is_valid_jpeg(data)
+
+def decode_image(b64_data, dest_path, label):
+    """
+    Decode base64 image, validasi, dan simpan ke dest_path.
+    Return True jika berhasil, False jika gagal (termasuk jika gambar tidak valid).
+    KRITIS: Jika decode gagal, JANGAN biarkan file rusak tersimpan — hapus saja.
+    """
     try:
-        img = Image.open(io.BytesIO(data))
-        img.verify()
+        b64 = b64_data.strip()
+        # Hapus data URI prefix jika ada (misal: data:image/png;base64,...)
+        if "," in b64:
+            b64 = b64.split(",", 1)[1]
+        # Tambahkan padding jika kurang
+        missing = len(b64) % 4
+        if missing:
+            b64 += "=" * (4 - missing)
+        img_bytes = base64.b64decode(b64)
+        # ── VALIDASI: pastikan file adalah gambar valid sebelum disimpan ──
+        if not is_valid_image(img_bytes):
+            print(f"  ⚠ {label}: data ter-decode tapi bukan PNG/JPEG valid — pakai warna default")
+            return False
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        with open(dest_path, "wb") as f:
+            f.write(img_bytes)
+        size_kb = len(img_bytes) // 1024
+        fmt = "PNG" if is_valid_png(img_bytes) else "JPEG"
+        print(f"  ✓ {dest_path} [{label}] ({fmt}, {size_kb} KB)")
         return True
-    except:
-        return False
-
-def save_base64_to_png(fpath, b64_str):
-    """
-    Menyimpan Base64 ke PNG.
-    Jika input kosong/rusak, file lama DIHAPUS agar sistem fallback ke warna.
-    """
-    if not b64_str or len(b64_str) < 10:
-        if os.path.exists(fpath):
-            os.remove(fpath)
-            print(f"  [CLEANUP] Menghapus {fpath} (menggunakan warna)")
-        return
-
-    try:
-        if "," in b64_str:
-            b64_str = b64_str.split(",")[1]
-        img_data = base64.b64decode(b64_str)
-        
-        if is_valid_image(img_data):
-            with open(fpath, "wb") as f:
-                f.write(img_data)
-            print(f"  [SUCCESS] Menyimpan gambar: {fpath}")
-        else:
-            if os.path.exists(fpath): os.remove(fpath)
-            print(f"  [SKIP] Data gambar tidak valid, file dihapus: {fpath}")
+    except base64.binascii.Error as e:
+        print(f"  ⚠ Gagal decode base64 {label}: {e} — pakai warna default")
     except Exception as e:
-        if os.path.exists(fpath): os.remove(fpath)
-        print(f"  [ERROR] Gagal menyimpan {fpath}: {e}")
+        print(f"  ⚠ Gagal simpan {label}: {e} — pakai warna default")
+    # Pastikan file rusak tidak tersisa
+    if os.path.exists(dest_path):
+        os.remove(dest_path)
+        print(f"  🗑 File rusak {dest_path} dihapus")
+    return False
 
-# 2. PROSES RESOURCE
-print("\n[1] Memproses Resource...")
-save_base64_to_png("app/src/main/res/drawable/header_bg.png", HEADER_IMAGE)
-save_base64_to_png("app/src/main/res/drawable/splash_bg.png", SPLASH_IMAGE)
-if LOGO_IMAGE_env:
-    save_base64_to_png("app/src/main/res/drawable/app_logo_custom.png", LOGO_IMAGE_env)
+# ── 1. strings.xml ─────────────────────────────────────────────────────────
+write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">{APP_NAME}</string>
+    <string name="app_title">{APP_TITLE}</string>
+    <string name="app_description">{APP_DESCRIPTION}</string>
+</resources>
+""")
 
-# Patch strings.xml
-strings_path = "app/src/main/res/values/strings.xml"
-s = read(strings_path)
-if s:
-    s = re.sub(r'<string name="app_name">.*?</string>', f'<string name="app_name">{APP_NAME}</string>', s)
-    s = re.sub(r'<string name="title_text">.*?</string>', f'<string name="title_text">{APP_TITLE}</string>', s)
-    s = re.sub(r'<string name="desc_text">.*?</string>', f'<string name="desc_text">{APP_DESCRIPTION}</string>', s)
-    s = re.sub(r'<string name="exit_pin">.*?</string>', f'<string name="exit_pin">{EXIT_PIN}</string>', s)
-    write(strings_path, s)
+# ── 2. colors.xml ──────────────────────────────────────────────────────────
+def darken_hex(hex_color, factor=0.85):
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2],16), int(h[2:4],16), int(h[4:6],16)
+    r = int(r * factor); g = int(g * factor); b = int(b * factor)
+    return f"{r:02X}{g:02X}{b:02X}"
 
-# Patch colors.xml
-colors_path = "app/src/main/res/values/colors.xml"
-c = read(colors_path)
-if c:
-    c = re.sub(r'<color name="colorPrimary">#.*?</color>', f'<color name="colorPrimary">#{HEADER_COLOR}</color>', c)
-    c = re.sub(r'<color name="colorAccent">#.*?</color>', f'<color name="colorAccent">#{BUTTON_COLOR}</color>', c)
-    write(colors_path, c)
+HEADER_DARK = darken_hex(HEADER_COLOR)
+BUTTON_DARK = darken_hex(BUTTON_COLOR)
 
-# 3. PATCH BUILD.GRADLE & AMBIL OLD_PACKAGE_ID
-print("\n[2] Patching app/build.gradle...")
-gradle_path = "app/build.gradle"
-gradle_content = read(gradle_path)
-OLD_PACKAGE_ID = "id.emes.exambrowser" # Bawaan awal template
+write("app/src/main/res/values/colors.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Warna utama — di-patch otomatis oleh apply_config.py saat build -->
+    <color name="colorHeaderBg">#{HEADER_COLOR}</color>
+    <color name="colorHeaderDark">#{HEADER_DARK}</color>
+    <color name="colorPrimary">#{BUTTON_COLOR}</color>
+    <color name="colorPrimaryDark">#{BUTTON_DARK}</color>
+    <color name="colorButtonPressed">#{darken_hex(BUTTON_COLOR, 0.75)}</color>
+    <color name="colorButtonShadow">#{darken_hex(BUTTON_COLOR, 0.65)}</color>
+    <color name="colorAccent">#{BUTTON_COLOR}</color>
+    <color name="colorButtonBg">#{BUTTON_COLOR}</color>
+    <!-- Backgrounds -->
+    <color name="colorBackground">#F0F4FA</color>
+    <color name="colorCardBg">#FFFFFF</color>
+    <color name="colorSurface">#F8FAFF</color>
+    <!-- Text -->
+    <color name="colorTextPrimary">#0F172A</color>
+    <color name="colorTextSecondary">#64748B</color>
+    <color name="colorTextHint">#94A3B8</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white80">#CCFFFFFF</color>
+    <color name="white60">#99FFFFFF</color>
+    <color name="white30">#4DFFFFFF</color>
+    <!-- Status -->
+    <color name="colorSuccess">#22C55E</color>
+    <color name="colorDanger">#EF4444</color>
+    <color name="colorWarning">#F59E0B</color>
+    <!-- Misc -->
+    <color name="colorDivider">#F1F5F9</color>
+    <color name="colorInputBorder">#E5E7EB</color>
+    <color name="colorProgressBar">#{BUTTON_COLOR}</color>
+</resources>
+""")
 
-if gradle_content:
-    match = re.search(r'applicationId "(.*?)"', gradle_content)
-    if match:
-        OLD_PACKAGE_ID = match.group(1)
-    
-    gradle_content = re.sub(r'applicationId ".*?"', f'applicationId "{PACKAGE_ID}"', gradle_content)
-    gradle_content = re.sub(r'versionName ".*?"', f'versionName "{VERSION_NAME}"', gradle_content)
-    write(gradle_path, gradle_content)
-    print(f"  ID: {OLD_PACKAGE_ID} -> {PACKAGE_ID}")
+# ── 3. Splash background image → assets/ (bukan drawable/, agar tidak diproses AAPT2) ──
+SPLASH_BG_PATH = "app/src/main/assets/splash_bg.png"
+if SPLASH_IMAGE.strip():
+    if not decode_image(SPLASH_IMAGE, SPLASH_BG_PATH, "splash_bg"):
+        if os.path.exists(SPLASH_BG_PATH):
+            os.remove(SPLASH_BG_PATH)
+else:
+    if os.path.exists(SPLASH_BG_PATH):
+        os.remove(SPLASH_BG_PATH)
+        print(f"  ✓ assets/splash_bg.png dihapus — pakai warna solid")
 
-# 4. REORGANISASI FOLDER PACKAGE (Logika Asli Anda)
-print("\n[3] Reorganizing Package Folders...")
-if OLD_PACKAGE_ID != PACKAGE_ID:
-    base_java_dir = "app/src/main/java"
-    old_dir = os.path.join(base_java_dir, OLD_PACKAGE_ID.replace(".", "/"))
-    new_dir = os.path.join(base_java_dir, PACKAGE_ID.replace(".", "/"))
+# ── 4. Header background image → assets/ (bukan drawable!, agar tidak diproses AAPT2) ──
+HEADER_BG_PATH = "app/src/main/assets/header_bg.png"
+if HEADER_IMAGE.strip():
+    if not decode_image(HEADER_IMAGE, HEADER_BG_PATH, "header_bg"):
+        if os.path.exists(HEADER_BG_PATH):
+            os.remove(HEADER_BG_PATH)
+else:
+    if os.path.exists(HEADER_BG_PATH):
+        os.remove(HEADER_BG_PATH)
+        print(f"  ✓ assets/header_bg.png dihapus — pakai warna solid")
 
-    if os.path.exists(old_dir):
-        os.makedirs(new_dir, exist_ok=True)
-        # Pindahkan file dari folder lama ke baru
-        for item in os.listdir(old_dir):
-            s_item = os.path.join(old_dir, item)
-            d_item = os.path.join(new_dir, item)
-            if os.path.isfile(s_item):
-                shutil.move(s_item, d_item)
-            elif os.path.isdir(s_item):
-                shutil.copytree(s_item, d_item, dirs_exist_ok=True)
-                shutil.rmtree(s_item)
+# ── 5. bg_button_primary.xml ───────────────────────────────────────────────
+write("app/src/main/res/drawable/bg_button_primary.xml", f"""<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorButtonBg"/>
+            <corners android:radius="12dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorButtonBg"/>
+            <corners android:radius="12dp"/>
+        </shape>
+    </item>
+</selector>
+""")
 
-        # Update deklarasi package di semua file .java
-        for root, dirs, files in os.walk(new_dir):
-            for file in files:
-                if file.endswith(".java"):
-                    fpath = os.path.join(root, file)
-                    content = read(fpath)
-                    content = content.replace(f"package {OLD_PACKAGE_ID}", f"package {PACKAGE_ID}")
-                    content = content.replace(f"import {OLD_PACKAGE_ID}", f"import {PACKAGE_ID}")
-                    write(fpath, content)
-        
-        # Hapus folder lama secara rekursif jika kosong
-        curr = old_dir
-        for _ in range(len(OLD_PACKAGE_ID.split("."))):
-            if os.path.exists(curr) and not os.listdir(curr):
-                os.rmdir(curr)
-                curr = os.path.dirname(curr)
-            else:
-                break
-        print(f"  Folder package berhasil dipindahkan.")
+# ── 6. Patch version di activity_splash.xml ───────────────────────────────
+splash_layout_path = "app/src/main/res/layout/activity_splash.xml"
+if os.path.exists(splash_layout_path):
+    splash_src = read(splash_layout_path)
+    splash_src = re.sub(
+        r'android:text="v[0-9]+\.[0-9]+\.[0-9]+"(\s+android:id="@\+id/splashVersion")',
+        f'android:text="v{VERSION_NAME}"\\1',
+        splash_src
+    )
+    splash_src = re.sub(
+        r'(android:id="@\+id/splashVersion"[^>]*\n\s*android:text=")v[0-9]+\.[0-9]+\.[0-9]+"',
+        f'\\1v{VERSION_NAME}"',
+        splash_src
+    )
+    splash_src = re.sub(r'>v[0-9]+\.[0-9]+\.[0-9]+<', f'>v{VERSION_NAME}<', splash_src)
+    write(splash_layout_path, splash_src)
 
-# 5. PATCH MANIFEST
-print("\n[4] Patching AndroidManifest.xml...")
+# ── 7. ExamActivity.java — patch EXIT_PIN ─────────────────────────────────
+exam_path = "app/src/main/java/id/emes/exambrowser/ExamActivity.java"
+exam_src  = read(exam_path)
+exam_src  = re.sub(
+    r'static final String EXIT_PIN\s*=\s*"[^"]*"',
+    f'static final String EXIT_PIN = "{EXIT_PIN}"',
+    exam_src
+)
+write(exam_path, exam_src)
+
+# ── 8. app/build.gradle — patch packageId + versionName ───────────────────
+app_gradle_path = "app/build.gradle"
+app_gradle = read(app_gradle_path)
+app_gradle = re.sub(r'applicationId\s+"[^"]+"', f'applicationId "{PACKAGE_ID}"', app_gradle)
+app_gradle = re.sub(r'versionName\s+"[^"]+"', f'versionName "{VERSION_NAME}"', app_gradle)
+write(app_gradle_path, app_gradle)
+
+# ── 9. AndroidManifest.xml — patch package + label ───────────────────────
 manifest_path = "app/src/main/AndroidManifest.xml"
-m = read(manifest_path)
-if m:
-    m = m.replace(OLD_PACKAGE_ID, PACKAGE_ID)
-    write(manifest_path, m)
+manifest = read(manifest_path)
+manifest = re.sub(r'package="[^"]+"', f'package="{PACKAGE_ID}"', manifest)
+manifest = re.sub(r'android:label="[^"]+"', f'android:label="{APP_NAME}"', manifest, count=1)
+write(manifest_path, manifest)
 
-print("\n" + "=" * 56)
-print("PATCH SELESAI!")
-print("=" * 56)
+# ── 10. Rename Java package directory if needed ────────────────────────────
+OLD_PACKAGE_ID = "id.emes.exambrowser"
+if PACKAGE_ID != OLD_PACKAGE_ID:
+    old_dir = f"app/src/main/java/{OLD_PACKAGE_ID.replace('.', '/')}"
+    new_dir = f"app/src/main/java/{PACKAGE_ID.replace('.', '/')}"
+    if os.path.isdir(old_dir) and not os.path.isdir(new_dir):
+        import shutil
+        os.makedirs(os.path.dirname(new_dir), exist_ok=True)
+        shutil.copytree(old_dir, new_dir)
+        java_files = []
+        for root, dirs, files in os.walk(new_dir):
+            for f in files:
+                if f.endswith(".java"):
+                    java_files.append(os.path.join(root, f))
+        for jf in java_files:
+            src = read(jf)
+            src = src.replace(f"package {OLD_PACKAGE_ID};", f"package {PACKAGE_ID};")
+            src = src.replace(f"import {OLD_PACKAGE_ID}.", f"import {PACKAGE_ID}.")
+            write(jf, src)
+        manifest2 = read(manifest_path)
+        manifest2 = manifest2.replace(OLD_PACKAGE_ID, PACKAGE_ID)
+        write(manifest_path, manifest2)
+        print(f"  ✓ Package directory renamed: {old_dir} → {new_dir}")
+
+# ── 11. Logo user → assets/app_logo.png (bukan drawable, agar tidak diproses AAPT2) ──
+APP_LOGO_PATH = "app/src/main/assets/app_logo.png"
+if LOGO_IMAGE_env.strip():
+    if decode_image(LOGO_IMAGE_env, APP_LOGO_PATH, "app_logo"):
+        print(f"  ✓ Logo user disimpan di assets/app_logo.png")
+    else:
+        if os.path.exists(APP_LOGO_PATH):
+            os.remove(APP_LOGO_PATH)
+else:
+    if os.path.exists(APP_LOGO_PATH):
+        os.remove(APP_LOGO_PATH)
+
+print()
+print("✅ Semua file berhasil di-patch. Siap untuk Gradle build.")
+print("\n📝 Gambar disimpan di assets/ (bukan drawable/) — aman dari AAPT2.")
