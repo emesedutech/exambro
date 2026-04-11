@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int QR_SCAN_REQUEST = 200;
 
+    // Deklarasi eksplisit sebagai field — mencegah R8 menganggapnya dead code
     private EditText etUrl;
     private Button btnStart;
     private LinearLayout btnScanQr;
@@ -28,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // FLAG_SECURE: cegah screenshot di layar home
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+
         getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_FULLSCREEN |
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
@@ -38,13 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        applyHeaderBackground();  // cover image header (header_bg.png) jika ada
+        applyHeaderBackground();
         applyAppLogo(R.id.imgAppLogo);
 
+        // Bind views — etUrl dan btnScanQr adalah fitur inti, WAJIB ada
         etUrl     = findViewById(R.id.etUrl);
         btnStart  = findViewById(R.id.btnStart);
         btnScanQr = findViewById(R.id.btnScanQr);
 
+        // Tombol Mulai Ujian
         if (btnStart != null) {
             btnStart.setOnClickListener(v -> {
                 String url = etUrl != null && etUrl.getText() != null
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        // Tombol Scan QR
         if (btnScanQr != null) {
             btnScanQr.setOnClickListener(v -> {
                 Intent intent = new Intent(this, QRScanActivity.class);
@@ -60,45 +66,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        // IME action "Go" pada keyboard juga trigger mulai ujian
         if (etUrl != null) {
             etUrl.setOnEditorActionListener((v, actionId, event) -> {
                 String url = etUrl.getText() != null ? etUrl.getText().toString().trim() : "";
                 launchExam(url);
                 return true;
             });
-        }
-    }
-
-    /**
-     * Terapkan gambar cover pada area header saja (header_bg.png) jika tersedia di drawable.
-     * Header sudah fixed 220dp, jadi ImageView match_parent bekerja dengan benar.
-     * Jika tidak ada header_bg.png → header tetap tampil dengan warna solid bg_header.
-     */
-    private void applyHeaderBackground() {
-        try {
-            int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
-            if (resId == 0) return;
-
-            Drawable d = getResources().getDrawable(resId, getTheme());
-            if (d == null) return;
-
-            ImageView imgHeaderBg      = findViewById(R.id.imgHeaderBg);
-            View headerOverlay         = findViewById(R.id.headerOverlay);
-            LinearLayout headerContent = findViewById(R.id.headerContent);
-
-            if (imgHeaderBg == null) return;
-
-            imgHeaderBg.setImageDrawable(d);
-            imgHeaderBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgHeaderBg.setVisibility(View.VISIBLE);
-
-            if (headerOverlay != null) headerOverlay.setVisibility(View.VISIBLE);
-
-            // Transparankan background LinearLayout konten agar cover image tembus
-            if (headerContent != null) headerContent.setBackgroundColor(Color.TRANSPARENT);
-
-        } catch (Exception e) {
-            // Fallback: warna solid dari bg_header drawable sudah ada di layer pertama
         }
     }
 
@@ -111,10 +85,38 @@ public class MainActivity extends AppCompatActivity {
         img.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+        // Coba drawable-nodpi dulu, fallback ke drawable
+        int resId = getResources().getIdentifier("app_logo", "drawable-nodpi", getPackageName());
+        if (resId == 0) {
+            resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+        }
         if (resId != 0) {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId, opts);
             if (bmp != null) img.setImageBitmap(bmp);
+        }
+    }
+
+    private void applyHeaderBackground() {
+        try {
+            int resId = getResources().getIdentifier("header_bg", "drawable", getPackageName());
+            if (resId == 0) return;
+            Drawable d = getResources().getDrawable(resId, getTheme());
+            if (d == null) return;
+
+            final ImageView imgBg      = findViewById(R.id.imgHeaderBg);
+            final View overlay         = findViewById(R.id.headerOverlay);
+            final LinearLayout content = findViewById(R.id.headerContent);
+
+            if (imgBg == null || overlay == null || content == null) return;
+
+            imgBg.setImageDrawable(d);
+            imgBg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imgBg.setBackgroundColor(Color.TRANSPARENT);
+            content.setBackgroundColor(Color.TRANSPARENT);
+            imgBg.setVisibility(View.VISIBLE);
+            overlay.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            // fallback warna solid — normal jika tidak ada header_bg
         }
     }
 
@@ -140,8 +142,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            String rawHost = url.split("[:/]")[0];
-            url = (isPrivateHost(rawHost) ? "http://" : "https://") + url;
+            url = "https://" + url;
         }
         if (!isValidHttpUrl(url)) {
             Toast.makeText(this, "Format URL tidak valid", Toast.LENGTH_SHORT).show();
@@ -157,28 +158,12 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = Uri.parse(url);
             String scheme = uri.getScheme();
             String host   = uri.getHost();
-            if (scheme == null || host == null || host.isEmpty()) return false;
-            if (!scheme.equals("http") && !scheme.equals("https")) return false;
-            return isPrivateHost(host) || host.contains(".");
+            return (scheme != null && (scheme.equals("http") || scheme.equals("https")))
+                && (host != null && !host.isEmpty())
+                && host.contains(".");
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private boolean isPrivateHost(String host) {
-        if (host == null) return false;
-        if (host.equals("localhost")) return true;
-        if (!host.matches("\\d{1,3}(\\.\\d{1,3}){3}")) return false;
-        try {
-            String[] parts = host.split("\\.");
-            int a = Integer.parseInt(parts[0]);
-            int b = Integer.parseInt(parts[1]);
-            if (a == 10) return true;
-            if (a == 172 && b >= 16 && b <= 31) return true;
-            if (a == 192 && b == 168) return true;
-            if (a == 127) return true;
-        } catch (Exception ignored) {}
-        return false;
     }
 
     @Override
