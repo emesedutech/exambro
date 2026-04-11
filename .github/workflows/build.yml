@@ -110,6 +110,36 @@ jobs:
       - name: Setup launcher icons
         run: python scripts/setup_icons.py
 
+      - name: Verifikasi drawable — hapus PNG corrupt sebelum build
+        run: |
+          echo "🔍 Memeriksa file PNG di drawable..."
+          DRAWABLE_DIR="app/src/main/res/drawable"
+          FOUND_BAD=0
+          for f in "$DRAWABLE_DIR"/*.png; do
+            [ -e "$f" ] || continue
+            # Cek PNG signature: byte pertama harus \x89PNG
+            if python3 -c "
+          import sys
+          data = open('$f','rb').read()
+          png_sig = b'\\x89PNG\\r\\n\\x1a\\n'
+          jpeg_sig = (b'\\xff\\xd8', b'\\xff\\xd9')
+          is_png  = len(data) >= 8 and data[:8] == png_sig and b'IEND' in data
+          is_jpeg = len(data) > 2 and data[:2] == jpeg_sig[0] and data[-2:] == jpeg_sig[1]
+          sys.exit(0 if (is_png or is_jpeg) else 1)
+          " 2>/dev/null; then
+              echo "  ✅ OK  : $f ($(du -sh "$f" | cut -f1))"
+            else
+              echo "  ❌ CORRUPT — menghapus: $f"
+              rm -f "$f"
+              FOUND_BAD=1
+            fi
+          done
+          if [ "$FOUND_BAD" -eq 1 ]; then
+            echo "⚠️  Ada PNG corrupt yang sudah dihapus. Build lanjut dengan warna solid sebagai fallback."
+          else
+            echo "✅ Semua PNG drawable valid."
+          fi
+
       - name: Restore keystore dari GitHub Secrets
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
