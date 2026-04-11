@@ -4,14 +4,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +37,7 @@ public class QRScanActivity extends AppCompatActivity
     private final MultiFormatReader reader = new MultiFormatReader();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
+    // Views
     private ScannerOverlayView overlayView;
     private TextView tvStatus;
     private ImageButton btnTorch;
@@ -46,10 +45,6 @@ public class QRScanActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // FLAG_SECURE juga di halaman scan
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-
         getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_FULLSCREEN |
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
@@ -96,6 +91,7 @@ public class QRScanActivity extends AppCompatActivity
             camera = Camera.open();
             Camera.Parameters p = camera.getParameters();
             p.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            // Rotasi preview sesuai orientasi
             camera.setDisplayOrientation(90);
             camera.setParameters(p);
             camera.setPreviewDisplay(holder);
@@ -112,6 +108,7 @@ public class QRScanActivity extends AppCompatActivity
     public void onPreviewFrame(byte[] data, Camera cam) {
         if (!scanning) return;
         Camera.Size size = cam.getParameters().getPreviewSize();
+        // Crop hanya area tengah (kotak scanner) supaya lebih akurat
         int w = size.width, h = size.height;
         int cropSize = Math.min(w, h) * 2 / 3;
         int left = (w - cropSize) / 2;
@@ -121,42 +118,19 @@ public class QRScanActivity extends AppCompatActivity
                 data, w, h, left, top, cropSize, cropSize, false);
             Result result = reader.decode(new BinaryBitmap(new HybridBinarizer(src)));
             scanning = false;
-            String scannedText = result.getText();
-
+            String url = result.getText();
             mainHandler.post(() -> {
-                // Validasi: hasil QR WAJIB URL http/https
-                if (!isValidHttpUrl(scannedText)) {
-                    Toast.makeText(this,
-                        "QR tidak mengandung URL ujian yang valid", Toast.LENGTH_LONG).show();
-                    scanning = true; // izinkan scan ulang
-                    return;
-                }
                 overlayView.showSuccess();
+                // Delay sedikit supaya animasi success kelihatan
                 mainHandler.postDelayed(() -> {
                     Intent intent = new Intent();
-                    intent.putExtra("scanned_url", scannedText);
+                    intent.putExtra("scanned_url", url);
                     setResult(RESULT_OK, intent);
                     finish();
                 }, 600);
             });
         } catch (NotFoundException ignored) {
             // lanjut scan
-        }
-    }
-
-    /**
-     * Validasi: hanya terima URL http/https dengan host yang valid.
-     */
-    private boolean isValidHttpUrl(String url) {
-        try {
-            Uri uri = Uri.parse(url);
-            String scheme = uri.getScheme();
-            String host = uri.getHost();
-            return (scheme != null && (scheme.equals("http") || scheme.equals("https")))
-                && (host != null && !host.isEmpty())
-                && host.contains(".");
-        } catch (Exception e) {
-            return false;
         }
     }
 
@@ -187,12 +161,6 @@ public class QRScanActivity extends AppCompatActivity
     @Override public void surfaceDestroyed(@NonNull SurfaceHolder h) { releaseCamera(); }
 
     @Override protected void onPause() { super.onPause(); releaseCamera(); }
-
-    @Override
-    public void onBackPressed() {
-        // Blokir back, hanya bisa tutup via tombol X
-        finish();
-    }
 
     private void releaseCamera() {
         if (camera != null) {

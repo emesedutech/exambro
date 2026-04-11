@@ -1,47 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Warna utama — di-patch otomatis oleh apply_config.py saat build GitHub Actions -->
-
-    <!-- Header — deep navy default -->
-    <color name="colorHeaderBg">#111827</color>
-    <color name="colorHeaderDark">#0A1020</color>
-
-    <!-- Primary / accent — SEMUA elemen interaktif ikut warna ini -->
-    <color name="colorPrimary">#3B82F6</color>
-    <color name="colorPrimaryDark">#2563EB</color>
-    <color name="colorAccent">#3B82F6</color>
-
-    <!-- Tombol utama (Mulai Ujian, Konfirmasi) ikut colorPrimary -->
-    <color name="colorButtonBg">#3B82F6</color>
-    <color name="colorButtonPressed">#2563EB</color>
-    <color name="colorButtonShadow">#1D4ED8</color>
-
-    <!-- QR scan button bg — 12% opacity dari warna primary -->
-    <color name="colorButtonScanBg">#1F3B82F6</color>
-
-    <!-- Background -->
-    <color name="colorBackground">#F9FAFB</color>
-    <color name="colorCardBg">#FFFFFF</color>
-    <color name="colorSurface">#FFFFFF</color>
-
-    <!-- Text -->
+    <color name="colorHeaderBg">#1A3A5C</color>
+    <color name="colorHeaderDark">#0D2540</color>
+    <color name="colorPrimary">#2E7BF6</color>
+    <color name="colorPrimaryDark">#1C6AE4</color>
+    <color name="colorAccent">#2E7BF6</color>
+    <color name="colorBackground">#F5F7FB</color>
     <color name="colorTextPrimary">#111827</color>
     <color name="colorTextSecondary">#6B7280</color>
     <color name="colorTextHint">#9CA3AF</color>
-
-    <!-- White variants -->
+    <color name="colorDivider">#F1F5F9</color>
     <color name="white">#FFFFFF</color>
-    <color name="white80">#CCFFFFFF</color>
-    <color name="white60">#99FFFFFF</color>
-    <color name="white30">#4DFFFFFF</color>
-
-    <!-- Status -->
-    <color name="colorSuccess">#10B981</color>
+    <color name="colorSuccess">#22C55E</color>
     <color name="colorDanger">#EF4444</color>
-    <color name="colorWarning">#F59E0B</color>
-
-    <!-- Misc -->
-    <color name="colorDivider">#F3F4F6</color>
-    <color name="colorInputBorder">#E5E7EB</color>
-    <color name="colorProgressBar">#3B82F6</color>
 </resources>

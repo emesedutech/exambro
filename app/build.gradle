@@ -14,42 +14,8 @@ android {
         versionName "1.1.0"
     }
 
-    signingConfigs {
-        release {
-            def ksFile = file("keystore.jks")
-            if (ksFile.exists()) {
-                storeFile     ksFile
-                storePassword System.getenv("STORE_PASSWORD") ?: ""
-                keyAlias      System.getenv("KEY_ALIAS")      ?: ""
-                keyPassword   System.getenv("KEY_PASSWORD")   ?: ""
-            }
-        }
-    }
-
     buildTypes {
-        release {
-            debuggable      false
-            minifyEnabled   true
-            // shrinkResources DINONAKTIFKAN: R8 dapat salah strip resource ID
-            // (etUrl, btnScanQr, btnStart) sehingga input URL & tombol QR hilang.
-            // Minify tetap aktif untuk obfuscation, hanya resource shrinking yang dimatikan.
-            shrinkResources false
-            crunchPngs      false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if (file("keystore.jks").exists()) {
-                signingConfig signingConfigs.release
-            }
-        }
-        debug {
-            debuggable true
-            crunchPngs false
-        }
-    }
-
-    // Universal APK — satu file untuk semua arsitektur
-    aaptOptions {
-        cruncherEnabled false
-        noCompress 'png'
+        release { minifyEnabled false }
     }
 
     compileOptions {
@@ -61,6 +27,5 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'com.google.zxing:core:3.5.3'
 }

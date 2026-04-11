@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tombol utama — ikut colorPrimary (warna aksen yang bisa dikustomisasi) -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorButtonPressed" />
-            <corners android:radius="9dp" />
+            <solid android:color="@color/colorPrimaryDark" />
+            <corners android:radius="12dp" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorButtonBg" />
-            <corners android:radius="9dp" />
+            <solid android:color="@color/colorPrimary" />
+            <corners android:radius="12dp" />
         </shape>
     </item>
 </selector>

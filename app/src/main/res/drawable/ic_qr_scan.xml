@@ -34,24 +34,24 @@
         android:strokeLineJoin="round"
         android:pathData="M15,21 L20,21 Q21,21 21,20 L21,15" />
 
-    <!-- Kotak QR kiri atas (4x4) -->
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M6,6 L10,6 L10,10 L6,10 Z" />
-    <!-- Kotak QR kanan atas (4x4) -->
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M14,6 L18,6 L18,10 L14,10 Z" />
-    <!-- Kotak QR kiri bawah (4x4) -->
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M6,14 L10,14 L10,18 L6,18 Z" />
+    <!-- Kotak QR kiri atas (3x3) -->
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="6" android:y="6" android:width="4" android:height="4" />
+    <!-- Kotak QR kanan atas (3x3) -->
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="14" android:y="6" android:width="4" android:height="4" />
+    <!-- Kotak QR kiri bawah (3x3) -->
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="6" android:y="14" android:width="4" android:height="4" />
 
     <!-- Titik-titik data QR kanan bawah -->
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M14,14 L16,14 L16,16 L14,16 Z" />
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M17,14 L19,14 L19,16 L17,16 Z" />
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M14,17 L16,17 L16,19 L14,19 Z" />
-    <path android:fillColor="@color/colorPrimary"
-        android:pathData="M17,17 L19,17 L19,19 L17,19 Z" />
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="14" android:y="14" android:width="2" android:height="2" />
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="17" android:y="14" android:width="2" android:height="2" />
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="14" android:y="17" android:width="2" android:height="2" />
+    <rect android:fillColor="@color/colorPrimary"
+        android:x="17" android:y="17" android:width="2" android:height="2" />
 
 </vector>

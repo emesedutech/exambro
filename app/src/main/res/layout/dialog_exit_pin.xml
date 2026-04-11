@@ -4,16 +4,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_dialog"
-    android:padding="26dp"
+    android:padding="28dp"
     android:gravity="center_horizontal">
 
-    <!-- Lock icon — minimal -->
+    <!-- Icon -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🔐"
-        android:textSize="36sp"
-        android:layout_marginBottom="16dp" />
+        android:textSize="40sp"
+        android:layout_marginBottom="14dp" />
 
     <!-- Title -->
     <TextView
@@ -21,13 +21,12 @@
         android:layout_height="wrap_content"
         android:text="Akhiri Sesi Ujian?"
         android:textColor="@color/colorTextPrimary"
-        android:textSize="18sp"
+        android:textSize="19sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:letterSpacing="-0.02"
         android:layout_marginBottom="6dp" />
 
-    <!-- Subtitle -->
+    <!-- Description -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,8 +34,7 @@
         android:textColor="@color/colorTextSecondary"
         android:textSize="12.5sp"
         android:gravity="center"
-        android:lineSpacingMultiplier="1.4"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="22dp" />
 
     <!-- PIN label -->
     <TextView
@@ -44,16 +42,16 @@
         android:layout_height="wrap_content"
         android:text="PIN PENGAWAS"
         android:textColor="@color/colorTextSecondary"
-        android:textSize="9.5sp"
-        android:letterSpacing="0.1"
+        android:textSize="10sp"
+        android:letterSpacing="0.12"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
-    <!-- PIN input — minimal, centered -->
+    <!-- PIN input -->
     <EditText
         android:id="@+id/etPin"
-        android:layout_width="148dp"
-        android:layout_height="50dp"
+        android:layout_width="160dp"
+        android:layout_height="52dp"
         android:background="@drawable/bg_pin_input"
         android:gravity="center"
         android:hint="• • • •"
@@ -61,32 +59,30 @@
         android:maxLength="8"
         android:textColor="@color/colorTextPrimary"
         android:textColorHint="@color/colorTextHint"
-        android:textSize="20sp"
-        android:letterSpacing="0.25"
+        android:textSize="22sp"
+        android:letterSpacing="0.3"
         android:layout_marginBottom="22dp" />
 
-    <!-- Confirm -->
+    <!-- Confirm button -->
     <Button
         android:id="@+id/btnConfirm"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="48dp"
         android:background="@drawable/bg_btn_confirm"
         android:text="Konfirmasi Keluar"
         android:textColor="@color/white"
-        android:textSize="13.5sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:letterSpacing="-0.01"
         android:layout_marginBottom="8dp" />
 
-    <!-- Cancel -->
+    <!-- Cancel button -->
     <Button
         android:id="@+id/btnCancel"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="44dp"
         android:background="@drawable/bg_btn_cancel"
         android:text="Lanjutkan Ujian"
         android:textColor="@color/colorTextSecondary"
-        android:textSize="13sp"
-        android:letterSpacing="-0.01" />
+        android:textSize="13sp" />
 
 </LinearLayout>

@@ -10,11 +10,4 @@
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
     </style>
     <style name="AppTheme.NoActionBar" parent="AppTheme" />
-
-    <!-- Theme khusus SplashActivity: windowBackground = warna header agar tidak ada flash hitam -->
-    <style name="AppTheme.Splash" parent="AppTheme">
-        <item name="android:windowBackground">@color/colorHeaderBg</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
 </resources>

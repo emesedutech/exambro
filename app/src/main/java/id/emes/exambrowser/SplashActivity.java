@@ -5,9 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -135,27 +132,22 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     /**
-     * Load logo secara dinamis:
-     *  1. drawable/app_logo.png  → logo custom yang di-bundle user saat build
-     *  2. fallback ic_launcher   → jika tidak ada app_logo
-     * Alpha channel dijaga penuh dengan ARGB_8888.
+     * Terapkan app_logo.png (transparan) ke ImageView jika tersedia.
+     * Fallback ke ic_launcher jika tidak ada logo user yang di-upload.
      */
     private void applyAppLogo(int viewId) {
-        ImageView img = findViewById(viewId);
-        if (img == null) return;
-        // Hapus semua background agar PNG transparan tampil apa adanya
-        img.setBackground(null);
-        img.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-        img.setPadding(0, 0, 0, 0);
-        // Software rendering wajib agar alpha channel PNG tidak dirender hitam
-        img.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-        // Load dengan ARGB_8888 agar alpha channel terjaga
-        android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
-        opts.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
-        int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
-        if (resId != 0) {
-            android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeResource(getResources(), resId, opts);
-            if (bmp != null) img.setImageBitmap(bmp);
+        try {
+            int resId = getResources().getIdentifier("app_logo", "drawable", getPackageName());
+            if (resId == 0) return; // Tidak ada logo → tetap pakai ic_launcher
+            android.graphics.drawable.Drawable d = getResources().getDrawable(resId, getTheme());
+            if (d == null) return;
+            ImageView img = findViewById(viewId);
+            img.setImageDrawable(d);
+            img.setBackground(null);   // hapus frame/background apapun
+            img.setPadding(0, 0, 0, 0);
+            img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        } catch (Exception e) {
+            // Fallback ke ic_launcher
         }
     }
 
