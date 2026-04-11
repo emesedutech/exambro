@@ -1,0 +1,31 @@
+# Build outputs
+build/
+app/build/
+*.apk
+*.aab
+*.class
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+
+# Android
+*.keystore
+*.jks
+keystore.properties
+app/keystore.jks
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# Generated PNG files (dibuat saat build, BUKAN dari repo)
+app/src/main/res/drawable/header_bg.png
+app/src/main/res/drawable/splash_bg.png
+app/src/main/res/drawable/app_logo.png
