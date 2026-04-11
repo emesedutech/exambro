@@ -882,8 +882,13 @@ hr{border:none;border-top:1px solid var(--border);margin:4px 0}
           <a href="#" class="run-link" id="runLink" style="display:none" target="_blank">Buka &nearr;</a>
         </div>
         <div class="build-log" id="buildLog"></div>
-        <a href="#" class="artifact-btn" id="artifactBtn" style="display:none" target="_blank">
-          <span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Unduh APK &amp; AAB (Artifacts)
+        <!-- Tombol Download Publik (tanpa login GitHub) -->
+        <a href="#" class="artifact-btn" id="releaseBtn" style="display:none" target="_blank">
+          <span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> ⬇️ Download APK (Tanpa Login GitHub)
+        </a>
+        <!-- Fallback: link ke Actions (perlu login) -->
+        <a href="#" class="artifact-btn" id="artifactBtn" style="display:none;opacity:.6;font-size:11px" target="_blank">
+          <span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span> Buka di GitHub Actions (perlu login)
         </a>
       </div>
     </div>
@@ -1709,9 +1714,14 @@ async function pollBuild(tok,own,rep) {
         clearInterval(pollTimer);
         const ok=run.conclusion==='success';
         setRun(ok?'ok':'fail',ok?'✅ Build Selesai!':`❌ Gagal (${run.conclusion})`,ok?`Selesai dalam ~${elapsed(run)}`:'Lihat log di GitHub Actions');
-        log(ok?'ok':'err',ok?'✅ APK + AAB siap!\n📦 APK: Actions → Artifacts → APK-Build\n📦 AAB: Actions → Artifacts → AAB-PlayStore\n':`❌ Build gagal: ${run.conclusion}\n`);
+        log(ok?'ok':'err',ok?'✅ APK siap!\n':`❌ Build gagal: ${run.conclusion}\n`);
         el('btnBuild').disabled=false;el('btnBuild').textContent='🚀 Build APK Lagi';
-        if(ok){el('artifactBtn').href=url;el('artifactBtn').style.display='inline-flex';}
+        if(ok){
+          el('artifactBtn').href=url;el('artifactBtn').style.display='inline-flex';
+          // Coba fetch GitHub Release terbaru untuk link download PUBLIK (tanpa login)
+          log('dim','🔍 Mengambil link download publik dari Releases…\n');
+          fetchLatestRelease(tok,own,rep);
+        }
       } else {
         setRun(run.status==='in_progress'?'run':'queue',
           run.status==='in_progress'?'🔨 Sedang Build…':'⏳ Antrian…',
@@ -1721,6 +1731,34 @@ async function pollBuild(tok,own,rep) {
     } catch(e){}
   };
   pollTimer=setInterval(check,5000); check();
+}
+
+async function fetchLatestRelease(tok,own,rep) {
+  // Tunggu beberapa detik agar GitHub selesai membuat Release
+  await new Promise(r=>setTimeout(r,6000));
+  try {
+    const res=await fetch(`https://api.github.com/repos/${own}/${rep}/releases/latest`,
+      {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
+    if(!res.ok){
+      log('dim','ℹ️ Release belum tersedia — gunakan link Actions di bawah\n');
+      return;
+    }
+    const rel=await res.json();
+    const releaseUrl=rel.html_url;
+    // Tampilkan tombol download publik
+    el('releaseBtn').href=releaseUrl;
+    el('releaseBtn').style.display='inline-flex';
+    log('ok',`✅ Link download publik siap!\n🔗 ${releaseUrl}\n`);
+    log('ok','👆 Bagikan link di atas kepada guru/siswa — TIDAK perlu login GitHub!\n');
+    // Tampilkan daftar file APK yang tersedia
+    const apks=(rel.assets||[]).filter(a=>a.name.endsWith('.apk'));
+    if(apks.length>0){
+      log('dim',`📦 File APK tersedia:\n`);
+      apks.forEach(a=>log('dim',`   • ${a.name} (${Math.round(a.size/1024/1024*10)/10}MB)\n`));
+    }
+  } catch(e){
+    log('dim','ℹ️ Gagal fetch Release — gunakan link Actions di bawah\n');
+  }
 }
 
 function elapsed(run){const s=new Date(run.created_at),e=run.updated_at?new Date(run.updated_at):new Date(),sec=Math.round((e-s)/1000);return sec<60?`${sec}s`:`${Math.round(sec/60)}m ${sec%60}s`;}
