@@ -20,7 +20,7 @@ on:
         required: true
         default: '1234'
       header_color:
-        description: 'Warna Header (hex, tanpa #) — diabaikan jika header_image diisi'
+        description: 'Warna Header (hex, tanpa #)'
         required: true
         default: '1A3A5C'
       header_image:
@@ -47,6 +47,10 @@ on:
         description: 'Logo aplikasi transparan (base64 PNG, kosongkan jika pakai ic_launcher default)'
         required: false
         default: ''
+
+# Wajib: izin write agar bisa membuat GitHub Release
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -169,26 +173,69 @@ jobs:
           AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
           [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
-      - name: Upload APK
+      # ──────────────────────────────────────────────────────────────────────────
+      # Artifact (untuk user yang login GitHub)
+      # ──────────────────────────────────────────────────────────────────────────
+      - name: Upload APK (Artifact)
         uses: actions/upload-artifact@v4
         with:
           name: APK-Build
           path: app/build/outputs/apk/release/*.apk
           retention-days: 30
 
-      - name: Upload AAB
+      - name: Upload AAB (Artifact)
         uses: actions/upload-artifact@v4
         with:
           name: AAB-PlayStore
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
+      # ──────────────────────────────────────────────────────────────────────────
+      # GitHub Release — APK bisa DIDOWNLOAD SIAPA SAJA tanpa login GitHub
+      # ──────────────────────────────────────────────────────────────────────────
+      - name: Generate release tag
+        id: tag
+        run: |
+          VER="${{ github.event.inputs.version_name || '1.1.0' }}"
+          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
+          echo "tag=v${VER}-${TIMESTAMP}" >> $GITHUB_OUTPUT
+          echo "version=${VER}" >> $GITHUB_OUTPUT
+
+      - name: Publish GitHub Release (download publik tanpa login)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "${{ github.event.inputs.app_name || 'EzamBro' }} v${{ steps.tag.outputs.version }}"
+          body: |
+            ## 📱 ${{ github.event.inputs.app_name || 'EzamBro' }} — v${{ steps.tag.outputs.version }}
+
+            > Build otomatis · `${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}`
+
+            ### ⬇️ Download APK — tidak perlu login GitHub
+
+            Klik file `*-universal.apk` di bagian **Assets** di bawah ini.
+
+            | File | Keterangan |
+            |------|-----------|
+            | `*-universal.apk` | ✅ **Rekomendasikan** — semua HP Android |
+            | `*-arm64.apk` | HP modern (2017+) |
+            | `*-arm32.apk` | HP lama |
+
+            ### Cara Install
+            1. Download `*-universal.apk`
+            2. Buka file di HP Android
+            3. Izinkan "Install dari sumber tidak dikenal" jika diminta
+          files: app/build/outputs/apk/release/*.apk
+          draft: false
+          prerelease: false
+          make_latest: true
+
       - name: Show download info
         run: |
           echo "✅ Build selesai!"
-          echo "📦 APK: Actions > Artifacts > APK-Build"
-          echo "   *-universal.apk → semua HP"
-          echo "   *-arm64.apk     → HP modern"
-          echo "   *-arm32.apk     → HP lama"
-          echo "🏷 Versi : ${{ github.event.inputs.version_name || '1.1.0' }}"
-          echo "📱 Package: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
+          echo ""
+          echo "⬇️  Download APK TANPA LOGIN GitHub:"
+          echo "   https://github.com/${{ github.repository }}/releases/latest"
+          echo ""
+          echo "📦 Artifact (perlu login GitHub):"
+          echo "   Actions > Artifacts > APK-Build"
