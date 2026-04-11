@@ -3,183 +3,156 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>EMES — ExamBro APK Builder</title>
-<link rel="icon" type="image/png" href="data:image/png;base64,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"/>
+<title>EzamBro APK Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --bg:        #FFFFFF;
-  --bg2:       #F8FAFC;
-  --bg3:       #F1F5F9;
-  --border:    rgba(15,23,42,.07);
-  --border2:   rgba(15,23,42,.13);
-  --blue:      #1D4ED8;
-  --blue2:     #2563EB;
-  --blue-bg:   rgba(37,99,235,.07);
-  --blue-ring: rgba(37,99,235,.18);
-  --cyan:      #0891B2;
-  --gold:      #D97706;
-  --gold-bg:   rgba(217,119,6,.07);
-  --green:     #059669;
-  --green-bg:  rgba(5,150,105,.07);
-  --red:       #DC2626;
-  --red-bg:    rgba(220,38,38,.07);
-  --purple:    #7C3AED;
-  --purple-bg: rgba(124,58,237,.07);
-  --text:      #0F172A;
-  --text2:     #334155;
+  --ink:       #0C1222;
+  --ink2:      #111827;
+  --ink3:      #1E293B;
+  --surface:   #16202E;
+  --surface2:  #1C2A3A;
+  --surface3:  #243044;
+  --border:    rgba(255,255,255,.08);
+  --border2:   rgba(255,255,255,.14);
+  --blue:      #3B82F6;
+  --blue2:     #60A5FA;
+  --cyan:      #06B6D4;
+  --gold:      #F59E0B;
+  --green:     #10B981;
+  --red:       #EF4444;
+  --text:      #E2E8F0;
+  --text2:     #94A3B8;
   --text3:     #64748B;
-  --text4:     #94A3B8;
   --r:         12px;
   --r2:        8px;
-  --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
-  --shadow:    0 4px 16px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.04);
+  --shadow:    0 4px 24px rgba(0,0,0,.4);
+  --glow:      0 0 24px rgba(59,130,246,.25);
 }
 
-html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--surface3) var(--ink)}
 body{
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--bg);
+  font-family:'DM Sans',sans-serif;
+  background:var(--ink);
   color:var(--text);
   min-height:100vh;
   overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
 }
 
-/* ── TOPBAR ── */
+/* ────── TOPBAR ────── */
 .topbar{
-  background:rgba(255,255,255,.95);
-  backdrop-filter:blur(16px);
+  background:rgba(12,18,34,.92);
+  backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
-  height:54px;
-  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   padding:0 24px;
   position:sticky;top:0;z-index:200;
 }
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .brand-icon{
-  width:30px;height:30px;border-radius:8px;
-  background:var(--blue-bg);border:1px solid var(--blue-ring);
-  display:grid;place-items:center;color:var(--blue2);flex-shrink:0;
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:grid;place-items:center;font-size:15px;flex-shrink:0;
 }
-.brand-name{
-  font-family:'Inter',sans-serif;font-size:15.5px;font-weight:800;
-  color:var(--text);letter-spacing:-.4px;
-}
+.brand-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.3px}
 .brand-name span{color:var(--blue2)}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .pill{
-  font-size:10px;font-weight:700;letter-spacing:.7px;
+  font-size:10px;font-weight:700;letter-spacing:.6px;
   padding:3px 10px;border-radius:20px;
-  background:var(--blue-bg);color:var(--blue2);
-  border:1px solid var(--blue-ring);
+  background:rgba(59,130,246,.15);color:var(--blue2);
+  border:1px solid rgba(59,130,246,.25);
 }
 .gh-btn{
   display:flex;align-items:center;gap:6px;
   font-size:12px;font-weight:600;color:var(--text2);
   text-decoration:none;padding:5px 12px;
   border:1px solid var(--border2);border-radius:var(--r2);
-  transition:.15s;background:var(--bg);
+  transition:.15s;
 }
-.gh-btn:hover{background:var(--bg3);color:var(--text)}
+.gh-btn:hover{color:#fff;border-color:var(--border2);background:var(--surface2)}
 
-/* ── LAYOUT ── */
+/* ────── LAYOUT ────── */
 .layout{
-  display:grid;grid-template-columns:1fr 420px;gap:0;
-  max-width:1300px;margin:0 auto;min-height:calc(100vh - 54px);
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:0;
+  max-width:1280px;
+  margin:0 auto;
+  min-height:calc(100vh - 56px);
 }
-@media(max-width:920px){
+@media(max-width:900px){
   .layout{grid-template-columns:1fr}
   .sidebar{position:relative;top:0!important;border-left:none;border-top:1px solid var(--border)}
 }
 
-/* ── MAIN TAB NAV ── */
-.main-tabs-nav{
-  display:flex;gap:0;
-  padding:0 20px;
-  border-bottom:1px solid var(--border);
-  background:var(--bg);
-  overflow-x:auto;scrollbar-width:none;
-  position:sticky;top:54px;z-index:100;
+/* ────── MAIN FORM COLUMN ────── */
+.main-col{
+  padding:28px 28px 80px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
 }
-.main-tabs-nav::-webkit-scrollbar{display:none}
-.main-tab-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:12px 14px 11px;
-  font-size:12.5px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;
-  color:var(--text3);background:transparent;
-  border:none;cursor:pointer;white-space:nowrap;
-  border-bottom:2px solid transparent;
-  transition:.15s;
-}
-.main-tab-btn .ico svg{transition:.15s}
-.main-tab-btn:hover{color:var(--text2)}
-.main-tab-btn.on{
-  color:var(--blue2);
-  border-bottom-color:var(--blue2);
-}
-.main-tab-btn.on .ico svg{stroke:var(--blue2)}
 
-/* ── MAIN FORM COL ── */
-.main-col{border-right:1px solid var(--border);display:flex;flex-direction:column}
-.main-tab-pane{
-  display:none;padding:20px 24px 60px;
-  flex-direction:column;gap:10px;
-}
-.main-tab-pane.on{display:flex}
-
-/* ── SECTION LABELS ── */
+/* ────── SECTION HEADERS ────── */
 .section-label{
   display:flex;align-items:center;gap:8px;
   font-size:10px;font-weight:700;letter-spacing:1px;
   color:var(--text3);text-transform:uppercase;
-  margin:16px 0 8px;
+  margin:16px 0 6px;padding-left:2px;
 }
 .section-label::after{
   content:'';flex:1;height:1px;
-  background:var(--border2);
+  background:linear-gradient(90deg,var(--border2),transparent);
 }
 
-/* ── CARDS ── */
+/* ────── CARDS ────── */
 .card{
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--r);overflow:hidden;
-  box-shadow:var(--shadow-sm);
-  transition:border-color .2s,box-shadow .2s;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  transition:border-color .2s;
 }
-.card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.card:hover{border-color:var(--border2)}
 .card-head{
   display:flex;align-items:center;gap:12px;
   padding:14px 18px 12px;
   border-bottom:1px solid var(--border);
-  background:var(--bg2);
 }
-.card-head h3{font-size:13.5px;font-weight:700;color:var(--text)}
+.card-head h3{font-size:13.5px;font-weight:600;color:var(--text)}
 .card-head p{font-size:11.5px;color:var(--text3);margin-top:1px}
 .card-ico{
   width:34px;height:34px;border-radius:9px;
-  display:grid;place-items:center;flex-shrink:0;
+  display:grid;place-items:center;font-size:16px;flex-shrink:0;
 }
-.ico-blue{background:var(--blue-bg);color:var(--blue2)}
-.ico-blue .ico svg{stroke:var(--blue2)}
-.ico-gold{background:var(--gold-bg);color:var(--gold)}
-.ico-gold .ico svg{stroke:var(--gold)}
-.ico-green{background:var(--green-bg);color:var(--green)}
-.ico-green .ico svg{stroke:var(--green)}
-.ico-cyan{background:rgba(6,182,212,.07);color:var(--cyan)}
-.ico-cyan .ico svg{stroke:var(--cyan)}
-.ico-red{background:var(--red-bg);color:var(--red)}
-.ico-red .ico svg{stroke:var(--red)}
-.ico-purple{background:var(--purple-bg);color:var(--purple)}
-.ico-purple .ico svg{stroke:var(--purple)}
+.ico-blue{background:rgba(59,130,246,.15)}
+.ico-gold{background:rgba(245,158,11,.15)}
+.ico-green{background:rgba(16,185,129,.15)}
+.ico-cyan{background:rgba(6,182,212,.15)}
+.ico-red{background:rgba(239,68,68,.12)}
+.ico-purple{background:rgba(139,92,246,.15)}
 .card-body{padding:18px}
 .card-body>*+*{margin-top:14px}
 
-/* ── FORM FIELDS ── */
-.field{display:flex;flex-direction:column;gap:5px}
+/* Card variant: featured (build card) */
+.card-featured{
+  background:linear-gradient(145deg, #0D1F35 0%, #112240 100%);
+  border-color:rgba(59,130,246,.3);
+  box-shadow:var(--glow);
+}
+.card-featured .card-head{
+  background:linear-gradient(90deg,rgba(59,130,246,.1),transparent);
+  border-bottom-color:rgba(59,130,246,.2);
+}
+
+/* ────── FORM FIELDS ────── */
+.field{display:flex;flex-direction:column;gap:6px}
 .field+.field{margin-top:14px}
 .field label{
   font-size:11px;font-weight:700;letter-spacing:.5px;
@@ -187,185 +160,194 @@ body{
 }
 .field input[type=text],.field input[type=password]{
   height:40px;padding:0 12px;
-  background:var(--bg);border:1.5px solid var(--border2);
+  background:var(--ink3);
+  border:1px solid var(--border2);
   border-radius:var(--r2);
-  font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;
-  color:var(--text);transition:border-color .15s,box-shadow .15s;
+  font-size:13px;font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  transition:border-color .15s,box-shadow .15s;
 }
 .field input:focus{
-  outline:none;border-color:var(--blue2);
-  box-shadow:0 0 0 3px var(--blue-ring);
+  outline:none;
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(59,130,246,.15);
 }
-.hint{font-size:11px;color:var(--text3);line-height:1.7}
+.hint{font-size:11px;color:var(--text3);line-height:1.6}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .row2 .field{margin:0}
 
-/* ── COLOR PICKER ── */
+/* ────── COLOR PICKER ────── */
 .color-row{display:flex;align-items:center;gap:8px}
 .color-row input[type=color]{
   width:40px;height:40px;padding:3px;
-  border:1.5px solid var(--border2);border-radius:var(--r2);
-  cursor:pointer;background:var(--bg3);flex-shrink:0;
+  border:1px solid var(--border2);border-radius:var(--r2);
+  cursor:pointer;background:var(--ink3);flex-shrink:0;
 }
 .color-hex{
   flex:1;height:40px;padding:0 12px;
-  background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--r2);
-  font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);
+  background:var(--ink3);border:1px solid var(--border2);border-radius:var(--r2);
+  font-family:'DM Mono',monospace;font-size:13px;color:var(--text);
   transition:border-color .15s;
 }
-.color-hex:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px var(--blue-ring)}
+.color-hex:focus{outline:none;border-color:var(--blue)}
 .color-swatches{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .swatch{
   width:22px;height:22px;border-radius:6px;cursor:pointer;
   border:2px solid transparent;
-  box-shadow:0 1px 3px rgba(0,0,0,.12);
-  transition:transform .15s,border-color .15s,box-shadow .15s;
+  transition:transform .15s,border-color .15s;
 }
-.swatch:hover{transform:scale(1.3);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.swatch:hover{transform:scale(1.3);border-color:rgba(255,255,255,.4)}
 
-/* ── UPLOAD ZONE ── */
+/* ────── UPLOAD ZONE ────── */
 .upload-zone{
   border:2px dashed var(--border2);
   border-radius:var(--r);padding:16px;cursor:pointer;
   transition:border-color .2s,background .2s;
 }
-.upload-zone:hover{border-color:var(--blue2);background:var(--blue-bg)}
+.upload-zone:hover{border-color:var(--blue);background:rgba(59,130,246,.05)}
 .upload-zone input[type=file]{display:none}
 .upload-inner{display:flex;align-items:center;gap:14px}
 .upload-thumb{
   width:64px;height:64px;border-radius:12px;
-  background:var(--bg3);border:1.5px solid var(--border2);
-  display:grid;place-items:center;color:var(--text3);
-  flex-shrink:0;overflow:hidden;
+  background:var(--ink3);border:1px solid var(--border2);
+  display:grid;place-items:center;font-size:26px;flex-shrink:0;overflow:hidden;
 }
 .upload-text h4{font-size:13px;font-weight:600;color:var(--text)}
 .upload-text p{font-size:11.5px;color:var(--text3);margin-top:3px}
 .upload-actions{display:flex;gap:7px;margin-top:8px}
 
-/* ── BUTTONS ── */
+/* ────── BUTTONS ────── */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  display:inline-flex;align-items:center;gap:6px;
   height:36px;padding:0 16px;border-radius:var(--r2);
-  font-size:12.5px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12.5px;font-weight:600;font-family:'DM Sans',sans-serif;
   cursor:pointer;border:none;transition:.15s;white-space:nowrap;
 }
-.btn-primary{background:var(--blue2);color:#fff;box-shadow:0 1px 3px rgba(37,99,235,.3)}
-.btn-primary:hover{background:var(--blue);box-shadow:0 3px 12px rgba(37,99,235,.3)}
-.btn-primary:disabled{background:#BFDBFE;color:#fff;cursor:not-allowed;box-shadow:none}
-.btn-secondary{background:var(--blue-bg);color:var(--blue2);border:1px solid var(--blue-ring)}
-.btn-secondary:hover{background:rgba(37,99,235,.12)}
-.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border2)}
-.btn-ghost:hover{background:var(--bg3)}
-.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,.15)}
-.btn-danger:hover{background:rgba(220,38,38,.12)}
-.btn-gold{background:var(--gold);color:#fff;font-weight:700}
-.btn-gold:hover{background:#B45309}
-.btn-big{height:48px;font-size:14px;font-weight:700;border-radius:var(--r);width:100%)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#2563EB}
+.btn-primary:disabled{background:#1D3A6B;color:#4A6FA5;cursor:not-allowed}
+.btn-secondary{background:rgba(59,130,246,.12);color:var(--blue2);border:1px solid rgba(59,130,246,.25)}
+.btn-secondary:hover{background:rgba(59,130,246,.2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.25)}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.btn-gold{background:var(--gold);color:#000;font-weight:700}
+.btn-gold:hover{background:#D97706}
+.btn-big{height:48px;font-size:14px;font-weight:700;border-radius:var(--r);width:100%;justify-content:center}
 .btn-sm{height:30px;padding:0 10px;font-size:11.5px}
 
-/* ── TOGGLE TABS ── */
+/* ────── TOGGLE TABS ────── */
 .seg{
-  display:inline-flex;background:var(--bg3);
-  border:1.5px solid var(--border2);border-radius:var(--r2);
+  display:inline-flex;
+  background:var(--ink3);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
   padding:3px;gap:3px;
 }
 .seg-btn{
   flex:1;padding:6px 14px;border-radius:6px;
-  font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:600;
+  font-family:'DM Sans',sans-serif;
   cursor:pointer;border:none;background:transparent;
   color:var(--text3);transition:.15s;
 }
-.seg-btn.on{background:var(--bg);color:var(--text);box-shadow:var(--shadow-sm)}
+.seg-btn.on{background:var(--surface3);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3)}
 
-/* ── EXPORT TABS ── */
+/* ────── EXPORT TABS ────── */
 .etabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px}
 .etab{
   padding:8px 14px;font-size:12px;font-weight:600;
   cursor:pointer;border:none;background:none;
-  color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;
-  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;
+  color:var(--text3);font-family:'DM Sans',sans-serif;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:.15s;
 }
-.etab.on{color:var(--blue2);border-bottom-color:var(--blue2)}
+.etab.on{color:var(--blue2);border-bottom-color:var(--blue)}
 .epane{display:none}
 .epane.on{display:block}
 
-/* ── CODE BLOCK ── */
+/* ────── CODE BLOCK ────── */
 .codeblock{
-  background:#0F172A;border:1.5px solid rgba(255,255,255,.05);
-  border-radius:var(--r2);padding:14px;
-  font-family:'JetBrains Mono',monospace;
+  background:var(--ink);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:14px;
+  font-family:'DM Mono',monospace;
   font-size:11px;color:#94A3B8;
   line-height:1.8;overflow-x:auto;white-space:pre;
   position:relative;max-height:220px;overflow-y:auto;
 }
 .codeblock .kw{color:#7DD3FC}
 .codeblock .str{color:#86EFAC}
-.codeblock .cmt{color:#475569}
+.codeblock .cmt{color:#334155}
 .copy-btn{
   position:absolute;top:8px;right:8px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:5px;
-  color:#64748B;font-size:10.5px;font-weight:600;
-  padding:4px 9px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;
+  background:rgba(255,255,255,.07);border:none;border-radius:5px;
+  color:var(--text3);font-size:10.5px;font-weight:600;
+  padding:4px 9px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;
 }
-.copy-btn:hover{background:rgba(255,255,255,.1);color:#94A3B8}
+.copy-btn:hover{background:rgba(255,255,255,.14);color:var(--text)}
 
-/* ── PIN FIELD ── */
+/* ────── PIN FIELD ────── */
 .pin-wrap{display:flex;gap:8px;align-items:center}
 .pin-wrap input{
-  flex:1;height:40px;font-family:'JetBrains Mono',monospace;
+  flex:1;height:40px;font-family:'DM Mono',monospace;
   font-size:20px;letter-spacing:10px;text-align:center;
-  background:var(--bg);border:1.5px solid var(--border2);
+  background:var(--ink3);border:1px solid var(--border2);
   border-radius:var(--r2);color:var(--text);transition:.15s;
 }
-.pin-wrap input:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px var(--blue-ring)}
-.pin-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:5px;flex-shrink:0}
-.pin-weak{background:var(--red-bg);color:var(--red)}
-.pin-ok{background:var(--green-bg);color:var(--green)}
+.pin-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.pin-badge{
+  font-size:10.5px;font-weight:700;padding:3px 9px;
+  border-radius:5px;flex-shrink:0;
+}
+.pin-weak{background:rgba(239,68,68,.15);color:#FCA5A5}
+.pin-ok{background:rgba(16,185,129,.15);color:#6EE7B7}
 
-/* ── TOKEN FIELD ── */
+/* ────── TOKEN FIELD ────── */
 .token-wrap{position:relative}
-.token-wrap input{padding-right:44px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.5px}
+.token-wrap input{padding-right:44px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.5px}
 .eye-btn{
   position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;color:var(--text3);
-  display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;font-size:15px;color:var(--text3);
   transition:.15s;
 }
 .eye-btn:hover{color:var(--text)}
 
-/* ── BUILD STATUS ── */
+/* ────── BUILD STATUS ────── */
 .build-status{
-  background:var(--bg2);border:1.5px solid var(--border);
+  background:var(--ink);border:1px solid var(--border);
   border-radius:var(--r);padding:14px;margin-top:14px;display:none;
 }
 .build-status.show{display:block}
 .run-row{
   display:flex;align-items:center;gap:10px;
   padding:10px 12px;border-radius:var(--r2);
-  background:var(--bg);border:1px solid var(--border);
+  background:var(--surface2);border:1px solid var(--border);
 }
 .run-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.run-dot.wait{background:var(--text4)}
+.run-dot.wait{background:var(--text3)}
 .run-dot.queue{background:var(--gold)}
-.run-dot.run{background:var(--blue2);animation:pulse 1s infinite}
+.run-dot.run{background:var(--blue);animation:pulse 1s infinite}
 .run-dot.ok{background:var(--green)}
 .run-dot.fail{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .run-meta{flex:1;min-width:0}
-.run-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.run-title{font-size:12.5px;font-weight:600;color:var(--text)}
 .run-sub{font-size:11px;color:var(--text3);margin-top:1px}
 .run-link{font-size:11px;color:var(--blue2);text-decoration:none;font-weight:600;flex-shrink:0}
 .run-link:hover{text-decoration:underline}
 .build-log{
-  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#64748B;
-  background:#0F172A;border-radius:6px;padding:10px;
+  font-family:'DM Mono',monospace;font-size:10.5px;color:#475569;
+  background:var(--ink);border-radius:6px;padding:10px;
   margin-top:10px;max-height:160px;overflow-y:auto;
   white-space:pre-wrap;word-break:break-all;line-height:1.7;
-  border:1px solid rgba(255,255,255,.04);
+  border:1px solid var(--border);
 }
-.build-log .ok{color:#34D399}
-.build-log .err{color:#F87171}
-.build-log .dim{color:#475569}
+.build-log .ok{color:#6EE7B7}
+.build-log .err{color:#FCA5A5}
+.build-log .dim{color:#334155}
 .artifact-btn{
   display:inline-flex;align-items:center;gap:7px;
   margin-top:12px;padding:10px 18px;
@@ -373,9 +355,55 @@ body{
   border-radius:var(--r2);font-size:12.5px;font-weight:700;
   text-decoration:none;transition:.15s;
 }
-.artifact-btn:hover{background:#047857}
+.artifact-btn:hover{background:#059669}
 
-/* ── SAVE ROW ── */
+/* ── APK Download Panel ── */
+.apk-panel{
+  background:var(--ink);border:1px solid var(--green);
+  border-radius:var(--r2);overflow:hidden;margin-top:12px;
+}
+.apk-panel-header{
+  background:rgba(16,185,129,.12);
+  padding:8px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(16,185,129,.2);
+}
+.apk-panel-header .apk-badge{
+  font-size:11px;font-weight:700;color:var(--green);
+  display:flex;align-items:center;gap:5px;
+}
+.apk-panel-header .apk-note{
+  font-size:10.5px;color:var(--text3);
+}
+.apk-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+  text-decoration:none;
+  transition:.15s;
+}
+.apk-item:last-child{border-bottom:none}
+.apk-item:hover{background:rgba(59,130,246,.06)}
+.apk-item-ico{font-size:20px;flex-shrink:0}
+.apk-item-info{flex:1;min-width:0}
+.apk-item-name{font-size:12px;font-weight:600;color:var(--text);word-break:break-all}
+.apk-item-size{font-size:10.5px;color:var(--text3);margin-top:1px}
+.apk-item-dl{
+  flex-shrink:0;
+  background:var(--green);color:#fff;
+  border-radius:6px;padding:6px 12px;
+  font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;gap:5px;
+  text-decoration:none;transition:.15s;
+}
+.apk-item-dl:hover{background:#059669}
+.apk-item-dl.expired{background:var(--text3);cursor:default}
+.apk-fetching{
+  padding:12px;text-align:center;
+  font-size:11.5px;color:var(--text3);
+}
+
+/* ────── SAVE ROW ────── */
 .save-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:4px}
 .saved-ok{
   display:inline-flex;align-items:center;gap:5px;
@@ -384,158 +412,237 @@ body{
 }
 .saved-ok.show{opacity:1}
 
-/* ── SIDEBAR ── */
+/* ────── SIDEBAR (PREVIEW) ────── */
 .sidebar{
-  position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;
-  background:var(--bg2);padding:20px 20px 40px;
+  position:sticky;top:56px;
+  height:calc(100vh - 56px);
+  overflow-y:auto;
+  background:var(--ink2);
+  padding:20px 20px 40px;
   display:flex;flex-direction:column;gap:16px;
-  border-left:1px solid var(--border);
 }
 
+/* Preview tab switcher */
 .prev-tabs{
-  display:flex;background:var(--bg3);
-  border:1.5px solid var(--border2);border-radius:var(--r);
+  display:flex;background:var(--ink3);
+  border:1px solid var(--border);border-radius:var(--r);
   padding:4px;gap:3px;
 }
 .prev-tab{
   flex:1;padding:8px 0;text-align:center;
   font-size:12px;font-weight:600;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;border:none;
+  font-family:'DM Sans',sans-serif;cursor:pointer;border:none;
   background:transparent;color:var(--text3);border-radius:var(--r2);transition:.15s;
 }
-.prev-tab.on{background:var(--bg);color:var(--text);box-shadow:var(--shadow-sm)}
+.prev-tab.on{background:var(--surface3);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.3)}
 
 /* Phone frame */
-.phone-outer{width:220px;height:460px;margin:0 auto;position:relative}
+.phone-outer{
+  width:220px;height:460px;
+  margin:0 auto;
+  position:relative;
+}
 .phone-shell{
   width:100%;height:100%;
-  background:linear-gradient(160deg,#1E2A3A,#0F172A);
-  border-radius:38px;padding:8px;
-  box-shadow:0 0 0 1px rgba(255,255,255,.05),0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);
+  background:linear-gradient(160deg,#2D3748,#1A202C);
+  border-radius:38px;
+  padding:8px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 20px 60px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.12);
 }
 .phone-screen{
-  width:100%;height:100%;border-radius:32px;overflow:hidden;
-  background:#fff;position:relative;display:flex;flex-direction:column;
+  width:100%;height:100%;
+  border-radius:32px;
+  overflow:hidden;
+  background:#fff;
+  position:relative;
+  display:flex;flex-direction:column;
 }
+/* Notch */
 .phone-notch{
   position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:56px;height:10px;
-  background:linear-gradient(160deg,#1E2A3A,#0F172A);
-  border-radius:0 0 8px 8px;z-index:10;
+  background:linear-gradient(160deg,#2D3748,#1A202C);
+  border-radius:0 0 8px 8px;
+  z-index:10;
 }
 
-/* Splash sim */
+/* ── SPLASH SCREEN SIM ── */
 #simSplash{
-  width:100%;height:100%;display:flex;flex-direction:column;
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  position:relative;padding:24px 20px;transition:background-color .4s;
+  position:relative;padding:24px 20px;
+  transition:background-color .4s;
 }
 .sp-logo-ring{
   width:80px;height:80px;border-radius:20px;
   background:rgba(255,255,255,.12);
   display:flex;align-items:center;justify-content:center;
   margin-bottom:18px;overflow:hidden;flex-shrink:0;
-  box-shadow:0 8px 32px rgba(0,0,0,.35);transition:width .3s,height .3s;
+  box-shadow:0 8px 32px rgba(0,0,0,.35);
+  transition:width .3s,height .3s;
 }
 .sp-logo-ring img{width:100%;height:100%;object-fit:contain;border-radius:16px}
-.sp-logo-ring .sp-fallback{color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center}
-.sp-name{font-size:15px;font-weight:800;color:#fff;text-align:center;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.4);margin-bottom:5px}
+.sp-logo-ring .sp-emoji{font-size:36px;line-height:1}
+.sp-name{
+  font-size:15px;font-weight:800;color:#fff;
+  text-align:center;letter-spacing:.2px;
+  text-shadow:0 2px 8px rgba(0,0,0,.4);
+  margin-bottom:5px;
+}
 .sp-line{width:40px;height:2px;background:rgba(255,255,255,.4);border-radius:2px;margin-bottom:9px}
-.sp-sub{font-size:9px;color:rgba(255,255,255,.7);text-align:center;line-height:1.6;max-width:140px;margin-bottom:16px}
-.sp-badge{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 10px;font-size:7px;color:#fff;font-weight:700;letter-spacing:.5px;margin-bottom:28px;display:flex;align-items:center;gap:5px}
-.sp-bottom{position:absolute;bottom:24px;left:28px;right:28px}
+.sp-sub{
+  font-size:9px;color:rgba(255,255,255,.7);
+  text-align:center;line-height:1.6;
+  max-width:140px;margin-bottom:16px;
+}
+.sp-badge{
+  background:rgba(255,255,255,.15);border-radius:20px;
+  padding:4px 10px;font-size:7px;color:#fff;
+  font-weight:700;letter-spacing:.5px;margin-bottom:28px;
+}
+.sp-bottom{
+  position:absolute;bottom:24px;left:28px;right:28px;
+}
 .sp-track{height:2px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
 .sp-bar{height:100%;width:50%;background:rgba(255,255,255,.85);border-radius:2px;animation:spbar 1.6s ease-in-out infinite}
 @keyframes spbar{0%{transform:translateX(-120%)}60%{transform:translateX(100%)}100%{transform:translateX(220%)}}
 .sp-ver{text-align:center;font-size:7px;color:rgba(255,255,255,.3);margin-top:7px}
 
-/* Main screen sim */
-#simMain{width:100%;height:100%;display:flex;flex-direction:column;background:#F1F5F9;position:relative}
-.ms-header{display:flex;flex-direction:column;align-items:center;padding:20px 14px 32px;transition:background .3s;position:relative;z-index:1;flex-shrink:0}
+/* ── MAIN SCREEN SIM ── */
+#simMain{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  background:#F1F5F9;
+}
+.ms-header{
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 14px 14px;
+  transition:background .3s;
+}
 .ms-logo{width:44px;height:44px;border-radius:10px;object-fit:contain;margin-bottom:5px}
-.ms-logo-fallback{font-size:26px;margin-bottom:5px;color:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
+.ms-logo-emoji{font-size:30px;margin-bottom:5px}
 .ms-title{font-size:12.5px;font-weight:800;color:#fff;text-align:center}
 .ms-sub{font-size:9px;color:rgba(255,255,255,.72);text-align:center;margin-top:2px}
-.ms-badge{margin-top:7px;background:rgba(255,255,255,.16);border-radius:20px;padding:3px 10px;font-size:7px;color:#fff;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:4px}
-.ms-body{flex:1;padding:10px;overflow:hidden;background:transparent;margin-top:-18px;position:relative;z-index:2}
-.ms-card{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;box-shadow:0 4px 16px rgba(0,0,0,.12);border:0.5px solid rgba(0,0,0,.04)}
+.ms-badge{
+  margin-top:7px;background:rgba(255,255,255,.16);
+  border-radius:20px;padding:3px 10px;
+  font-size:7px;color:#fff;font-weight:700;letter-spacing:.4px;
+}
+.ms-body{flex:1;padding:10px;overflow:hidden;background:#F1F5F9}
+.ms-card{
+  background:#fff;border-radius:10px;padding:10px;
+  margin-bottom:7px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
+}
 .ms-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
 .ms-input-row{display:flex;gap:5px;margin-bottom:5px}
-.ms-input{flex:1;height:26px;background:#F8FAFC;border:1.5px solid #E5E7EB;border-radius:6px;font-size:8px;color:#94A3B8;font-family:monospace;display:flex;align-items:center;padding:0 7px}
-.ms-qr-btn{width:26px;height:26px;border-radius:6px;flex-shrink:0;border:1.5px solid #3B82F6;background:#EFF6FF;display:flex;align-items:center;justify-content:center;color:#3B82F6}
-.ms-divider{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.ms-input{
+  flex:1;height:26px;background:#F8FAFC;
+  border:1.5px solid #E5E7EB;border-radius:6px;
+  font-size:8px;color:#94A3B8;
+  font-family:monospace;display:flex;align-items:center;padding:0 7px;
+}
+.ms-qr-btn{
+  width:26px;height:26px;border-radius:6px;flex-shrink:0;
+  border:1.5px solid #3B82F6;background:#EFF6FF;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#3B82F6;font-weight:bold;
+}
+.ms-divider{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:6px;
+}
 .ms-divider-line{flex:1;height:1px;background:#F1F5F9}
 .ms-divider-text{font-size:7px;color:#94A3B8;white-space:nowrap}
-.ms-start-btn{height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;transition:background .3s}
+.ms-start-btn{
+  height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:9px;font-weight:700;
+  transition:background .3s;
+}
 .ms-feats{background:#fff;border-radius:10px;padding:10px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
 .ms-feat-lbl{font-size:7.5px;font-weight:700;color:#64748B;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
-.ms-feat{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:7px;background:#F8FAFC;margin-bottom:4px;font-size:7.5px;color:#374151}
+.ms-feat{
+  display:flex;align-items:center;gap:6px;
+  padding:4px 6px;border-radius:7px;
+  background:#F8FAFC;margin-bottom:4px;font-size:7.5px;color:#374151;
+}
 .ms-feat:last-child{margin:0}
-.ms-check{width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:bold;flex-shrink:0;transition:background .3s}
-.ms-footer{background:#F8FAFF;border-top:1px solid #EEF2FF;text-align:center;padding:4px;font-size:7px;color:#94A3B8}
+.ms-check{
+  width:13px;height:13px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:6.5px;font-weight:bold;flex-shrink:0;
+  transition:background .3s;
+}
+.ms-footer{
+  background:#F8FAFF;border-top:1px solid #EEF2FF;
+  text-align:center;padding:4px;font-size:7px;color:#94A3B8;
+}
 
-/* Preview labels */
-.prev-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+/* ────── PREVIEW PANEL LABELS ────── */
+.prev-label{
+  font-size:10px;font-weight:700;color:var(--text3);
+  letter-spacing:.5px;text-transform:uppercase;
+  margin-bottom:2px;
+}
 .prev-note{font-size:10.5px;color:var(--text3);text-align:center;margin-top:8px}
 
-/* ── INFO / WARN BOXES ── */
+/* ────── INFO BOXES ────── */
 .info-box{
-  background:var(--blue-bg);border:1.5px solid var(--blue-ring);
+  background:rgba(59,130,246,.07);
+  border:1px solid rgba(59,130,246,.2);
   border-radius:var(--r2);padding:12px 14px;
-  font-size:12px;color:var(--text2);line-height:1.8;
-  display:flex;gap:10px;align-items:flex-start;
+  font-size:12px;color:#93C5FD;line-height:1.8;
 }
-.info-box .box-icon{color:var(--blue2);flex-shrink:0;margin-top:1px}
 .warn-box{
-  background:rgba(217,119,6,.06);border:1.5px solid rgba(217,119,6,.18);
+  background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.2);
   border-radius:var(--r2);padding:10px 14px;
-  font-size:11.5px;color:var(--text2);line-height:1.7;
-  display:flex;gap:10px;align-items:flex-start;
+  font-size:11.5px;color:#FCD34D;line-height:1.7;
 }
-.warn-box .box-icon{color:var(--gold);flex-shrink:0;margin-top:1px}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.summary-item{background:var(--bg3);border-radius:var(--r2);padding:8px 10px}
+.summary-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+}
+.summary-item{
+  background:var(--surface3);border-radius:var(--r2);
+  padding:8px 10px;
+}
 .summary-item .sk{font-size:10px;color:var(--text3);margin-bottom:2px}
 .summary-item .sv{font-size:12px;font-weight:600;color:var(--text);word-break:break-all}
 
-/* ── STEP LIST ── */
+/* ────── STEP LIST ────── */
 .steps{list-style:none;counter-reset:step;padding:0}
 .steps li{
-  counter-increment:step;display:flex;align-items:flex-start;gap:10px;
-  font-size:12px;color:var(--text2);padding:5px 0;line-height:1.5;
+  counter-increment:step;
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:12px;color:var(--text2);
+  padding:5px 0;line-height:1.5;
 }
 .steps li::before{
   content:counter(step);
   display:flex;align-items:center;justify-content:center;
   width:20px;height:20px;border-radius:50%;
-  background:var(--blue-bg);color:var(--blue2);
+  background:rgba(59,130,246,.15);color:var(--blue2);
   font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;
 }
 
-/* ── SLIDER ── */
+/* ────── OVERLAY SLIDER ────── */
 .sl-row{display:flex;align-items:center;gap:10px;margin-top:10px}
 .sl-row label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;min-width:90px}
-.sl-row input[type=range]{flex:1;accent-color:var(--blue2)}
+.sl-row input[type=range]{flex:1;accent-color:var(--blue)}
 .sl-val{font-size:11px;font-weight:700;color:var(--blue2);min-width:34px;text-align:right}
 
-/* ── SIDEBAR HELP CARD ── */
-.help-card{
-  background:var(--bg);border:1.5px solid var(--border);
-  border-radius:var(--r);padding:16px;
-}
-.help-card-title{
-  font-size:10px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
-  display:flex;align-items:center;gap:6px;
-}
-
-/* ── TOAST ── */
+/* ────── TOAST ────── */
 .toast{
   position:fixed;bottom:20px;right:20px;
-  background:var(--text);color:#fff;
+  background:var(--surface3);color:var(--text);
   padding:10px 16px;border-radius:var(--r);
   font-size:13px;font-weight:600;
+  border:1px solid var(--border2);
   box-shadow:var(--shadow);
   display:flex;align-items:center;gap:8px;
   transform:translateY(70px);opacity:0;
@@ -543,35 +650,6 @@ body{
   z-index:999;pointer-events:none;
 }
 .toast.show{transform:translateY(0);opacity:1}
-/* Exam screen sim */
-#simExam{width:100%;height:100%;display:flex;flex-direction:column;background:#111827}
-.ex-topbar{height:38px;display:flex;align-items:center;padding:0 8px;gap:6px;flex-shrink:0}
-.ex-appico{width:18px;height:18px;border-radius:4px;object-fit:contain}
-.ex-urlstack{flex:1;min-width:0}
-.ex-label{font-size:5.5px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-.ex-url{font-size:7.5px;color:rgba(255,255,255,.85);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ex-badge{background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.35);border-radius:10px;padding:2px 6px;font-size:6px;color:#60a5fa;font-weight:700;flex-shrink:0}
-.ex-progress{height:2px;background:#0A1020;flex-shrink:0}
-.ex-progressbar{height:100%;width:60%;transition:background .3s}
-.ex-webview{flex:1;background:#f8f9fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ex-webview-inner{text-align:center}
-.ex-webview-inner p{font-size:7.5px;color:#6b7280;margin-top:4px}
-.ex-bottombar{height:38px;background:#fff;border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ex-exitbtn{height:22px;padding:0 12px;border-radius:11px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.06);font-size:7.5px;font-weight:700;color:#ef4444}
-
-/* Dialog overlay sim */
-#simDialog{width:100%;height:100%;display:flex;flex-direction:column;background:#111827;position:relative}
-.dlg-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
-.dlg-card{background:#fff;border-radius:14px;padding:16px 14px;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px}
-.dlg-icon{font-size:22px}
-.dlg-title{font-size:11px;font-weight:800;color:#111827;text-align:center}
-.dlg-sub{font-size:7.5px;color:#6b7280;text-align:center;line-height:1.6}
-.dlg-label{font-size:7px;font-weight:700;color:#6b7280;letter-spacing:.5px;text-transform:uppercase;align-self:center}
-.dlg-input{width:100px;height:30px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;letter-spacing:6px;color:#374151}
-.dlg-btn-confirm{width:100%;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8.5px;font-weight:700;transition:background .3s;margin-top:2px}
-.dlg-btn-cancel{width:100%;height:28px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:600;color:#6b7280}
-
-.ico svg{width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -579,50 +657,28 @@ body{
 <!-- ═══ TOPBAR ═══ -->
 <nav class="topbar">
   <a class="brand" href="#">
-    <div class="brand-icon" style="background:transparent;border:none;padding:0;overflow:hidden"><img src="data:image/png;base64,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" style="width:30px;height:30px;object-fit:contain;border-radius:6px"/></div>
-    <div class="brand-name">EMES <span>ExamBro</span></div>
+    <div class="brand-icon">🛡</div>
+    <div class="brand-name">Ezam<span>Bro</span></div>
   </a>
   <div class="topbar-right">
     <span class="pill">APK BUILDER</span>
-    <a class="gh-btn" href="#" id="ghRepoLink" target="_blank">
-      <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></span> <span id="ghRepoText">GitHub Repo</span>
-    </a>
+    <a class="gh-btn" href="#" id="ghRepoLink" target="_blank">⭐ GitHub Repo</a>
   </div>
 </nav>
 
 <div class="layout">
 
-<!-- ══════════════════ LEFT: FORM ══════════════════ -->
+<!-- ═══════════════════════════════════════════
+     LEFT: FORM COLUMN
+════════════════════════════════════════════ -->
 <div class="main-col">
 
-<div class="main-tabs-nav">
-  <button class="main-tab-btn on" onclick="switchMainTab('tab-github',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg></span> GitHub
-  </button>
-  <button class="main-tab-btn" onclick="switchMainTab('tab-identitas',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span> Identitas
-  </button>
-  <button class="main-tab-btn" onclick="switchMainTab('tab-splash',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg></span> Splash
-  </button>
-  <button class="main-tab-btn" onclick="switchMainTab('tab-warna',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span> Warna
-  </button>
-  <button class="main-tab-btn" onclick="switchMainTab('tab-keamanan',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Keamanan
-  </button>
-  <button class="main-tab-btn" onclick="switchMainTab('tab-build',this)">
-    <span class="ico" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span> Build
-  </button>
-</div>
-
-<!-- TAB: GitHub -->
-<div class="main-tab-pane on" id="tab-github">
+  <!-- ── GITHUB CONNECTION ── -->
   <div class="section-label">Koneksi GitHub</div>
 
-  <div class="card">
+  <div class="card card-featured">
     <div class="card-head">
-      <div class="card-ico ico-blue"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg></span></div>
+      <div class="card-ico ico-blue">🔑</div>
       <div><h3>GitHub Actions</h3><p>Token &amp; repo untuk trigger build otomatis</p></div>
     </div>
     <div class="card-body">
@@ -631,9 +687,9 @@ body{
         <div class="token-wrap">
           <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
             oninput="saveGH()" spellcheck="false" autocomplete="off"/>
-          <button class="eye-btn" onclick="toggleToken()"><span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span></button>
+          <button class="eye-btn" onclick="toggleToken()">👁</button>
         </div>
-        <p class="hint">Buat di <strong>GitHub → Settings → Developer settings → Personal access tokens (classic)</strong>. Wajib centang scope: <code>repo</code> <strong>DAN</strong> <code>workflow</code>. Hanya tersimpan di browser Anda.</p>
+        <p class="hint">Buat di <strong>GitHub → Settings → Developer settings → Personal access tokens (classic)</strong>. Wajib centang scope: <code>repo</code> <strong>DAN</strong> <code>workflow</code> (keduanya diperlukan untuk trigger build). Hanya tersimpan di browser Anda.</p>
       </div>
       <div class="row2">
         <div class="field">
@@ -651,45 +707,43 @@ body{
         <p class="hint">Nama file di <code>.github/workflows/</code>. Default: <strong>build.yml</strong></p>
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
-        <button class="btn btn-secondary btn-sm" onclick="testConn()"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M1.42 9A16 16 0 0 1 22.58 9"/><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M10.5 17.1a5 5 0 0 1 2.99 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg></span> Test Koneksi</button>
+        <button class="btn btn-secondary btn-sm" onclick="testConn()">🔌 Test Koneksi</button>
         <span id="connStatus" style="font-size:12px;font-weight:600"></span>
       </div>
     </div>
   </div>
 
-</div><!-- /tab-github -->
-
-<!-- TAB: Identitas -->
-<div class="main-tab-pane" id="tab-identitas">
+  <!-- ── LOGO ── -->
   <div class="section-label">Identitas Visual</div>
 
   <div class="card">
     <div class="card-head">
-      <div class="card-ico ico-gold"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span></div>
+      <div class="card-ico ico-gold">🖼</div>
       <div><h3>Logo Aplikasi</h3><p>Tampil di splash screen, header &amp; ikon launcher</p></div>
     </div>
     <div class="card-body">
       <div class="upload-zone" id="logoZone" onclick="document.getElementById('logoFile').click()">
         <input type="file" id="logoFile" accept="image/*"/>
         <div class="upload-inner">
-          <div class="upload-thumb" id="logoThumb"><span class="ico" style="width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span></div>
+          <div class="upload-thumb" id="logoThumb">🛡</div>
           <div class="upload-text">
             <h4 id="logoName">Belum ada logo</h4>
             <p>Klik atau drag &amp; drop PNG/JPG/SVG</p>
             <div class="upload-actions">
-              <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('logoFile').click()"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Pilih</button>
-              <button class="btn btn-danger btn-sm" id="logoRemove" onclick="e(event);removeLogo()" style="display:none"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span> Hapus</button>
+              <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('logoFile').click()">📁 Pilih</button>
+              <button class="btn btn-danger btn-sm" id="logoRemove" onclick="e(event);removeLogo()" style="display:none">✕ Hapus</button>
             </div>
           </div>
         </div>
       </div>
-      <p class="hint">Ukuran optimal: <strong>512×512 px</strong>, PNG transparan. Logo otomatis tampil di splash &amp; header preview.</p>
+      <p class="hint">Ukuran optimal: <strong>512×512 px</strong>, PNG transparan. Logo otomatis tampil di splash &amp; header preview di sebelah kanan.</p>
     </div>
   </div>
 
+  <!-- ── NAMA & DESKRIPSI ── -->
   <div class="card">
     <div class="card-head">
-      <div class="card-ico ico-cyan"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span></div>
+      <div class="card-ico ico-cyan">✏️</div>
       <div><h3>Nama &amp; Deskripsi</h3><p>Teks di splash screen dan layar utama</p></div>
     </div>
     <div class="card-body">
@@ -710,25 +764,26 @@ body{
     </div>
   </div>
 
-</div><!-- /tab-identitas -->
-
-<!-- TAB: Splash -->
-<div class="main-tab-pane" id="tab-splash">
+  <!-- ── SPLASH SCREEN ── -->
   <div class="section-label">Splash Screen</div>
 
   <div class="card">
     <div class="card-head">
-      <div class="card-ico ico-purple"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/></svg></span></div>
+      <div class="card-ico ico-purple">🌅</div>
       <div><h3>Pengaturan Splash Screen</h3><p>Layar loading ~2–3 detik saat app pertama dibuka</p></div>
     </div>
     <div class="card-body">
+
+      <!-- BG Mode -->
       <div class="field">
         <label>Background Splash</label>
         <div class="seg" style="width:100%">
-          <button class="seg-btn on" id="spBgColorBtn" onclick="setSplashBgMode('color')">Warna Solid</button>
-          <button class="seg-btn" id="spBgImgBtn" onclick="setSplashBgMode('image')">Gambar</button>
+          <button class="seg-btn on" id="spBgColorBtn" onclick="setSplashBgMode('color')">🎨 Warna Solid</button>
+          <button class="seg-btn" id="spBgImgBtn" onclick="setSplashBgMode('image')">🖼️ Gambar</button>
         </div>
       </div>
+
+      <!-- Warna splash -->
       <div id="spColorWrap">
         <div class="field">
           <label>Warna Background</label>
@@ -739,6 +794,8 @@ body{
           <div class="color-swatches" id="swSplash"></div>
         </div>
       </div>
+
+      <!-- Gambar splash -->
       <div id="spImageWrap" style="display:none">
         <div class="field">
           <label>Gambar Background Splash</label>
@@ -752,8 +809,8 @@ body{
                 <h4 id="spBgName">Pilih gambar splash</h4>
                 <p>PNG/JPG, portrait (9:16) direkomendasikan</p>
                 <div class="upload-actions">
-                  <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('spBgFile').click()"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Pilih</button>
-                  <button class="btn btn-danger btn-sm" id="spBgRemove" onclick="e(event);removeSpBg()" style="display:none"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></button>
+                  <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('spBgFile').click()">📁 Pilih</button>
+                  <button class="btn btn-danger btn-sm" id="spBgRemove" onclick="e(event);removeSpBg()" style="display:none">✕</button>
                 </div>
               </div>
             </div>
@@ -765,6 +822,8 @@ body{
           <span id="spOverlayVal" class="sl-val">50%</span>
         </div>
       </div>
+
+      <!-- Warna teks splash -->
       <div class="field">
         <label>Warna Teks Splash</label>
         <div class="color-row">
@@ -773,55 +832,60 @@ body{
         </div>
         <p class="hint">Warna untuk nama, subtitle, dan badge di splash. Default putih.</p>
       </div>
+
+      <!-- Logo splash -->
       <div class="field">
         <label>Logo di Splash Screen</label>
         <div class="seg" style="width:100%">
-          <button class="seg-btn on" id="spLogoSameBtn" onclick="setSpLogoMode('same')">Sama dengan Logo Utama</button>
-          <button class="seg-btn" id="spLogoCustomBtn" onclick="setSpLogoMode('custom')">Logo Khusus</button>
+          <button class="seg-btn on" id="spLogoSameBtn" onclick="setSpLogoMode('same')">📌 Sama dengan Logo Utama</button>
+          <button class="seg-btn" id="spLogoCustomBtn" onclick="setSpLogoMode('custom')">🎨 Logo Khusus</button>
         </div>
       </div>
       <div id="spLogoCustomWrap" style="display:none">
         <div class="upload-zone" id="spLogoZone" onclick="document.getElementById('spLogoFile').click()">
           <input type="file" id="spLogoFile" accept="image/*"/>
           <div class="upload-inner">
-            <div class="upload-thumb" id="spLogoThumb"><span class="ico" style="width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span></div>
+            <div class="upload-thumb" id="spLogoThumb">🛡</div>
             <div class="upload-text">
               <h4 id="spLogoName">Logo khusus splash</h4>
               <p>PNG transparan direkomendasikan</p>
               <div class="upload-actions">
-                <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('spLogoFile').click()"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Pilih</button>
-                <button class="btn btn-danger btn-sm" id="spLogoRemove" onclick="e(event);removeSpLogo()" style="display:none"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></button>
+                <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('spLogoFile').click()">📁 Pilih</button>
+                <button class="btn btn-danger btn-sm" id="spLogoRemove" onclick="e(event);removeSpLogo()" style="display:none">✕</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Ukuran logo -->
       <div class="sl-row">
         <label>Ukuran logo:</label>
         <input type="range" id="spLogoSize" min="50" max="130" value="80" oninput="document.getElementById('spLogoSizeVal').textContent=this.value+'px';refreshSplash()"/>
         <span id="spLogoSizeVal" class="sl-val">80px</span>
       </div>
+
     </div>
   </div>
-</div><!-- /tab-splash -->
 
-<!-- TAB: Warna -->
-<div class="main-tab-pane" id="tab-warna">
+  <!-- ── WARNA APLIKASI ── -->
   <div class="section-label">Warna Aplikasi</div>
 
   <div class="card">
     <div class="card-head">
-      <div class="card-ico ico-blue"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span></div>
+      <div class="card-ico ico-blue">🎨</div>
       <div><h3>Warna Header &amp; Aksen</h3><p>Header layar utama dan tombol aksi</p></div>
     </div>
     <div class="card-body">
+      <!-- Header BG -->
       <div class="field">
         <label>Background Header</label>
         <div class="seg" style="width:100%">
-          <button class="seg-btn on" id="hdrColorBtn" onclick="setHdrMode('color')">Warna</button>
-          <button class="seg-btn" id="hdrImageBtn" onclick="setHdrMode('image')">Gambar</button>
+          <button class="seg-btn on" id="hdrColorBtn" onclick="setHdrMode('color')">🎨 Warna</button>
+          <button class="seg-btn" id="hdrImageBtn" onclick="setHdrMode('image')">🖼️ Gambar</button>
         </div>
       </div>
+
       <div id="hdrColorWrap">
         <div class="color-row">
           <input type="color" id="cHeader" value="#1A3A5C" oninput="syncHex('cHeader','hHeader')"/>
@@ -829,6 +893,7 @@ body{
         </div>
         <div class="color-swatches" id="swHeader"></div>
       </div>
+
       <div id="hdrImageWrap" style="display:none">
         <div class="upload-zone" id="hdrBgZone" onclick="document.getElementById('hdrBgFile').click()">
           <input type="file" id="hdrBgFile" accept="image/*"/>
@@ -840,8 +905,8 @@ body{
               <h4 id="hdrBgName">Pilih gambar header</h4>
               <p>PNG/JPG landscape direkomendasikan</p>
               <div class="upload-actions">
-                <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('hdrBgFile').click()"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Pilih</button>
-                <button class="btn btn-danger btn-sm" id="hdrBgRemove" onclick="e(event);removeHdrBg()" style="display:none"><span class="ico" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span></button>
+                <button class="btn btn-secondary btn-sm" onclick="e(event);document.getElementById('hdrBgFile').click()">📁 Pilih</button>
+                <button class="btn btn-danger btn-sm" id="hdrBgRemove" onclick="e(event);removeHdrBg()" style="display:none">✕</button>
               </div>
             </div>
           </div>
@@ -852,6 +917,8 @@ body{
           <span id="hdrOverlayVal" class="sl-val">35%</span>
         </div>
       </div>
+
+      <!-- Warna aksen -->
       <div class="field" style="margin-top:16px">
         <label>Warna Tombol &amp; Aksen</label>
         <div class="color-row">
@@ -862,15 +929,13 @@ body{
       </div>
     </div>
   </div>
-</div><!-- /tab-warna -->
 
-<!-- TAB: Keamanan -->
-<div class="main-tab-pane" id="tab-keamanan">
+  <!-- ── KEAMANAN ── -->
   <div class="section-label">Keamanan &amp; Identitas</div>
 
   <div class="card">
     <div class="card-head">
-      <div class="card-ico ico-red"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></div>
+      <div class="card-ico ico-red">🔒</div>
       <div><h3>PIN &amp; Package</h3><p>Keamanan exit dan identitas APK di perangkat</p></div>
     </div>
     <div class="card-body">
@@ -894,31 +959,51 @@ body{
       </div>
     </div>
   </div>
-</div><!-- /tab-keamanan -->
 
-<!-- TAB: Build -->
-<div class="main-tab-pane" id="tab-build">
+  <!-- ── EXPORT KODE ── -->
+  <div class="section-label">Export Konfigurasi</div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-ico ico-green">📦</div>
+      <div><h3>Export Manual</h3><p>Salin kode untuk Android Studio (opsional)</p></div>
+    </div>
+    <div class="card-body" style="padding-bottom:0">
+      <div class="etabs">
+        <button class="etab on" onclick="switchExportTab('eStrings',this)">strings.xml</button>
+        <button class="etab" onclick="switchExportTab('eColors',this)">colors.xml</button>
+        <button class="etab" onclick="switchExportTab('eJson',this)">config.json</button>
+      </div>
+      <div class="epane on" id="eStrings"><div class="codeblock" id="codeStrings"><button class="copy-btn" onclick="copyCode('codeStrings')">Salin</button></div></div>
+      <div class="epane" id="eColors"><div class="codeblock" id="codeColors"><button class="copy-btn" onclick="copyCode('codeColors')">Salin</button></div></div>
+      <div class="epane" id="eJson"><div class="codeblock" id="codeJson"><button class="copy-btn" onclick="copyCode('codeJson')">Salin</button></div></div>
+      <div class="save-row" style="padding:16px 0">
+        <button class="btn btn-secondary" onclick="saveConfig()">💾 Simpan ke Browser</button>
+        <button class="btn btn-gold" onclick="dlJson()">⬇ Unduh config.json</button>
+        <span class="saved-ok" id="savedOk">✓ Tersimpan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BUILD APK ── -->
   <div class="section-label">Build APK</div>
 
-  <div class="card" id="buildCard">
+  <div class="card card-featured" id="buildCard">
     <div class="card-head">
-      <div class="card-ico ico-purple"><span class="ico" style="width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span></div>
+      <div class="card-ico ico-purple">🚀</div>
       <div><h3>Build via GitHub Actions</h3><p>APK siap dalam ~3 menit tanpa Android Studio</p></div>
     </div>
     <div class="card-body">
       <div class="info-box">
-        <div class="box-icon"><span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span></div>
-        <div>
-          <strong>Ringkasan Build:</strong><br/>
-          Nama: <span id="sumName">Emes Exam Browser</span><br/>
-          Header: <span id="sumHdr">#1A3A5C</span> &nbsp;·&nbsp; Tombol: <span id="sumAcc">#2E7BF6</span><br/>
-          PIN: <span id="sumPin">****</span> &nbsp;·&nbsp; Package: <span id="sumPkg">id.emes.exambrowser</span><br/>
-          Versi: <span id="sumVer">1.1.0</span>
-        </div>
+        <strong>Ringkasan Build:</strong><br/>
+        📱 <span id="sumName">Emes Exam Browser</span><br/>
+        🎨 Header: <span id="sumHdr">#1A3A5C</span> &nbsp;·&nbsp; Tombol: <span id="sumAcc">#2E7BF6</span><br/>
+        🔒 PIN: <span id="sumPin">****</span> &nbsp;·&nbsp; Package: <span id="sumPkg">id.emes.exambrowser</span><br/>
+        🏷 Versi: <span id="sumVer">1.1.0</span>
       </div>
 
       <button class="btn btn-primary btn-big" id="btnBuild" onclick="triggerBuild()">
-        <span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span> Build APK Sekarang
+        🚀 Build APK Sekarang
       </button>
 
       <div class="build-status" id="buildStatus">
@@ -928,39 +1013,31 @@ body{
             <div class="run-title" id="runTitle">Memulai…</div>
             <div class="run-sub" id="runSub">Mengirim ke GitHub Actions</div>
           </div>
-          <a href="#" class="run-link" id="runLink" style="display:none" target="_blank">Buka &nearr;</a>
+          <a href="#" class="run-link" id="runLink" style="display:none" target="_blank">Buka ↗</a>
         </div>
         <div class="build-log" id="buildLog"></div>
-        <!-- Panel download inline — muncul setelah build selesai -->
-        <div id="downloadPanel" style="display:none;margin-top:10px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--bg)">
-          <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
-            <span style="font-size:11px;font-weight:700;color:#10B981;letter-spacing:.4px;text-transform:uppercase">✅ APK Siap Didownload</span>
-            <span style="font-size:10px;color:var(--text3);margin-left:auto">Tidak perlu login GitHub</span>
-          </div>
-          <div id="apkList" style="padding:6px;display:flex;flex-direction:column;gap:4px"></div>
-          <div style="padding:8px 14px;border-top:1px solid var(--border)">
-            <a href="#" id="artifactBtn" target="_blank" style="font-size:11px;color:var(--text3);text-decoration:none">↗ Buka GitHub Actions (perlu login)</a>
-          </div>
-        </div>
+        <!-- Panel download APK dinamis -->
+        <div id="apkPanel" style="display:none;margin-top:12px;"></div>
+        <a href="#" class="run-link" id="artifactBtn" style="display:none;font-size:11px;margin-top:8px;display:none" target="_blank">↗ Buka GitHub Actions</a>
       </div>
     </div>
   </div>
-</div><!-- /tab-build -->
 
 </div><!-- /main-col -->
 
 
-<!-- ══════════════════ RIGHT: SIDEBAR ══════════════════ -->
+<!-- ═══════════════════════════════════════════
+     RIGHT: SIDEBAR / PREVIEW
+════════════════════════════════════════════ -->
 <div class="sidebar">
 
-  <div class="prev-tabs" style="flex-wrap:wrap;gap:3px">
-    <button class="prev-tab on" id="ptSplash" onclick="showPrev('splash')" style="font-size:11px;padding:7px 8px">💡 Splash</button>
-    <button class="prev-tab" id="ptMain"   onclick="showPrev('main')"   style="font-size:11px;padding:7px 8px">🏠 Utama</button>
-    <button class="prev-tab" id="ptExam"   onclick="showPrev('exam')"   style="font-size:11px;padding:7px 8px">🖥 Ujian</button>
-    <button class="prev-tab" id="ptDialog" onclick="showPrev('dialog')" style="font-size:11px;padding:7px 8px">🔐 Dialog</button>
+  <!-- Preview Tabs -->
+  <div class="prev-tabs">
+    <button class="prev-tab on" id="ptSplash" onclick="showPrev('splash')">🌅 Splash</button>
+    <button class="prev-tab" id="ptMain" onclick="showPrev('main')">📱 Layar Utama</button>
   </div>
 
-  <!-- Splash Preview -->
+  <!-- ── SPLASH PREVIEW ── -->
   <div id="prevSplash">
     <p class="prev-label">Preview Splash Screen</p>
     <div class="phone-outer">
@@ -970,14 +1047,12 @@ body{
           <div id="simSplash" style="background:#1A3A5C">
             <div class="sp-logo-ring" id="spLogoRing">
               <img id="spLogoImg" src="" alt="" style="display:none"/>
-              <span id="spLogoEmoji" class="sp-fallback"><span class="ico" style="width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></span>
+              <span id="spLogoEmoji" class="sp-emoji">🛡</span>
             </div>
             <div class="sp-name" id="spName">Emes Exam Browser</div>
             <div class="sp-line" id="spLine"></div>
             <div class="sp-sub" id="spSub">Safe browsing untuk ujian online</div>
-            <div class="sp-badge" id="spBadge">
-              <span class="ico" style="width:8px;height:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> <span>SECURE EXAM MODE</span>
-            </div>
+            <div class="sp-badge" id="spBadge">🛡 SECURE EXAM MODE</div>
             <div class="sp-bottom">
               <div class="sp-track"><div class="sp-bar"></div></div>
               <div class="sp-ver" id="spVer">v1.1.0</div>
@@ -989,7 +1064,7 @@ body{
     <p class="prev-note">Tampil ~2.8 detik saat app dibuka</p>
   </div>
 
-  <!-- Main Screen Preview -->
+  <!-- ── MAIN SCREEN PREVIEW ── -->
   <div id="prevMain" style="display:none">
     <p class="prev-label">Preview Layar Utama</p>
     <div class="phone-outer">
@@ -997,21 +1072,21 @@ body{
         <div class="phone-screen">
           <div class="phone-notch"></div>
           <div id="simMain">
+            <!-- Header -->
             <div class="ms-header" id="msHeader" style="background:#1A3A5C">
               <img id="msLogoImg" src="" alt="" class="ms-logo" style="display:none"/>
-              <span id="msLogoEmoji" class="ms-logo-fallback"><span class="ico" style="width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></span>
+              <span id="msLogoEmoji" class="ms-logo-emoji">🛡</span>
               <div class="ms-title" id="msTitle">Emes Exam Browser</div>
               <div class="ms-sub" id="msSub">Safe browsing untuk ujian online</div>
-              <div class="ms-badge">
-                <span class="ico" style="width:7px;height:7px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> <span>SECURE EXAM MODE</span>
-              </div>
+              <div class="ms-badge">🛡 SECURE EXAM MODE</div>
             </div>
+            <!-- Body -->
             <div class="ms-body">
               <div class="ms-card">
                 <div class="ms-lbl">URL Ujian</div>
                 <div class="ms-input-row">
                   <div class="ms-input">https://ujian.sekolah.id/...</div>
-                  <div class="ms-qr-btn" id="msQrBtn" style="font-size:9px;font-weight:900">QR</div>
+                  <div class="ms-qr-btn" id="msQrBtn">⬚</div>
                 </div>
                 <div class="ms-divider">
                   <div class="ms-divider-line"></div>
@@ -1022,14 +1097,14 @@ body{
               </div>
               <div class="ms-feats">
                 <div class="ms-feat-lbl">Fitur Keamanan</div>
-                <div class="ms-feat"><span class="ms-check" id="ch1" style="background:#2E7BF6">&#10003;</span>Back &amp; Home diblokir</div>
-                <div class="ms-feat"><span class="ms-check" id="ch2" style="background:#2E7BF6">&#10003;</span>Fullscreen tanpa gangguan</div>
-                <div class="ms-feat"><span class="ms-check" id="ch3" style="background:#2E7BF6">&#10003;</span>PIN pengawas untuk keluar</div>
-                <div class="ms-feat"><span class="ms-check" id="ch4" style="background:#2E7BF6">&#10003;</span>Screenshot diblokir</div>
-                <div class="ms-feat"><span class="ms-check" id="ch5" style="background:#2E7BF6">&#10003;</span>Scan QR URL ujian</div>
+                <div class="ms-feat"><span class="ms-check" id="ch1" style="background:#2E7BF6">✓</span>Back &amp; Home diblokir</div>
+                <div class="ms-feat"><span class="ms-check" id="ch2" style="background:#2E7BF6">✓</span>Fullscreen tanpa gangguan</div>
+                <div class="ms-feat"><span class="ms-check" id="ch3" style="background:#2E7BF6">✓</span>PIN pengawas untuk keluar</div>
+                <div class="ms-feat"><span class="ms-check" id="ch4" style="background:#2E7BF6">✓</span>Screenshot diblokir</div>
+                <div class="ms-feat"><span class="ms-check" id="ch5" style="background:#2E7BF6">✓</span>Scan QR URL ujian</div>
               </div>
             </div>
-            <div class="ms-footer">&copy; 2026 Emes EduTech</div>
+            <div class="ms-footer">© 2026 Emes EduTech</div>
           </div>
         </div>
       </div>
@@ -1037,74 +1112,9 @@ body{
     <p class="prev-note">Simulasi tampilan aktual</p>
   </div>
 
-  <!-- Exam Screen Preview -->
-  <div id="prevExam" style="display:none">
-    <p class="prev-label">Preview Halaman Ujian</p>
-    <div class="phone-outer">
-      <div class="phone-shell">
-        <div class="phone-screen">
-          <div class="phone-notch"></div>
-          <div id="simExam">
-            <div class="ex-topbar" id="exTopbar" style="background:#1A3A5C">
-              <img class="ex-appico" id="exLogoImg" src="" alt="" style="display:none"/>
-              <span id="exLogoEmoji" style="font-size:12px">🛡</span>
-              <div class="ex-urlstack">
-                <div class="ex-label">SESI UJIAN</div>
-                <div class="ex-url" id="exUrl">ujian.sekolah.id</div>
-              </div>
-              <div class="ex-badge" id="exBadge" style="border-color:rgba(59,130,246,.35);color:#60a5fa;background:rgba(59,130,246,.18)">🔒 AMAN</div>
-            </div>
-            <div class="ex-progress">
-              <div class="ex-progressbar" id="exProgressBar" style="background:#3B82F6"></div>
-            </div>
-            <div class="ex-webview">
-              <div class="ex-webview-inner">
-                <span style="font-size:28px">📋</span>
-                <p>Halaman ujian dimuat</p>
-                <p style="font-size:6.5px;color:#9ca3af;margin-top:2px">Konten dari server ujian</p>
-              </div>
-            </div>
-            <div class="ex-bottombar">
-              <div class="ex-exitbtn">Keluar dari Ujian</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="prev-note">Kiosk mode — Back & Home diblokir</p>
-  </div>
-
-  <!-- Exit Dialog Preview -->
-  <div id="prevDialog" style="display:none">
-    <p class="prev-label">Preview Dialog Keluar</p>
-    <div class="phone-outer">
-      <div class="phone-shell">
-        <div class="phone-screen">
-          <div class="phone-notch"></div>
-          <div id="simDialog">
-            <!-- Background: exam screen (simplified) -->
-            <div class="ex-topbar" id="dlgTopbar" style="background:#1A3A5C;height:38px"></div>
-            <div style="flex:1;background:#f8f9fa"></div>
-            <!-- Dialog overlay -->
-            <div class="dlg-overlay">
-              <div class="dlg-card">
-                <div class="dlg-icon">🔐</div>
-                <div class="dlg-title">Akhiri Sesi Ujian?</div>
-                <div class="dlg-sub">Masukkan PIN pengawas untuk mengakhiri sesi</div>
-                <div class="dlg-label">PIN PENGAWAS</div>
-                <div class="dlg-input">• • • •</div>
-                <div class="dlg-btn-confirm" id="dlgConfirmBtn" style="background:#2E7BF6">Konfirmasi Keluar</div>
-                <div class="dlg-btn-cancel">Lanjutkan Ujian</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="prev-note">Muncul saat tombol "Keluar dari Ujian" ditekan</p>
-  </div>
-  <div class="help-card">
-    <p class="help-card-title"><span class="ico" style="width:12px;height:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Cara Kerja</p>
+  <!-- ── CARA KERJA ── -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px">
+    <p style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Cara Kerja</p>
     <ol class="steps">
       <li>Isi token GitHub &amp; nama repo</li>
       <li>Upload logo &amp; atur tampilan splash</li>
@@ -1114,8 +1124,7 @@ body{
       <li>Tunggu ~3 menit, unduh APK</li>
     </ol>
     <div class="warn-box" style="margin-top:12px">
-      <div class="box-icon"><span class="ico" style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></div>
-      <div>Pastikan <code>.github/workflows/build.yml</code> dan <code>scripts/apply_config.py</code> sudah ada di repo Anda.</div>
+      ⚠️ Pastikan <code>.github/workflows/build.yml</code> dan <code>scripts/apply_config.py</code> sudah ada di repo Anda.
     </div>
   </div>
 
@@ -1124,7 +1133,7 @@ body{
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <span id="toastIcon"></span>
+  <span id="toastIcon">✓</span>
   <span id="toastMsg">OK</span>
 </div>
 
@@ -1180,13 +1189,11 @@ function el(id) { return document.getElementById(id); }
 
 // ═══ PREVIEW TAB ══════════════════════════════════════════════════════════════
 function showPrev(tab) {
-  const tabs = ['splash','main','exam','dialog'];
-  tabs.forEach(t => {
-    const pane = el('prev'+t.charAt(0).toUpperCase()+t.slice(1));
-    if(pane) pane.style.display = (t===tab) ? '' : 'none';
-    const btn = el('pt'+t.charAt(0).toUpperCase()+t.slice(1));
-    if(btn) btn.classList.toggle('on', t===tab);
-  });
+  const isSplash = tab === 'splash';
+  el('prevSplash').style.display = isSplash ? '' : 'none';
+  el('prevMain').style.display   = isSplash ? 'none' : '';
+  el('ptSplash').classList.toggle('on', isSplash);
+  el('ptMain').classList.toggle('on', !isSplash);
 }
 
 // ═══ MODE SWITCHES ════════════════════════════════════════════════════════════
@@ -1420,43 +1427,58 @@ function refreshSummary() {
   el('sumVer').textContent  = ver;
 }
 
-function refreshExam() {
-  const hdrColor = v('cHeader') || '#1A3A5C';
-  const accColor = v('cAccent') || '#2E7BF6';
+function refreshCode() {
+  const name  = esc(v('appName')    || 'Emes Exam Browser');
+  const title = esc(v('appTitle')   || 'Emes Exam Browser');
+  const sub   = esc(v('appSubtitle')|| 'Safe browsing untuk ujian online');
+  const hc    = (v('hHeader') || '#1A3A5C').toUpperCase();
+  const ac    = (v('hAccent') || '#2E7BF6').toUpperCase();
+  const sc    = (v('hSplash') || '#1A3A5C').toUpperCase();
 
-  // Exam topbar & dialog topbar → header color
-  const tb = el('exTopbar');  if(tb) tb.style.background = hdrColor;
-  const tb2 = el('dlgTopbar'); if(tb2) tb2.style.background = hdrColor;
+  el('codeStrings').innerHTML =
+    `<button class="copy-btn" onclick="copyCode('codeStrings')">Salin</button>` +
+    `<span class="cmt">&lt;?xml version="1.0" encoding="utf-8"?&gt;\n</span>` +
+    `<span class="kw">&lt;resources&gt;\n</span>` +
+    `    <span class="kw">&lt;string</span> name=<span class="str">"app_name"</span><span class="kw">&gt;</span>${name}<span class="kw">&lt;/string&gt;</span>\n` +
+    `    <span class="kw">&lt;string</span> name=<span class="str">"app_title"</span><span class="kw">&gt;</span>${title}<span class="kw">&lt;/string&gt;</span>\n` +
+    `    <span class="kw">&lt;string</span> name=<span class="str">"app_description"</span><span class="kw">&gt;</span>${sub}<span class="kw">&lt;/string&gt;</span>\n` +
+    `<span class="kw">&lt;/resources&gt;</span>`;
 
-  // Progress bar → accent color
-  const pb = el('exProgressBar'); if(pb) pb.style.background = accColor;
+  const dk = (h,f) => {
+    const x=h.replace('#','');
+    return '#'+[0,2,4].map(i=>Math.round(parseInt(x.slice(i,i+2),16)*f).toString(16).padStart(2,'0')).join('').toUpperCase();
+  };
 
-  // Badge "AMAN" → accent color
-  const badge = el('exBadge');
-  if(badge) {
-    badge.style.color = accColor;
-    badge.style.background = accColor + '28';
-    badge.style.borderColor = accColor + '55';
-  }
+  el('codeColors').innerHTML =
+    `<button class="copy-btn" onclick="copyCode('codeColors')">Salin</button>` +
+    `<span class="cmt">&lt;?xml version="1.0" encoding="utf-8"?&gt;\n</span>` +
+    `<span class="kw">&lt;resources&gt;\n</span>` +
+    `    <span class="kw">&lt;color</span> name=<span class="str">"colorHeaderBg"</span>&gt;<span class="str">${hc}</span><span class="kw">&lt;/color&gt;</span>\n` +
+    `    <span class="kw">&lt;color</span> name=<span class="str">"colorSplashBg"</span>&gt;<span class="str">${sc}</span><span class="kw">&lt;/color&gt;</span>\n` +
+    `    <span class="kw">&lt;color</span> name=<span class="str">"colorPrimary"</span>&gt;<span class="str">${ac}</span><span class="kw">&lt;/color&gt;</span>\n` +
+    `    <span class="kw">&lt;color</span> name=<span class="str">"colorPrimaryDark"</span>&gt;<span class="str">${dk(ac,.85)}</span><span class="kw">&lt;/color&gt;</span>\n` +
+    `    <span class="kw">&lt;color</span> name=<span class="str">"colorAccent"</span>&gt;<span class="str">${ac}</span><span class="kw">&lt;/color&gt;</span>\n` +
+    `<span class="kw">&lt;/resources&gt;</span>`;
 
-  // Confirm button → accent color (sama dengan tombol Mulai Ujian)
-  const dc = el('dlgConfirmBtn'); if(dc) dc.style.background = accColor;
-
-  // Logo exam screen
-  const exLogo = el('exLogoImg');
-  const exEmoji = el('exLogoEmoji');
-  if(S.logoUrl && exLogo && exEmoji) {
-    exLogo.src = S.logoUrl; exLogo.style.display='block'; exEmoji.style.display='none';
-  } else if(exLogo && exEmoji) {
-    exLogo.style.display='none'; exEmoji.style.display='';
-  }
+  const cfg = {
+    app_name:v('appName')||'Emes Exam Browser',
+    app_title:v('appTitle')||'Emes Exam Browser',
+    app_description:v('appSubtitle')||'',
+    exit_pin:v('exitPin')||'1234',
+    colors:{header:hc,splash_bg:(v('hSplash')||'#1A3A5C').toUpperCase(),splash_text:(v('hSplashTxt')||'#FFFFFF').toUpperCase(),button:ac},
+    package_id:v('pkgId')||'id.emes.exambrowser',
+    version_name:v('versionName')||'1.1.0',
+    generated_at:new Date().toISOString()
+  };
+  el('codeJson').innerHTML =
+    `<button class="copy-btn" onclick="copyCode('codeJson')">Salin</button>` + esc(JSON.stringify(cfg,null,2));
 }
 
 function refresh() {
   refreshSplash();
   refreshMain();
-  refreshExam();
   refreshSummary();
+  refreshCode();
 }
 
 // ═══ MISC HELPERS ═════════════════════════════════════════════════════════════
@@ -1479,12 +1501,31 @@ function validatePkg() {
   refreshSummary();
 }
 
+function switchExportTab(id, btn) {
+  document.querySelectorAll('.epane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.etab').forEach(b=>b.classList.remove('on'));
+  el(id).classList.add('on'); btn.classList.add('on');
+}
+
 function copyCode(id) {
   const txt = el(id).innerText.replace(/^Salin\n?/,'');
   navigator.clipboard.writeText(txt).then(()=>toast('📋','Disalin ke clipboard'));
 }
 
 // ═══ SAVE / LOAD ══════════════════════════════════════════════════════════════
+function saveConfig() {
+  const cfg = {
+    appName:v('appName'),appTitle:v('appTitle'),appSubtitle:v('appSubtitle'),
+    exitPin:v('exitPin'),pkgId:v('pkgId'),versionName:v('versionName'),
+    cHeader:v('cHeader'),cAccent:v('cAccent'),cSplash:v('cSplash'),cSplashTxt:v('cSplashTxt'),
+    spBgMode:S.spBgMode,spLogoMode:S.spLogoMode,hdrMode:S.hdrMode,
+    logoUrl:S.logoUrl,spBgUrl:S.spBgUrl,spLogoUrl:S.spLogoUrl,hdrBgUrl:S.hdrBgUrl,
+    spOverlay:el('spOverlay')?.value,hdrOverlay:el('hdrOverlay')?.value,spLogoSize:el('spLogoSize')?.value
+  };
+  try { localStorage.setItem('ezambro_cfg', JSON.stringify(cfg)); } catch(e){}
+  const ok = el('savedOk'); ok.classList.add('show'); setTimeout(()=>ok.classList.remove('show'),2200);
+  toast('💾','Tersimpan di browser');
+}
 
 function saveGH() {
   try {
@@ -1531,7 +1572,27 @@ function loadSaved() {
   } catch(e){}
 }
 
-
+function dlJson() {
+  const cfg = {
+    app_name:v('appName')||'Emes Exam Browser',
+    app_title:v('appTitle')||'Emes Exam Browser',
+    app_description:v('appSubtitle')||'',
+    exit_pin:v('exitPin')||'1234',
+    colors:{
+      header:(v('hHeader')||'#1A3A5C').toUpperCase(),
+      splash_bg:(v('hSplash')||'#1A3A5C').toUpperCase(),
+      splash_text:(v('hSplashTxt')||'#FFFFFF').toUpperCase(),
+      button:(v('hAccent')||'#2E7BF6').toUpperCase()
+    },
+    package_id:v('pkgId')||'id.emes.exambrowser',
+    version_name:v('versionName')||'1.1.0',
+    generated_at:new Date().toISOString()
+  };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}));
+  a.download = 'ezambro-config.json'; a.click();
+  toast('⬇','config.json diunduh');
+}
 
 // ═══ GITHUB ═══════════════════════════════════════════════════════════════════
 function updateRepoLink() {
@@ -1583,33 +1644,10 @@ async function testConn() {
 // ═══ BUILD ════════════════════════════════════════════════════════════════════
 // GitHub Actions API: limit TOTAL payload ~65KB untuk semua inputs gabungan
 // Bagi rata: logo ≤15KB, header ≤15KB, splash ≤15KB → total ~45KB aman
-const GH_TOTAL_LIMIT = 200000; // chars, total semua gambar
-const GH_IMG_LIMIT   = 65000;  // chars, per gambar
+const GH_TOTAL_LIMIT = 60000;  // chars, total semua gambar
+const GH_IMG_LIMIT   = 15000;  // chars, per gambar
 
-// Resize gambar ke PNG — WAJIB untuk logo agar alpha/transparansi tetap terjaga
-// JANGAN gunakan image/jpeg karena JPEG tidak support transparansi (hasilnya hitam)
-async function resizePng(url, maxW, maxH) {
-  return new Promise(res => {
-    const img = new Image();
-    img.onload = () => {
-      let w = img.width, h = img.height;
-      if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
-      if(h > maxH){ w = Math.round(w * maxH / h); h = maxH; }
-      const c = document.createElement('canvas');
-      c.width = w; c.height = h;
-      const ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, w, h); // pastikan canvas transparan
-      ctx.drawImage(img, 0, 0, w, h);
-      // toDataURL PNG — satu-satunya format yang support transparansi
-      const b64 = c.toDataURL('image/png').split(',')[1] || '';
-      res(b64);
-    };
-    img.onerror = () => res('');
-    img.src = url;
-  });
-}
-
-async function compressImg(url, maxW=300, maxH=300, maxChars=GH_IMG_LIMIT, keepAlpha=false) {
+async function compressImg(url, maxW=300, maxH=300, maxChars=GH_IMG_LIMIT) {
   return new Promise(res => {
     const img = new Image(); img.onload = () => {
       let w=img.width, h=img.height;
@@ -1617,22 +1655,9 @@ async function compressImg(url, maxW=300, maxH=300, maxChars=GH_IMG_LIMIT, keepA
       if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
       const tryEncode = (tw, th, q) => {
         const c=document.createElement('canvas');c.width=tw;c.height=th;
-        const ctx=c.getContext('2d');
-        // Jika keepAlpha: jangan fill background, biarkan transparan
-        if(!keepAlpha){ ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,tw,th); }
-        ctx.drawImage(img,0,0,tw,th);
-        // Logo transparan WAJIB pakai PNG, bukan JPEG (JPEG tidak support alpha)
-        if(keepAlpha) return c.toDataURL('image/png').split(',')[1]||'';
+        c.getContext('2d').drawImage(img,0,0,tw,th);
         return c.toDataURL('image/jpeg', q).split(',')[1]||'';
       };
-      if(keepAlpha){
-        // PNG: tidak bisa turunkan kualitas, hanya bisa kecilkan dimensi
-        let result=tryEncode(w,h,1);
-        if(result.length>maxChars){ w=Math.round(w*0.6); h=Math.round(h*0.6); result=tryEncode(w,h,1); }
-        if(result.length>maxChars){ w=Math.round(w*0.5); h=Math.round(h*0.5); result=tryEncode(w,h,1); }
-        res(result.length<=maxChars ? result : '');
-        return;
-      }
       // Iterasi: turunkan kualitas dulu, lalu kecilkan dimensi jika perlu
       let result='';
       for(let q=0.45; q>=0.10; q-=0.08){
@@ -1664,65 +1689,22 @@ function payloadTooLarge(inputs) {
   return json.length > 100000;
 }
 
-async function getDefaultBranch(tok, own, rep) {
-  try {
-    const r = await fetch(`https://api.github.com/repos/${own}/${rep}`,
-      {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
-    if(r.ok){ const d=await r.json(); return d.default_branch||'main'; }
-  } catch(e){}
-  return 'main';
-}
-
-async function commitFile(tok, own, rep, path, b64content, message, branch='main') {
-  // Cek apakah file sudah ada (untuk dapat SHA-nya)
-  let sha = '';
-  try {
-    const r = await fetch(`https://api.github.com/repos/${own}/${rep}/contents/${path}?ref=${branch}`,
-      {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
-    if(r.ok){ const d=await r.json(); sha=d.sha||''; }
-  } catch(e){}
-  const body = {message, content:b64content, branch};
-  if(sha) body.sha = sha;
-  const res = await fetch(`https://api.github.com/repos/${own}/${rep}/contents/${path}`,{
-    method:'PUT',
-    headers:{Authorization:`Bearer ${tok}`,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},
-    body:JSON.stringify(body)
-  });
-  return res.ok || res.status===201;
-}
-
 async function triggerBuild() {
   const tok=v('ghToken').trim(),own=v('ghOwner').trim(),rep=v('ghRepo').trim();
   const wf=v('ghWorkflow').trim()||'build.yml';
   if(!tok||!own||!rep){toast('⚠️','Isi token, username, dan repo dulu');el('buildCard').scrollIntoView({behavior:'smooth'});return;}
   const btn=el('btnBuild');
-  btn.disabled=true;btn.textContent='⏳ Menyiapkan…';
-  log('dim','📡 Mengirim ke GitHub…\n');
+  btn.disabled=true;btn.textContent='⏳ Mengompres gambar…';
+  log('dim','📡 Mengirim workflow_dispatch ke GitHub Actions…\n');
   el('buildStatus').classList.add('show');
   try {
-    // Deteksi default branch repo
-    const branch = await getDefaultBranch(tok, own, rep);
-    log('dim',`🌿 Branch: ${branch}\n`);
     let hImg='',sImg='',logoImg='';
-
-    // Logo: commit langsung ke repo via GitHub Contents API
-    // TIDAK lewat workflow input — karena limit GitHub Actions hanya 65KB total
     if(S.logoUrl){
-      btn.textContent='⏳ Upload logo ke repo…';
-      const rawB64 = S.logoUrl.includes(',') ? S.logoUrl.split(',')[1] : S.logoUrl;
-      const ok = await commitFile(tok, own, rep,
-        'app/src/main/res/drawable-nodpi/app_logo.png',
-        rawB64, '🖼 Update logo aplikasi', branch);
-      if(ok){
-        log('ok',`✅ Logo di-commit ke repo (${Math.round(rawB64.length/1024)}KB PNG asli)\n`);
-        // Tunggu GitHub memproses commit sebelum trigger workflow_dispatch
-        log('dim','⏳ Menunggu GitHub memproses commit…\n');
-        await new Promise(r => setTimeout(r, 4000));
-      } else {
-        log('err','⚠️ Gagal commit logo, build tetap dilanjutkan\n');
-      }
+      btn.textContent='⏳ Kompres logo…';
+      logoImg=await compressImg(S.logoUrl,512,512,GH_IMG_LIMIT);
+      if(!logoImg){log('err','⚠️ Logo tidak bisa dikompres cukup kecil, diabaikan\n');}
+      else{log('dim',`🖼 Logo: ${Math.round(logoImg.length/1024)}KB\n`);}
     }
-
     if(S.hdrMode==='image'&&S.hdrBgUrl){
       btn.textContent='⏳ Kompres gambar header…';
       hImg=await compressImg(S.hdrBgUrl,400,200,GH_IMG_LIMIT);
@@ -1735,9 +1717,7 @@ async function triggerBuild() {
       if(!sImg){log('err','⚠️ Gambar splash tidak bisa dikompres, diabaikan\n');}
       else{log('dim',`🌅 Splash: ${Math.round(sImg.length/1024)}KB\n`);}
     }
-    // Source files di repo sudah benar — langsung trigger build
-    log('dim','🔨 Trigger build dari source repo yang sudah benar…\n');
-        btn.textContent='⏳ Mengirim ke GitHub…';
+    btn.textContent='⏳ Mengirim ke GitHub…';
     const inputs = {
       app_name:v('appName')||'Emes Exam Browser',
       app_title:v('appTitle')||'Emes Exam Browser',
@@ -1746,17 +1726,30 @@ async function triggerBuild() {
       header_color:(v('hHeader')||'#1A3A5C').replace('#',''),
       header_image:hImg,
       splash_image:sImg,
-      logo_image:'',
+      logo_image:logoImg,
       button_color:(v('hAccent')||'#2E7BF6').replace('#',''),
       package_id:v('pkgId')||'id.emes.exambrowser',
       version_name:v('versionName')||'1.1.0'
     };
-    const totalImgKB = Math.round((hImg.length+sImg.length)/1024);
-    if(totalImgKB>0) log('dim',`📦 Total gambar non-logo: ${totalImgKB}KB\n`);
+    // Cek total ukuran gambar sebelum kirim
+    const totalImgKB = Math.round((logoImg.length+hImg.length+sImg.length)/1024);
+    log('dim',`📦 Total gambar: ${totalImgKB}KB\n`);
+    if(imgsTooLarge(logoImg,hImg,sImg)){
+      log('err','❌ Total gambar masih terlalu besar untuk GitHub Actions API.\n');
+      log('err','  → Coba kurangi: gunakan hanya 1-2 gambar saja\n');
+      log('err','  → Atau gunakan warna saja (tanpa gambar) untuk header/splash\n');
+      btn.disabled=false;btn.textContent='🚀 Build APK Sekarang';
+      return;
+    }
+    if(payloadTooLarge(inputs)){
+      log('err','❌ Total payload terlalu besar.\n');
+      btn.disabled=false;btn.textContent='🚀 Build APK Sekarang';
+      return;
+    }
     const res=await fetch(`https://api.github.com/repos/${own}/${rep}/actions/workflows/${wf}/dispatches`,{
       method:'POST',
       headers:{Authorization:`Bearer ${tok}`,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},
-      body:JSON.stringify({ref:branch,inputs})
+      body:JSON.stringify({ref:'main',inputs})
     });
     if(res.status===204){
       log('ok','✅ Workflow di-trigger!\n');
@@ -1805,8 +1798,9 @@ async function triggerBuild() {
 
 async function pollBuild(tok,own,rep) {
   clearInterval(pollTimer); let att=0;
+  const wf = v('ghWorkflow').trim()||'build.yml';
   const check = async () => {
-    if(++att>60){clearInterval(pollTimer);log('err','⏱ Timeout — cek GitHub Actions langsung.\n');return;}
+    if(++att>72){clearInterval(pollTimer);log('err','⏱ Timeout 6 menit — cek GitHub Actions langsung.\n');return;}
     try {
       const res=await fetch(`https://api.github.com/repos/${own}/${rep}/actions/runs?per_page=5&event=workflow_dispatch`,
         {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
@@ -1818,9 +1812,15 @@ async function pollBuild(tok,own,rep) {
         clearInterval(pollTimer);
         const ok=run.conclusion==='success';
         setRun(ok?'ok':'fail',ok?'✅ Build Selesai!':`❌ Gagal (${run.conclusion})`,ok?`Selesai dalam ~${elapsed(run)}`:'Lihat log di GitHub Actions');
-        log(ok?'ok':'err',ok?'✅ APK siap!\n':`❌ Build gagal: ${run.conclusion}\n`);
+        log(ok?'ok':'err',ok?'✅ APK siap!\n📦 Mengambil link download…\n':`❌ Build gagal: ${run.conclusion}\n`);
         el('btnBuild').disabled=false;el('btnBuild').textContent='🚀 Build APK Lagi';
-        if(ok){el('artifactBtn').href=url;fetchLatestRelease(tok,own,rep);}
+        // Tampilkan link GitHub Actions sebagai fallback
+        const ab=el('artifactBtn');
+        ab.href=url; ab.style.display='';
+        if(ok){
+          // Fetch direct artifact download links — pass run.created_at agar ambil release BARU saja
+          await fetchArtifacts(tok,own,rep,run.id,run.created_at);
+        }
       } else {
         setRun(run.status==='in_progress'?'run':'queue',
           run.status==='in_progress'?'🔨 Sedang Build…':'⏳ Antrian…',
@@ -1832,52 +1832,149 @@ async function pollBuild(tok,own,rep) {
   pollTimer=setInterval(check,5000); check();
 }
 
-async function fetchLatestRelease(tok,own,rep) {
-  log('dim','🔍 Mengambil link download…\n');
-  await new Promise(r=>setTimeout(r,6000));
+async function fetchArtifacts(tok,own,rep,runId,runCreatedAt) {
+  const panel=el('apkPanel');
+  panel.style.display='';
+  panel.innerHTML='<div class="apk-fetching">⏳ Mengambil link download APK…</div>';
+
+  const runTime = runCreatedAt ? new Date(runCreatedAt) : new Date(Date.now() - 600000);
+
+  // Poll sampai 90 detik — release GitHub perlu waktu setelah workflow selesai
+  const MAX_WAIT = 90000;
+  const INTERVAL = 8000;
+  let waited = 0;
+
+  const tryFetch = async () => {
+    // ── Coba GitHub Releases (direct download tanpa login) ──
+    try {
+      const relRes = await fetch(`https://api.github.com/repos/${own}/${rep}/releases?per_page=10`,
+        {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
+      if(relRes.ok) {
+        const releases = await relRes.json();
+        // Cari release yang dibuat SETELAH run ini dimulai dan punya APK
+        const fresh = releases.find(r => {
+          const relTime = new Date(r.created_at);
+          const hasApk = r.assets && r.assets.some(a =>
+            a.name.toLowerCase().endsWith('.apk') || a.name.toLowerCase().endsWith('.aab')
+          );
+          return hasApk && relTime >= runTime;
+        });
+        if(fresh) {
+          const apkAssets = fresh.assets.filter(a =>
+            a.name.toLowerCase().endsWith('.apk') || a.name.toLowerCase().endsWith('.aab')
+          );
+          renderReleasePanel(apkAssets, fresh, own, rep, runId);
+          log('ok', `✅ ${apkAssets.length} file siap didownload langsung!\n`);
+          return true;
+        }
+      }
+    } catch(e) {}
+    return false;
+  };
+
+  // Coba pertama setelah 10 detik
+  await new Promise(r => setTimeout(r, 10000));
+  if(await tryFetch()) return;
+
+  // Poll setiap 8 detik sampai max 90 detik
+  panel.innerHTML='<div class="apk-fetching">⏳ Menunggu release tersedia… (maks 90 detik)</div>';
+  while(waited < MAX_WAIT) {
+    await new Promise(r => setTimeout(r, INTERVAL));
+    waited += INTERVAL;
+    if(await tryFetch()) return;
+    panel.innerHTML=`<div class="apk-fetching">⏳ Menunggu release… (${Math.round((waited+10000)/1000)}s)</div>`;
+  }
+
+  // ── Fallback: GitHub Actions Artifacts ──
+  log('dim', 'ℹ️ Release belum tersedia, coba artifacts…\n');
   try {
-    const res=await fetch(`https://api.github.com/repos/${own}/${rep}/releases/latest`,
+    const artRes = await fetch(`https://api.github.com/repos/${own}/${rep}/actions/runs/${runId}/artifacts`,
       {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
-    if(!res.ok){log('dim','ℹ️ Release belum tersedia, coba beberapa saat lagi\n');return;}
-    const rel=await res.json();
-    const apks=(rel.assets||[]).filter(a=>a.name.endsWith('.apk'));
-    if(!apks.length){log('dim','ℹ️ File APK belum muncul di Release\n');return;}
-    const list=el('apkList');
-    list.innerHTML='';
-    apks.forEach(a=>{
-      const isUniversal=a.name.includes('universal');
-      const mb=(a.size/1024/1024).toFixed(1);
-      const row=document.createElement('a');
-      row.href=a.browser_download_url;
-      row.target='_blank';
-      row.style.cssText=`display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;text-decoration:none;color:var(--text);background:${isUniversal?'rgba(0,112,243,.07)':'transparent'};border:1px solid ${isUniversal?'rgba(0,112,243,.2)':'transparent'};transition:.15s`;
-      row.onmouseenter=()=>{if(!isUniversal)row.style.background='var(--bg2)';};
-      row.onmouseleave=()=>{if(!isUniversal)row.style.background='transparent';};
-      row.innerHTML=`
-        <span style="font-size:20px">${isUniversal?'📦':'📱'}</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600;color:${isUniversal?'#0070F3':'var(--text)'}">${a.name}${isUniversal?' <span style="font-size:9px;background:#0070F3;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px">Rekomendasikan</span>':''}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:1px">${mb} MB · klik untuk download</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-      list.appendChild(row);
-    });
-    el('downloadPanel').style.display='block';
-    log('ok',`✅ ${apks.length} file APK siap — lihat panel download di atas\n`);
-  } catch(e){log('dim','ℹ️ Gagal mengambil link download\n');}
+    if(artRes.ok) {
+      const data = await artRes.json();
+      const artifacts = (data.artifacts||[]).filter(a =>
+        a.name.toLowerCase().includes('apk') || a.name.toLowerCase().includes('aab')
+      );
+      if(artifacts.length) {
+        renderArtifactPanel(artifacts, own, rep, runId);
+        log('ok', `✅ ${artifacts.length} artifact tersedia (perlu login GitHub)\n`);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  const actionsUrl = `https://github.com/${own}/${rep}/actions/runs/${runId}`;
+  panel.innerHTML = `<div class="apk-fetching">⚠️ Release belum tersedia.<br><a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Download manual di GitHub Actions ↗</a></div>`;
+}
+
+function renderReleasePanel(assets,release,own,rep,runId) {
+  const panel=el('apkPanel');
+  const releaseUrl=release.html_url;
+  let html=`<div class="apk-panel">
+    <div class="apk-panel-header">
+      <span class="apk-badge">✅ APK SIAP DIDOWNLOAD</span>
+      <span class="apk-note">Tidak perlu login GitHub</span>
+    </div>`;
+  assets.forEach(a=>{
+    const sizeLabel=formatSize(a.size);
+    const ico=a.name.toLowerCase().endsWith('.aab')?'🎯':'📦';
+    const hint=a.name.toLowerCase().endsWith('.aab')?'· untuk Google Play':'· install langsung ke HP';
+    html+=`<a class="apk-item" href="${a.browser_download_url}" target="_blank" download>
+      <span class="apk-item-ico">${ico}</span>
+      <div class="apk-item-info">
+        <div class="apk-item-name">${a.name}</div>
+        <div class="apk-item-size">${sizeLabel} ${hint}</div>
+      </div>
+      <span class="apk-item-dl">⬇ Download</span>
+    </a>`;
+  });
+  html+=`</div>
+  <div style="font-size:10.5px;color:var(--text3);margin-top:6px;text-align:center">
+    Link permanen: <a href="${releaseUrl}" target="_blank" style="color:var(--blue2)">${releaseUrl.replace('https://','')}</a>
+  </div>`;
+  panel.innerHTML=html;
+}
+
+function renderArtifactPanel(artifacts,own,rep,runId) {
+  const panel=el('apkPanel');
+  const actionsUrl=`https://github.com/${own}/${rep}/actions/runs/${runId}`;
+  let html=`<div class="apk-panel">
+    <div class="apk-panel-header">
+      <span class="apk-badge">📦 APK SIAP</span>
+      <span class="apk-note">⚠️ Perlu login GitHub untuk download</span>
+    </div>`;
+  artifacts.forEach(a=>{
+    const isExpired=a.expired;
+    const sizeLabel=formatSize(a.size_in_bytes);
+    const ico=a.name.toLowerCase().includes('aab')?'🎯':'📦';
+    const hint=a.name.toLowerCase().includes('aab')?'· untuk Google Play':'· install langsung';
+    html+=`<a class="apk-item" href="${actionsUrl}" target="_blank">
+      <span class="apk-item-ico">${ico}</span>
+      <div class="apk-item-info">
+        <div class="apk-item-name">${a.name}</div>
+        <div class="apk-item-size">${sizeLabel} ${hint}</div>
+      </div>
+      <span class="apk-item-dl ${isExpired?'expired':''}">
+        ${isExpired?'Kedaluwarsa':'⬇ Download'}
+      </span>
+    </a>`;
+  });
+  html+=`</div>
+  <div style="font-size:10.5px;color:var(--text3);margin-top:6px;text-align:center">
+    Login GitHub lalu klik: <a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Actions → Artifacts → APK-Build</a>
+  </div>`;
+  panel.innerHTML=html;
+}
+
+function formatSize(bytes){
+  if(!bytes)return'';
+  if(bytes>1048576)return`${(bytes/1048576).toFixed(1)} MB`;
+  return`${Math.round(bytes/1024)} KB`;
 }
 
 function elapsed(run){const s=new Date(run.created_at),e=run.updated_at?new Date(run.updated_at):new Date(),sec=Math.round((e-s)/1000);return sec<60?`${sec}s`:`${Math.round(sec/60)}m ${sec%60}s`;}
 function setRun(status,title,sub){el('runDot').className='run-dot '+status;el('runTitle').textContent=title;el('runSub').textContent=sub;}
 function log(cls,msg){const b=el('buildLog');const sp=document.createElement('span');sp.className=cls;sp.textContent=msg;b.appendChild(sp);b.scrollTop=b.scrollHeight;}
-
-// ═══ MAIN TAB SWITCHER ══════════════════════════════════════════════════════
-function switchMainTab(id, btn) {
-  document.querySelectorAll('.main-tab-pane').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-  btn.classList.add('on');
-}
 
 // ═══ TOAST ════════════════════════════════════════════════════════════════════
 let tTimer;
