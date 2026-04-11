@@ -1,31 +1,23 @@
-# Build outputs
-build/
-app/build/
-*.apk
-*.aab
-*.class
-
-# Gradle
-.gradle/
-gradle-app.setting
-!gradle/wrapper/gradle-wrapper.jar
-local.properties
-
-# Android
-*.keystore
-*.jks
-keystore.properties
-app/keystore.jks
-
-# IDE
-.idea/
-*.iml
-*.iws
-*.ipr
-.DS_Store
-Thumbs.db
-
-# Generated PNG files (dibuat saat build, BUKAN dari repo)
+# File gambar opsional yang di-generate saat build — JANGAN di-commit ke repo
+# File di drawable/ diproses AAPT2 → file rusak = build gagal
 app/src/main/res/drawable/header_bg.png
 app/src/main/res/drawable/splash_bg.png
 app/src/main/res/drawable/app_logo.png
+app/src/main/res/drawable-nodpi/app_logo.png
+
+# File di assets/ — di-generate oleh apply_config.py saat build
+app/src/main/assets/header_bg.png
+app/src/main/assets/header_bg.jpg
+app/src/main/assets/splash_bg.png
+app/src/main/assets/splash_bg.jpg
+app/src/main/assets/app_logo.png
+
+# Keystore — jangan pernah di-commit!
+app/keystore.jks
+*.jks
+
+# Build outputs
+app/build/
+build/
+.gradle/
+local.properties
