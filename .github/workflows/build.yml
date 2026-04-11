@@ -110,36 +110,6 @@ jobs:
       - name: Setup launcher icons
         run: python scripts/setup_icons.py
 
-      - name: Verifikasi drawable — hapus PNG corrupt sebelum build
-        run: |
-          echo "🔍 Memeriksa file PNG di drawable..."
-          DRAWABLE_DIR="app/src/main/res/drawable"
-          FOUND_BAD=0
-          for f in "$DRAWABLE_DIR"/*.png; do
-            [ -e "$f" ] || continue
-            # Cek PNG signature: byte pertama harus \x89PNG
-            if python3 -c "
-          import sys
-          data = open('$f','rb').read()
-          png_sig = b'\\x89PNG\\r\\n\\x1a\\n'
-          jpeg_sig = (b'\\xff\\xd8', b'\\xff\\xd9')
-          is_png  = len(data) >= 8 and data[:8] == png_sig and b'IEND' in data
-          is_jpeg = len(data) > 2 and data[:2] == jpeg_sig[0] and data[-2:] == jpeg_sig[1]
-          sys.exit(0 if (is_png or is_jpeg) else 1)
-          " 2>/dev/null; then
-              echo "  ✅ OK  : $f ($(du -sh "$f" | cut -f1))"
-            else
-              echo "  ❌ CORRUPT — menghapus: $f"
-              rm -f "$f"
-              FOUND_BAD=1
-            fi
-          done
-          if [ "$FOUND_BAD" -eq 1 ]; then
-            echo "⚠️  Ada PNG corrupt yang sudah dihapus. Build lanjut dengan warna solid sebagai fallback."
-          else
-            echo "✅ Semua PNG drawable valid."
-          fi
-
       - name: Restore keystore dari GitHub Secrets
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -176,21 +146,12 @@ jobs:
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-          find app/build/outputs/apk/release/ -name "*.apk" | while read f; do
-            BASE=$(basename "$f" .apk)
-            if echo "$BASE" | grep -qi "universal"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-universal.apk"
-            elif echo "$BASE" | grep -qi "arm64"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm64.apk"
-            elif echo "$BASE" | grep -qi "armeabi"; then
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-arm32.apk"
-            else
-              mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
-            fi
-          done
-          COUNT=$(find app/build/outputs/apk/release/ -name "*.apk" | wc -l)
-          echo "✅ Total APK: $COUNT"
-          [ "$COUNT" -eq 0 ] && echo "❌ Tidak ada APK!" && exit 1
+          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "❌ Tidak ada APK ditemukan!" && exit 1
+          fi
+          mv "$APK" "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
+          echo "✅ APK: ${SAFE}-v${VER}-release.apk"
           AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
           [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
@@ -207,6 +168,29 @@ jobs:
           name: AAB-PlayStore
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
+
+      - name: Publish GitHub Release (direct download tanpa login)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
+          VER="${{ github.event.inputs.version_name || '1.1.0' }}"
+          SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
+          TAG="v${VER}-$(date +%Y%m%d-%H%M%S)"
+          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
+          NOTES="**${APP}** v${VER}\n\nBuild: $(date '+%d %b %Y %H:%M') WIB\nPackage: ${{ github.event.inputs.package_id || 'id.emes.exambrowser' }}"
+          # Buat release
+          gh release create "$TAG" \
+            --title "${APP} v${VER}" \
+            --notes "$(printf "$NOTES")" \
+            --repo "${{ github.repository }}" \
+            "$APK" || true
+          [ -n "$AAB" ] && gh release upload "$TAG" "$AAB" --repo "${{ github.repository }}" || true
+          echo "✅ Release: https://github.com/${{ github.repository }}/releases/tag/${TAG}"
+          echo "RELEASE_TAG=${TAG}" >> $GITHUB_OUTPUT
+          echo "RELEASE_URL=https://github.com/${{ github.repository }}/releases/tag/${TAG}" >> $GITHUB_OUTPUT
+        id: release
 
       - name: Show download info
         run: |
