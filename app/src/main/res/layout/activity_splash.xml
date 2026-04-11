@@ -123,7 +123,7 @@
             android:id="@+id/splashVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v1.1.0"
+            android:text="v1.0.0"
             android:textColor="#CCFFFFFF"
             android:textSize="11sp"
             android:alpha="0.6" />

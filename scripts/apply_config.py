@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
 apply_config.py — Patch Android source files sebelum Gradle build.
-Membaca environment variables yang dikirim dari GitHub Actions workflow_dispatch.
 """
 
-import os, re, sys, base64
+import os, re, base64
 
 def env(key, default=""):
     return os.environ.get(key, default).strip()
@@ -37,24 +36,26 @@ print(f"  Splash Img : {'ada' if SPLASH_IMAGE.strip() else 'pakai warna'}")
 print(f"  Header Img : {'ada' if HEADER_IMAGE.strip() else 'pakai warna'}")
 print("=" * 56)
 
-# ── LANGKAH PERTAMA: HAPUS SEMUA PNG OPSIONAL TANPA KONDISI ──────────────
-# Ini WAJIB dilakukan pertama kali sebelum apapun untuk mencegah
-# file PNG corrupt dari run sebelumnya menyebabkan AAPT2 error.
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 1: PAKSA HAPUS semua PNG opsional TANPA SYARAT APAPUN
+# Ini dilakukan PERTAMA sebelum logika apapun berjalan.
+# ════════════════════════════════════════════════════════════════
 OPTIONAL_PNGS = [
     "app/src/main/res/drawable/header_bg.png",
     "app/src/main/res/drawable/splash_bg.png",
     "app/src/main/res/drawable/app_logo.png",
 ]
-print("\n[1] Bersihkan PNG opsional lama...")
+print("\n[STEP 1] Hapus PNG opsional lama...")
 for p in OPTIONAL_PNGS:
     if os.path.exists(p):
         os.remove(p)
-        print(f"    hapus: {p}")
+        print(f"  hapus: {p}")
     else:
-        print(f"    tidak ada: {p} (ok)")
+        print(f"  tidak ada: {p}")
 
-# ── Helper functions ──────────────────────────────────────────────────────
-
+# ════════════════════════════════════════════════════════════════
+# Helper functions
+# ════════════════════════════════════════════════════════════════
 def write(path, content):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -66,54 +67,67 @@ def read(path):
         return f.read()
 
 def is_valid_image(data):
-    """Validasi PNG atau JPEG."""
+    """
+    Validasi PNG atau JPEG.
+    PNG: harus ada signature + IEND chunk
+    JPEG: harus dimulai SOI marker (0xFFD8) dan ada EOI marker (0xFFD9)
+          di mana saja di dalam file (tidak harus di akhir persis).
+    """
     if len(data) < 8:
         return False
-    # PNG: signature + IEND chunk
-    if data[:8] == b'\x89PNG\r\n\x1a\n' and b'IEND' in data:
-        return True
-    # JPEG: SOI marker
-    if data[:2] == b'\xff\xd8' and b'\xff\xd9' in data:
-        return True
+    # PNG check
+    if data[:8] == b'\x89PNG\r\n\x1a\n':
+        return b'IEND' in data
+    # JPEG check — SOI di awal, EOI di mana saja (browser JPEG bisa punya trailing bytes)
+    if data[:2] == b'\xff\xd8':
+        return b'\xff\xd9' in data
     return False
 
 def decode_and_save_image(b64_data, dest_path, label):
     """
-    Decode base64, validasi, simpan ke dest_path.
-    Return True jika berhasil. File TIDAK disimpan jika tidak valid.
+    Decode base64 gambar, validasi, lalu simpan.
+    - Hapus prefix 'data:image/...;base64,' jika ada
+    - Return True jika berhasil, False jika gagal
+    - File TIDAK pernah disimpan jika tidak valid
     """
     if not b64_data or not b64_data.strip():
-        print(f"  [{label}] kosong - pakai warna solid")
+        print(f"  [{label}] tidak ada input -> pakai warna solid")
         return False
     try:
         b64 = b64_data.strip()
-        # Strip data URI prefix
+        # Strip data URI prefix (dari browser canvas toDataURL)
         if "," in b64:
             b64 = b64.split(",", 1)[1]
-        # Fix padding
+        b64 = b64.strip()
+        # Fix padding base64
         remainder = len(b64) % 4
         if remainder:
             b64 += "=" * (4 - remainder)
-        img_bytes = base64.b64decode(b64, validate=False)
+        # Decode
+        img_bytes = base64.b64decode(b64)
+        # Validasi
         if not is_valid_image(img_bytes):
-            print(f"  [{label}] bukan PNG/JPEG valid - pakai warna solid")
+            fmt_hint = "bukan PNG/JPEG valid"
+            print(f"  [{label}] {fmt_hint} (size={len(img_bytes)}B) -> pakai warna solid")
             return False
+        # Simpan
         os.makedirs(os.path.dirname(dest_path), exist_ok=True)
         with open(dest_path, "wb") as f:
             f.write(img_bytes)
-        fmt = "PNG" if img_bytes[:4] == b'\x89PNG' else "JPEG"
-        print(f"  [{label}] disimpan: {dest_path} ({fmt}, {len(img_bytes)//1024}KB)")
+        fmt = "PNG" if img_bytes[:8] == b'\x89PNG\r\n\x1a\n' else "JPEG"
+        print(f"  [{label}] OK -> {dest_path} ({fmt}, {len(img_bytes)//1024}KB)")
         return True
     except Exception as e:
-        print(f"  [{label}] GAGAL decode: {e} - pakai warna solid")
-        # Pastikan file tidak tersisa
+        print(f"  [{label}] GAGAL decode: {e} -> pakai warna solid")
+        # Pastikan tidak ada file sisa
         if os.path.exists(dest_path):
             os.remove(dest_path)
         return False
 
-
-# ── 2. strings.xml ───────────────────────────────────────────────────────
-print("\n[2] strings.xml...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 2: strings.xml
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 2] strings.xml...")
 write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">{APP_NAME}</string>
@@ -122,13 +136,15 @@ write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="u
 </resources>
 """)
 
-# ── 3. colors.xml ────────────────────────────────────────────────────────
-print("\n[3] colors.xml...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 3: colors.xml
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 3] colors.xml...")
 def darken_hex(hex_color, factor=0.85):
     h = hex_color.lstrip("#")
-    r = int(int(h[0:2], 16) * factor)
-    g = int(int(h[2:4], 16) * factor)
-    b = int(int(h[4:6], 16) * factor)
+    r = min(255, int(int(h[0:2], 16) * factor))
+    g = min(255, int(int(h[2:4], 16) * factor))
+    b = min(255, int(int(h[4:6], 16) * factor))
     return f"{r:02X}{g:02X}{b:02X}"
 
 HEADER_DARK = darken_hex(HEADER_COLOR)
@@ -163,8 +179,10 @@ write("app/src/main/res/values/colors.xml", f"""<?xml version="1.0" encoding="ut
 </resources>
 """)
 
-# ── 4. bg_button_primary.xml ─────────────────────────────────────────────
-print("\n[4] bg_button_primary.xml...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 4: bg_button_primary.xml
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 4] bg_button_primary.xml...")
 write("app/src/main/res/drawable/bg_button_primary.xml", f"""<?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
@@ -182,33 +200,39 @@ write("app/src/main/res/drawable/bg_button_primary.xml", f"""<?xml version="1.0"
 </selector>
 """)
 
-# ── 5. Gambar header (opsional) ───────────────────────────────────────────
-print("\n[5] Header image...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 5: Gambar header (opsional)
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 5] Header image...")
 decode_and_save_image(HEADER_IMAGE, "app/src/main/res/drawable/header_bg.png", "header_bg")
 
-# ── 6. Gambar splash (opsional) ───────────────────────────────────────────
-print("\n[6] Splash image...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 6: Gambar splash (opsional)
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 6] Splash image...")
 decode_and_save_image(SPLASH_IMAGE, "app/src/main/res/drawable/splash_bg.png", "splash_bg")
 
-# ── 7. Logo (opsional) ────────────────────────────────────────────────────
-print("\n[7] Logo image...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 7: Logo (opsional)
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 7] Logo image...")
 decode_and_save_image(LOGO_IMAGE_env, "app/src/main/res/drawable/app_logo.png", "app_logo")
 
-# ── 8. Patch version di activity_splash.xml ──────────────────────────────
-print("\n[8] activity_splash.xml...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 8: Patch activity_splash.xml versi
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 8] activity_splash.xml...")
 splash_layout_path = "app/src/main/res/layout/activity_splash.xml"
 if os.path.exists(splash_layout_path):
     splash_src = read(splash_layout_path)
-    splash_src = re.sub(r'>v[0-9]+\.[0-9]+\.[0-9]+<', f'>v{VERSION_NAME}<', splash_src)
-    splash_src = re.sub(
-        r'android:text="v[0-9]+\.[0-9]+\.[0-9]+"',
-        f'android:text="v{VERSION_NAME}"',
-        splash_src
-    )
+    splash_src = re.sub(r'>v[\d.]+<', f'>v{VERSION_NAME}<', splash_src)
+    splash_src = re.sub(r'android:text="v[\d.]+"', f'android:text="v{VERSION_NAME}"', splash_src)
     write(splash_layout_path, splash_src)
 
-# ── 9. ExamActivity.java — patch EXIT_PIN ────────────────────────────────
-print("\n[9] ExamActivity.java...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 9: ExamActivity.java - patch EXIT_PIN
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 9] ExamActivity.java (EXIT_PIN)...")
 exam_path = "app/src/main/java/id/emes/exambrowser/ExamActivity.java"
 exam_src = read(exam_path)
 exam_src = re.sub(
@@ -218,24 +242,30 @@ exam_src = re.sub(
 )
 write(exam_path, exam_src)
 
-# ── 10. app/build.gradle — patch packageId + versionName ─────────────────
-print("\n[10] app/build.gradle...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 10: app/build.gradle - patch packageId + versionName
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 10] app/build.gradle...")
 app_gradle_path = "app/build.gradle"
 app_gradle = read(app_gradle_path)
 app_gradle = re.sub(r'applicationId\s+"[^"]+"', f'applicationId "{PACKAGE_ID}"', app_gradle)
 app_gradle = re.sub(r'versionName\s+"[^"]+"', f'versionName "{VERSION_NAME}"', app_gradle)
 write(app_gradle_path, app_gradle)
 
-# ── 11. AndroidManifest.xml — patch package + label ──────────────────────
-print("\n[11] AndroidManifest.xml...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 11: AndroidManifest.xml - patch package + label
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 11] AndroidManifest.xml...")
 manifest_path = "app/src/main/AndroidManifest.xml"
 manifest = read(manifest_path)
 manifest = re.sub(r'package="[^"]+"', f'package="{PACKAGE_ID}"', manifest)
 manifest = re.sub(r'android:label="[^"]+"', f'android:label="{APP_NAME}"', manifest, count=1)
 write(manifest_path, manifest)
 
-# ── 12. Rename Java package directory if needed ──────────────────────────
-print("\n[12] Package rename (jika perlu)...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH 12: Rename Java package directory jika Package ID berubah
+# ════════════════════════════════════════════════════════════════
+print("\n[STEP 12] Package rename...")
 OLD_PACKAGE_ID = "id.emes.exambrowser"
 if PACKAGE_ID != OLD_PACKAGE_ID:
     old_dir = f"app/src/main/java/{OLD_PACKAGE_ID.replace('.', '/')}"
@@ -257,28 +287,40 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
         write(manifest_path, manifest2)
         print(f"  Package direname: {old_dir} -> {new_dir}")
     else:
-        print(f"  Tidak perlu rename")
+        print(f"  Skip rename (dir sudah ada atau tidak ada sumber)")
 else:
-    print(f"  Package sama, tidak perlu rename")
+    print(f"  Package tidak berubah, skip")
 
-# ── VERIFIKASI AKHIR: pastikan tidak ada PNG corrupt di drawable ──────────
-print("\n[FINAL] Verifikasi PNG di drawable...")
+# ════════════════════════════════════════════════════════════════
+# LANGKAH FINAL: Verifikasi — hapus paksa semua PNG yang tidak valid
+# Ini safety net terakhir sebelum Gradle build
+# ════════════════════════════════════════════════════════════════
+print("\n[FINAL] Verifikasi dan cleanup PNG di drawable...")
 drawable_dir = "app/src/main/res/drawable"
+found_corrupt = False
 for fname in os.listdir(drawable_dir):
-    if fname.endswith(".png"):
-        fpath = os.path.join(drawable_dir, fname)
-        try:
-            data = open(fpath, "rb").read()
-            if not is_valid_image(data):
-                os.remove(fpath)
-                print(f"  HAPUS CORRUPT: {fpath}")
-            else:
-                print(f"  VALID: {fpath} ({len(data)//1024}KB)")
-        except Exception as e:
-            if os.path.exists(fpath):
-                os.remove(fpath)
-            print(f"  HAPUS ERROR: {fpath} - {e}")
+    if not fname.endswith(".png"):
+        continue
+    fpath = os.path.join(drawable_dir, fname)
+    try:
+        data = open(fpath, "rb").read()
+        if not is_valid_image(data):
+            os.remove(fpath)
+            print(f"  HAPUS CORRUPT: {fpath}")
+            found_corrupt = True
+        else:
+            print(f"  VALID: {fpath} ({len(data)//1024}KB)")
+    except Exception as e:
+        if os.path.exists(fpath):
+            os.remove(fpath)
+        print(f"  HAPUS ERROR: {fpath} ({e})")
+        found_corrupt = True
+
+if found_corrupt:
+    print("  [!] Ada PNG corrupt yang sudah dihapus - build tetap lanjut dengan warna solid")
+else:
+    print("  Semua PNG di drawable valid atau tidak ada")
 
 print("\n" + "=" * 56)
-print("SELESAI: Semua file di-patch. Siap untuk Gradle build.")
+print("SELESAI: Semua file berhasil di-patch.")
 print("=" * 56)
