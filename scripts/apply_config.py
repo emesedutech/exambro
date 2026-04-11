@@ -156,31 +156,40 @@ write("app/src/main/res/values/colors.xml", f"""<?xml version="1.0" encoding="ut
 </resources>
 """)
 
-# ── 3. Splash background image ────────────────────────────────────────────
+# ── 3. Bersihkan semua PNG opsional di awal (KRITIS: cegah AAPT2 error) ──
+# Hapus dulu semua file PNG opsional tanpa syarat. Baru nanti dibuat ulang
+# jika ada base64 yang valid. Ini mencegah file corrupt dari run sebelumnya
+# atau dari git menyebabkan AAPT2 gagal compile.
+OPTIONAL_PNG_FILES = [
+    "app/src/main/res/drawable/header_bg.png",
+    "app/src/main/res/drawable/splash_bg.png",
+    "app/src/main/res/drawable/app_logo.png",
+]
+print("\n  🧹 Membersihkan PNG opsional lama...")
+for _png in OPTIONAL_PNG_FILES:
+    if os.path.exists(_png):
+        os.remove(_png)
+        print(f"     🗑 {_png} dihapus")
+    else:
+        print(f"     — {_png} tidak ada (oke)")
+
+# ── 4. Splash background image ───────────────────────────────────────────
 SPLASH_BG_PATH = "app/src/main/res/drawable/splash_bg.png"
 if SPLASH_IMAGE.strip():
     if not decode_image(SPLASH_IMAGE, SPLASH_BG_PATH, "splash_bg"):
-        # decode gagal — pastikan file tidak ada (jangan sampai file rusak tersisa)
-        if os.path.exists(SPLASH_BG_PATH):
-            os.remove(SPLASH_BG_PATH)
+        print(f"  ⚠ splash_bg: decode gagal — pakai warna solid")
+    # (file sudah dibersihkan di atas, decode_image hanya membuat jika valid)
 else:
-    if os.path.exists(SPLASH_BG_PATH):
-        os.remove(SPLASH_BG_PATH)
-        print(f"  ✓ splash_bg.png dihapus — pakai warna solid")
+    print(f"  — splash_bg.png: tidak ada input — pakai warna solid")
 
-# ── 4. Header background image (opsional) ────────────────────────────────
+# ── 5. Header background image (opsional) ────────────────────────────────
 HEADER_BG_PATH = "app/src/main/res/drawable/header_bg.png"
 if HEADER_IMAGE.strip():
     if not decode_image(HEADER_IMAGE, HEADER_BG_PATH, "header_bg"):
-        # decode gagal — pastikan file tidak ada (KRITIS: file rusak = AAPT2 error!)
-        if os.path.exists(HEADER_BG_PATH):
-            os.remove(HEADER_BG_PATH)
-            print(f"  🗑 header_bg.png rusak dihapus — pakai warna solid sebagai fallback")
+        print(f"  ⚠ header_bg: decode gagal — pakai warna solid")
+    # (file sudah dibersihkan di atas, decode_image hanya membuat jika valid)
 else:
-    # Tidak ada gambar header — hapus file lama jika ada
-    if os.path.exists(HEADER_BG_PATH):
-        os.remove(HEADER_BG_PATH)
-        print(f"  ✓ header_bg.png dihapus — pakai warna solid")
+    print(f"  — header_bg.png: tidak ada input — pakai warna solid")
 
 # ── 5. bg_button_primary.xml ───────────────────────────────────────────────
 write("app/src/main/res/drawable/bg_button_primary.xml", f"""<?xml version="1.0" encoding="utf-8"?>
@@ -266,17 +275,15 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
         print(f"  ✓ Package directory renamed: {old_dir} → {new_dir}")
 
 # ── 11. Logo user → app_logo.png (transparan, bukan ic_launcher) ──────────
+# Catatan: app_logo.png sudah dibersihkan di langkah 3 di atas
 APP_LOGO_PATH = "app/src/main/res/drawable/app_logo.png"
 if LOGO_IMAGE_env.strip():
     if decode_image(LOGO_IMAGE_env, APP_LOGO_PATH, "app_logo"):
         print(f"  ✓ Logo user disimpan sebagai app_logo.png (transparan)")
     else:
-        if os.path.exists(APP_LOGO_PATH):
-            os.remove(APP_LOGO_PATH)
+        print(f"  — app_logo.png: decode gagal — fallback ke ic_launcher")
 else:
-    # Hapus jika tidak ada, supaya Java fallback ke ic_launcher
-    if os.path.exists(APP_LOGO_PATH):
-        os.remove(APP_LOGO_PATH)
+    print(f"  — app_logo.png: tidak ada input — fallback ke ic_launcher")
 
 print()
 print("✅ Semua file berhasil di-patch. Siap untuk Gradle build.")
