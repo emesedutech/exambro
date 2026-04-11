@@ -4,7 +4,7 @@ apply_config.py — Patch Android source files sebelum Gradle build.
 Membaca environment variables yang dikirim dari GitHub Actions workflow_dispatch.
 """
 
-import os, re, sys, base64
+import os, re, sys, base64, struct, zlib
 
 def env(key, default=""):
     return os.environ.get(key, default).strip()
@@ -20,6 +20,7 @@ PACKAGE_ID      = env("PACKAGE_ID",      "id.emes.exambrowser")
 HEADER_IMAGE    = env("HEADER_IMAGE",    "")
 SPLASH_IMAGE    = env("SPLASH_IMAGE",    "")
 VERSION_NAME    = env("VERSION_NAME",    "1.1.0")
+LOGO_IMAGE_env  = env("LOGO_IMAGE",      "")
 
 print("=" * 56)
 print("🔧  EzamBro Config Patcher")
@@ -32,7 +33,6 @@ print(f"  Header     : #{HEADER_COLOR}")
 print(f"  Button     : #{BUTTON_COLOR}")
 print(f"  Package ID : {PACKAGE_ID}")
 print(f"  Version    : {VERSION_NAME}")
-LOGO_IMAGE_env = env("LOGO_IMAGE", "")
 print(f"  Logo User  : {'✓ ada' if LOGO_IMAGE_env.strip() else '— pakai ic_launcher'}")
 print(f"  Splash Img : {'✓ ada' if SPLASH_IMAGE.strip() else '— pakai warna'}")
 print(f"  Header Img : {'✓ ada' if HEADER_IMAGE.strip() else '— pakai warna'}")
@@ -48,21 +48,60 @@ def read(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
+def is_valid_png(data):
+    """Validasi apakah bytes merupakan PNG yang valid (cek signature + IEND chunk)."""
+    PNG_SIG = b'\x89PNG\r\n\x1a\n'
+    if len(data) < 8:
+        return False
+    if data[:8] != PNG_SIG:
+        return False
+    # Cek ada IEND chunk
+    return b'IEND' in data
+
+def is_valid_jpeg(data):
+    """Validasi apakah bytes merupakan JPEG yang valid."""
+    return len(data) > 2 and data[:2] == b'\xff\xd8' and data[-2:] == b'\xff\xd9'
+
+def is_valid_image(data):
+    """Cek apakah data adalah gambar PNG atau JPEG yang valid."""
+    return is_valid_png(data) or is_valid_jpeg(data)
+
 def decode_image(b64_data, dest_path, label):
-    """Decode base64 image dan simpan ke dest_path. Return True jika berhasil."""
+    """
+    Decode base64 image, validasi, dan simpan ke dest_path.
+    Return True jika berhasil, False jika gagal (termasuk jika gambar tidak valid).
+    KRITIS: Jika decode gagal, JANGAN biarkan file rusak tersimpan — hapus saja.
+    """
     try:
         b64 = b64_data.strip()
+        # Hapus data URI prefix jika ada (misal: data:image/png;base64,...)
         if "," in b64:
             b64 = b64.split(",", 1)[1]
+        # Tambahkan padding jika kurang
+        missing = len(b64) % 4
+        if missing:
+            b64 += "=" * (4 - missing)
         img_bytes = base64.b64decode(b64)
+        # ── VALIDASI: pastikan file adalah gambar valid sebelum disimpan ──
+        if not is_valid_image(img_bytes):
+            print(f"  ⚠ {label}: data ter-decode tapi bukan PNG/JPEG valid — pakai warna default")
+            return False
         os.makedirs(os.path.dirname(dest_path), exist_ok=True)
         with open(dest_path, "wb") as f:
             f.write(img_bytes)
-        print(f"  ✓ {dest_path} [{label}] ({len(img_bytes)//1024} KB)")
+        size_kb = len(img_bytes) // 1024
+        fmt = "PNG" if is_valid_png(img_bytes) else "JPEG"
+        print(f"  ✓ {dest_path} [{label}] ({fmt}, {size_kb} KB)")
         return True
+    except base64.binascii.Error as e:
+        print(f"  ⚠ Gagal decode base64 {label}: {e} — pakai warna default")
     except Exception as e:
-        print(f"  ⚠ Gagal decode {label}: {e} — pakai warna default")
-        return False
+        print(f"  ⚠ Gagal simpan {label}: {e} — pakai warna default")
+    # Pastikan file rusak tidak tersisa
+    if os.path.exists(dest_path):
+        os.remove(dest_path)
+        print(f"  🗑 File rusak {dest_path} dihapus")
+    return False
 
 # ── 1. strings.xml ─────────────────────────────────────────────────────────
 write("app/src/main/res/values/strings.xml", f"""<?xml version="1.0" encoding="utf-8"?>
@@ -121,6 +160,7 @@ write("app/src/main/res/values/colors.xml", f"""<?xml version="1.0" encoding="ut
 SPLASH_BG_PATH = "app/src/main/res/drawable/splash_bg.png"
 if SPLASH_IMAGE.strip():
     if not decode_image(SPLASH_IMAGE, SPLASH_BG_PATH, "splash_bg"):
+        # decode gagal — pastikan file tidak ada (jangan sampai file rusak tersisa)
         if os.path.exists(SPLASH_BG_PATH):
             os.remove(SPLASH_BG_PATH)
 else:
@@ -132,9 +172,12 @@ else:
 HEADER_BG_PATH = "app/src/main/res/drawable/header_bg.png"
 if HEADER_IMAGE.strip():
     if not decode_image(HEADER_IMAGE, HEADER_BG_PATH, "header_bg"):
+        # decode gagal — pastikan file tidak ada (KRITIS: file rusak = AAPT2 error!)
         if os.path.exists(HEADER_BG_PATH):
             os.remove(HEADER_BG_PATH)
+            print(f"  🗑 header_bg.png rusak dihapus — pakai warna solid sebagai fallback")
 else:
+    # Tidak ada gambar header — hapus file lama jika ada
     if os.path.exists(HEADER_BG_PATH):
         os.remove(HEADER_BG_PATH)
         print(f"  ✓ header_bg.png dihapus — pakai warna solid")
@@ -166,13 +209,11 @@ if os.path.exists(splash_layout_path):
         f'android:text="v{VERSION_NAME}"\\1',
         splash_src
     )
-    # Try alternative pattern
     splash_src = re.sub(
         r'(android:id="@\+id/splashVersion"[^>]*\n\s*android:text=")v[0-9]+\.[0-9]+\.[0-9]+"',
         f'\\1v{VERSION_NAME}"',
         splash_src
     )
-    # Simple replace all version patterns in splash
     splash_src = re.sub(r'>v[0-9]+\.[0-9]+\.[0-9]+<', f'>v{VERSION_NAME}<', splash_src)
     write(splash_layout_path, splash_src)
 
@@ -225,10 +266,9 @@ if PACKAGE_ID != OLD_PACKAGE_ID:
         print(f"  ✓ Package directory renamed: {old_dir} → {new_dir}")
 
 # ── 11. Logo user → app_logo.png (transparan, bukan ic_launcher) ──────────
-LOGO_IMAGE = env("LOGO_IMAGE", "")
 APP_LOGO_PATH = "app/src/main/res/drawable/app_logo.png"
-if LOGO_IMAGE.strip():
-    if decode_image(LOGO_IMAGE, APP_LOGO_PATH, "app_logo"):
+if LOGO_IMAGE_env.strip():
+    if decode_image(LOGO_IMAGE_env, APP_LOGO_PATH, "app_logo"):
         print(f"  ✓ Logo user disimpan sebagai app_logo.png (transparan)")
     else:
         if os.path.exists(APP_LOGO_PATH):
