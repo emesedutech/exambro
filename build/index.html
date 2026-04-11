@@ -1899,9 +1899,7 @@ async function fetchLatestRelease(tok,own,rep,runCreatedAt) {
   log('dim','ℹ️ Release tidak ditemukan otomatis. Cek manual di GitHub → Releases\n');
 }
 async function openLatestRelease(tok, own, rep) {
-  // Coba ambil release terbaru via API
-  log('dim','🔍 Mengambil link release terbaru…
-');
+  log('dim','🔍 Mengambil link release terbaru…\n');
   const fallback = `https://github.com/${own}/${rep}/releases`;
   try {
     const res = await fetch(`https://api.github.com/repos/${own}/${rep}/releases?per_page=1`,
@@ -1912,17 +1910,14 @@ async function openLatestRelease(tok, own, rep) {
       if(rel && rel.html_url) {
         el('releasesLink').href = rel.html_url;
         el('downloadPanel').style.display = 'block';
-        log('ok', `🔗 Release: ${rel.tag_name} — klik tombol Download APK
-`);
+        log('ok', '🔗 Release ' + rel.tag_name + ' — klik tombol Download APK\n');
         return;
       }
     }
   } catch(e){}
-  // Fallback ke halaman releases
   el('releasesLink').href = fallback;
   el('downloadPanel').style.display = 'block';
-  log('ok', '🔗 Buka halaman Releases untuk download APK
-');
+  log('ok', '🔗 Buka halaman Releases untuk download APK\n');
 }
 
 
