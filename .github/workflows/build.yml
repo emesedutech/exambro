@@ -92,6 +92,25 @@ jobs:
             )
           echo "✅ gradle-wrapper.jar: $(ls -lh gradle/wrapper/gradle-wrapper.jar)"
 
+      - name: Bersihkan file gambar opsional dari repo (cegah AAPT2 error)
+        run: |
+          # Hapus semua file gambar opsional — drawable maupun assets lama
+          # File di drawable/ diproses AAPT2 → jika rusak = build gagal
+          git rm --cached app/src/main/res/drawable/header_bg.png 2>/dev/null || true
+          git rm --cached app/src/main/res/drawable/splash_bg.png 2>/dev/null || true
+          git rm --cached app/src/main/res/drawable/app_logo.png  2>/dev/null || true
+          rm -f app/src/main/res/drawable/header_bg.png
+          rm -f app/src/main/res/drawable/splash_bg.png
+          rm -f app/src/main/res/drawable/app_logo.png
+          # Bersihkan assets lama juga (akan dibuat ulang oleh apply_config.py)
+          rm -f app/src/main/assets/header_bg.png
+          rm -f app/src/main/assets/header_bg.jpg
+          rm -f app/src/main/assets/splash_bg.png
+          rm -f app/src/main/assets/splash_bg.jpg
+          rm -f app/src/main/assets/app_logo.png
+          mkdir -p app/src/main/assets
+          echo "✅ Semua file gambar opsional dibersihkan"
+
       - name: Apply configuration from inputs
         env:
           APP_NAME:        ${{ github.event.inputs.app_name        || 'Emes Exam Browser' }}
