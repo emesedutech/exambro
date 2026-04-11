@@ -357,52 +357,6 @@ body{
 }
 .artifact-btn:hover{background:#059669}
 
-/* ── APK Download Panel ── */
-.apk-panel{
-  background:var(--ink);border:1px solid var(--green);
-  border-radius:var(--r2);overflow:hidden;margin-top:12px;
-}
-.apk-panel-header{
-  background:rgba(16,185,129,.12);
-  padding:8px 12px;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(16,185,129,.2);
-}
-.apk-panel-header .apk-badge{
-  font-size:11px;font-weight:700;color:var(--green);
-  display:flex;align-items:center;gap:5px;
-}
-.apk-panel-header .apk-note{
-  font-size:10.5px;color:var(--text3);
-}
-.apk-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;
-  border-bottom:1px solid var(--border);
-  text-decoration:none;
-  transition:.15s;
-}
-.apk-item:last-child{border-bottom:none}
-.apk-item:hover{background:rgba(59,130,246,.06)}
-.apk-item-ico{font-size:20px;flex-shrink:0}
-.apk-item-info{flex:1;min-width:0}
-.apk-item-name{font-size:12px;font-weight:600;color:var(--text);word-break:break-all}
-.apk-item-size{font-size:10.5px;color:var(--text3);margin-top:1px}
-.apk-item-dl{
-  flex-shrink:0;
-  background:var(--green);color:#fff;
-  border-radius:6px;padding:6px 12px;
-  font-size:11.5px;font-weight:700;
-  display:flex;align-items:center;gap:5px;
-  text-decoration:none;transition:.15s;
-}
-.apk-item-dl:hover{background:#059669}
-.apk-item-dl.expired{background:var(--text3);cursor:default}
-.apk-fetching{
-  padding:12px;text-align:center;
-  font-size:11.5px;color:var(--text3);
-}
-
 /* ────── SAVE ROW ────── */
 .save-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:4px}
 .saved-ok{
@@ -1016,9 +970,7 @@ body{
           <a href="#" class="run-link" id="runLink" style="display:none" target="_blank">Buka ↗</a>
         </div>
         <div class="build-log" id="buildLog"></div>
-        <!-- Panel download APK dinamis -->
-        <div id="apkPanel" style="display:none;margin-top:12px;"></div>
-        <a href="#" class="run-link" id="artifactBtn" style="display:none;font-size:11px;margin-top:8px;display:none" target="_blank">↗ Buka GitHub Actions</a>
+        <a href="#" class="artifact-btn" id="artifactBtn" style="display:none" target="_blank">⬇ Unduh APK (Artifacts)</a>
       </div>
     </div>
   </div>
@@ -1798,9 +1750,8 @@ async function triggerBuild() {
 
 async function pollBuild(tok,own,rep) {
   clearInterval(pollTimer); let att=0;
-  const wf = v('ghWorkflow').trim()||'build.yml';
   const check = async () => {
-    if(++att>72){clearInterval(pollTimer);log('err','⏱ Timeout 6 menit — cek GitHub Actions langsung.\n');return;}
+    if(++att>60){clearInterval(pollTimer);log('err','⏱ Timeout — cek GitHub Actions langsung.\n');return;}
     try {
       const res=await fetch(`https://api.github.com/repos/${own}/${rep}/actions/runs?per_page=5&event=workflow_dispatch`,
         {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
@@ -1812,15 +1763,9 @@ async function pollBuild(tok,own,rep) {
         clearInterval(pollTimer);
         const ok=run.conclusion==='success';
         setRun(ok?'ok':'fail',ok?'✅ Build Selesai!':`❌ Gagal (${run.conclusion})`,ok?`Selesai dalam ~${elapsed(run)}`:'Lihat log di GitHub Actions');
-        log(ok?'ok':'err',ok?'✅ APK siap!\n📦 Mengambil link download…\n':`❌ Build gagal: ${run.conclusion}\n`);
+        log(ok?'ok':'err',ok?'✅ APK siap!\n📦 Unduh: Actions → Artifacts → APK-Build\n':`❌ Build gagal: ${run.conclusion}\n`);
         el('btnBuild').disabled=false;el('btnBuild').textContent='🚀 Build APK Lagi';
-        // Tampilkan link GitHub Actions sebagai fallback
-        const ab=el('artifactBtn');
-        ab.href=url; ab.style.display='';
-        if(ok){
-          // Fetch direct artifact download links
-          await fetchArtifacts(tok,own,rep,run.id);
-        }
+        if(ok){el('artifactBtn').href=url;el('artifactBtn').style.display='inline-flex';}
       } else {
         setRun(run.status==='in_progress'?'run':'queue',
           run.status==='in_progress'?'🔨 Sedang Build…':'⏳ Antrian…',
@@ -1830,123 +1775,6 @@ async function pollBuild(tok,own,rep) {
     } catch(e){}
   };
   pollTimer=setInterval(check,5000); check();
-}
-
-async function fetchArtifacts(tok,own,rep,runId) {
-  const panel=el('apkPanel');
-  panel.style.display='';
-  panel.innerHTML='<div class="apk-fetching">⏳ Mengambil link download APK…</div>';
-  try {
-    // Beri waktu artifact dan release siap
-    await new Promise(r=>setTimeout(r,4000));
-
-    // ── Coba GitHub Releases dulu (direct download tanpa login) ──
-    const relRes=await fetch(`https://api.github.com/repos/${own}/${rep}/releases?per_page=5`,
-      {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
-    if(relRes.ok){
-      const releases=await relRes.json();
-      // Cari release terbaru yang memiliki APK asset
-      const latest=releases.find(r=>r.assets&&r.assets.some(a=>
-        a.name.toLowerCase().endsWith('.apk')||a.name.toLowerCase().endsWith('.aab')
-      ));
-      if(latest){
-        const apkAssets=latest.assets.filter(a=>
-          a.name.toLowerCase().endsWith('.apk')||a.name.toLowerCase().endsWith('.aab')
-        );
-        renderReleasePanel(apkAssets,latest,own,rep,runId);
-        log('ok',`✅ ${apkAssets.length} file siap didownload langsung!\n`);
-        return;
-      }
-    }
-
-    // ── Fallback: GitHub Actions Artifacts (perlu login) ──
-    const artRes=await fetch(`https://api.github.com/repos/${own}/${rep}/actions/runs/${runId}/artifacts`,
-      {headers:{Authorization:`Bearer ${tok}`,'X-GitHub-Api-Version':'2022-11-28'}});
-    if(!artRes.ok){
-      const actionsUrl=`https://github.com/${own}/${rep}/actions/runs/${runId}`;
-      panel.innerHTML=`<div class="apk-fetching">⚠️ Tidak bisa fetch artifacts (HTTP ${artRes.status})<br><a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Buka GitHub Actions ↗</a></div>`;
-      return;
-    }
-    const data=await artRes.json();
-    const artifacts=(data.artifacts||[]).filter(a=>
-      a.name.toLowerCase().includes('apk')||a.name.toLowerCase().includes('aab')
-    );
-    if(artifacts.length===0){
-      const actionsUrl=`https://github.com/${own}/${rep}/actions/runs/${runId}`;
-      panel.innerHTML=`<div class="apk-fetching">⚠️ Artifact belum tersedia.<br><a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Download manual di GitHub Actions ↗</a></div>`;
-      return;
-    }
-    renderArtifactPanel(artifacts,own,rep,runId);
-    log('ok',`✅ ${artifacts.length} artifact siap (perlu login GitHub untuk download)\n`);
-  } catch(e){
-    const actionsUrl=`https://github.com/${own}/${rep}/actions/runs/${runId}`;
-    panel.innerHTML=`<div class="apk-fetching">⚠️ Error: ${e.message}<br><a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Buka GitHub Actions ↗</a></div>`;
-  }
-}
-
-function renderReleasePanel(assets,release,own,rep,runId) {
-  const panel=el('apkPanel');
-  const releaseUrl=release.html_url;
-  let html=`<div class="apk-panel">
-    <div class="apk-panel-header">
-      <span class="apk-badge">✅ APK SIAP DIDOWNLOAD</span>
-      <span class="apk-note">Tidak perlu login GitHub</span>
-    </div>`;
-  assets.forEach(a=>{
-    const sizeLabel=formatSize(a.size);
-    const ico=a.name.toLowerCase().endsWith('.aab')?'🎯':'📦';
-    const hint=a.name.toLowerCase().endsWith('.aab')?'· untuk Google Play':'· install langsung ke HP';
-    html+=`<a class="apk-item" href="${a.browser_download_url}" target="_blank" download>
-      <span class="apk-item-ico">${ico}</span>
-      <div class="apk-item-info">
-        <div class="apk-item-name">${a.name}</div>
-        <div class="apk-item-size">${sizeLabel} ${hint}</div>
-      </div>
-      <span class="apk-item-dl">⬇ Download</span>
-    </a>`;
-  });
-  html+=`</div>
-  <div style="font-size:10.5px;color:var(--text3);margin-top:6px;text-align:center">
-    Link permanen: <a href="${releaseUrl}" target="_blank" style="color:var(--blue2)">${releaseUrl.replace('https://','')}</a>
-  </div>`;
-  panel.innerHTML=html;
-}
-
-function renderArtifactPanel(artifacts,own,rep,runId) {
-  const panel=el('apkPanel');
-  const actionsUrl=`https://github.com/${own}/${rep}/actions/runs/${runId}`;
-  let html=`<div class="apk-panel">
-    <div class="apk-panel-header">
-      <span class="apk-badge">📦 APK SIAP</span>
-      <span class="apk-note">⚠️ Perlu login GitHub untuk download</span>
-    </div>`;
-  artifacts.forEach(a=>{
-    const isExpired=a.expired;
-    const sizeLabel=formatSize(a.size_in_bytes);
-    const ico=a.name.toLowerCase().includes('aab')?'🎯':'📦';
-    const hint=a.name.toLowerCase().includes('aab')?'· untuk Google Play':'· install langsung';
-    html+=`<a class="apk-item" href="${actionsUrl}" target="_blank">
-      <span class="apk-item-ico">${ico}</span>
-      <div class="apk-item-info">
-        <div class="apk-item-name">${a.name}</div>
-        <div class="apk-item-size">${sizeLabel} ${hint}</div>
-      </div>
-      <span class="apk-item-dl ${isExpired?'expired':''}">
-        ${isExpired?'Kedaluwarsa':'⬇ Download'}
-      </span>
-    </a>`;
-  });
-  html+=`</div>
-  <div style="font-size:10.5px;color:var(--text3);margin-top:6px;text-align:center">
-    Login GitHub lalu klik: <a href="${actionsUrl}" target="_blank" style="color:var(--blue2)">Actions → Artifacts → APK-Build</a>
-  </div>`;
-  panel.innerHTML=html;
-}
-
-function formatSize(bytes){
-  if(!bytes)return'';
-  if(bytes>1048576)return`${(bytes/1048576).toFixed(1)} MB`;
-  return`${Math.round(bytes/1024)} KB`;
 }
 
 function elapsed(run){const s=new Date(run.created_at),e=run.updated_at?new Date(run.updated_at):new Date(),sec=Math.round((e-s)/1000);return sec<60?`${sec}s`:`${Math.round(sec/60)}m ${sec%60}s`;}
