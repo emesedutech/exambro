@@ -58,13 +58,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Pull latest commits (ambil logo yang di-commit dari builder)
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git pull origin ${{ github.ref_name }} --rebase || git pull origin main --rebase || true
-          echo "✅ Logo terbaru: $(ls -lh app/src/main/res/drawable-nodpi/app_logo.png 2>/dev/null || echo 'tidak ada')"
-
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
@@ -74,15 +67,13 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.4'
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install Pillow --quiet
 
       - name: Download Gradle Wrapper JAR
         run: |
@@ -117,9 +108,7 @@ jobs:
         run: python scripts/apply_config.py
 
       - name: Setup launcher icons
-        run: |
-          pip install Pillow --quiet
-          python3 scripts/setup_icons.py
+        run: python scripts/setup_icons.py
 
       - name: Restore keystore dari GitHub Secrets
         env:
@@ -157,7 +146,6 @@ jobs:
           APP="${{ github.event.inputs.app_name || 'EzamBro' }}"
           VER="${{ github.event.inputs.version_name || '1.1.0' }}"
           SAFE=$(echo "$APP" | sed 's/[^a-zA-Z0-9]/-/g')
-
           find app/build/outputs/apk/release/ -name "*.apk" | while read f; do
             BASE=$(basename "$f" .apk)
             if echo "$BASE" | grep -qi "universal"; then
@@ -170,11 +158,9 @@ jobs:
               mv "$f" "app/build/outputs/apk/release/${SAFE}-v${VER}-release.apk"
             fi
           done
-
           COUNT=$(find app/build/outputs/apk/release/ -name "*.apk" | wc -l)
           echo "✅ Total APK: $COUNT"
           [ "$COUNT" -eq 0 ] && echo "❌ Tidak ada APK!" && exit 1
-
           AAB=$(find app/build/outputs/bundle/release/ -name "*.aab" | head -1)
           [ -n "$AAB" ] && mv "$AAB" "app/build/outputs/bundle/release/${SAFE}-v${VER}-release.aab"
 
