@@ -55,6 +55,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest commits (ambil logo yang di-commit dari builder)
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git pull origin ${{ github.ref_name }} --rebase || git pull origin main --rebase || true
+          echo "✅ Logo terbaru: $(ls -lh app/src/main/res/drawable-nodpi/app_logo.png 2>/dev/null || echo 'tidak ada')"
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
